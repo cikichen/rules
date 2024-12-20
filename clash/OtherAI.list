@@ -1,5 +1,5 @@
 # NAME: OtherAI
-# UPDATED: 2024-12-19
+# UPDATED: 2024-12-20
 
 DOMAIN-SUFFIX,ciciai.com
 DOMAIN-SUFFIX,iterative.ai
@@ -22,3 +22,11 @@ DOMAIN-SUFFIX,gemini.google.com
 DOMAIN-SUFFIX,android.chat.openai.com
 DOMAIN-SUFFIX,ios.chat.openai.com
 DOMAIN-SUFFIX,chatgpt.com
+DOMAIN-SUFFIX,ai.com
+DOMAIN-SUFFIX,identrust.com
+DOMAIN-SUFFIX,oaistatic.com
+DOMAIN-SUFFIX,oaiusercontent.com
+DOMAIN-SUFFIX,vimeo.com
+DOMAIN-SUFFIX,vimeocdn.com
+DOMAIN-SUFFIX,hcaptcha.com
+DOMAIN-SUFFIX,akamaized.com
