@@ -128,3 +128,5 @@ DOMAIN-SUFFIX,trip.com,DIRECT
 # >>>>>>>>>>>>>>> 其他分流修正 <<<<<<<<<<<<<<
 IP-CIDR,192.168.0.1/24,DIRECT
 IP-CIDR,192.168.1.1/24,DIRECT
+
+DOMAIN-SUFFIX,challenges.cloudflare.com,DIRECT
