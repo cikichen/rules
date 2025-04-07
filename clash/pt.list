@@ -1,10 +1,10 @@
-DOMAIN-SUFFIX,btschool.club
-DOMAIN-SUFFIX,hdhome.org
+#DOMAIN-SUFFIX,btschool.club
+#DOMAIN-SUFFIX,hdhome.org
 DOMAIN-SUFFIX,m-team.cc
-DOMAIN-SUFFIX,haidan.video
-DOMAIN-SUFFIX,zmpt.cc
+#DOMAIN-SUFFIX,haidan.video
+#DOMAIN-SUFFIX,zmpt.cc
 DOMAIN-SUFFIX,rousi.zip
-DOMAIN-SUFFIX,crabpt.vip
-DOMAIN-SUFFIX,52pt.site
+#DOMAIN-SUFFIX,crabpt.vip
+#DOMAIN-SUFFIX,52pt.site
 #DOMAIN-SUFFIX,icc2022.com
-DOMAIN-SUFFIX,yemapt.org
+#DOMAIN-SUFFIX,yemapt.org
