@@ -129,4 +129,4 @@ DOMAIN-SUFFIX,trip.com,DIRECT
 IP-CIDR,192.168.0.1/24,DIRECT
 IP-CIDR,192.168.1.1/24,DIRECT
 
-# DOMAIN-SUFFIX,challenges.cloudflare.com,DIRECT
+DOMAIN-SUFFIX,challenges.cloudflare.com,DIRECT
