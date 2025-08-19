@@ -1,5 +1,5 @@
 # NAME: OtherAI
-# UPDATED: 2024-12-20
+# UPDATED: 2025-08-19
 
 DOMAIN-SUFFIX,ciciai.com
 DOMAIN-SUFFIX,iterative.ai
@@ -30,3 +30,4 @@ DOMAIN-SUFFIX,vimeo.com
 DOMAIN-SUFFIX,vimeocdn.com
 DOMAIN-SUFFIX,hcaptcha.com
 DOMAIN-SUFFIX,akamaized.com
+DOMAIN-SUFFIX,augmentcode.com
