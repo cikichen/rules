@@ -76,8 +76,19 @@ proxy-groups:
     type: select
     proxies:
       - 节点选择
-      - DIRECT
       - 自动选择
+      - 故障转移
+      - 香港节点
+      - 台湾节点
+      - 狮城节点
+      - 日本节点
+      - 美国节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 其他地区
+      - 手动切换
+      - DIRECT
 
   # === AI 服务组 ===
   - name: OpenAi
@@ -746,7 +757,7 @@ rules:
   - RULE-SET,PT,PT站点
 
   # === 代理规则 ===
-  - RULE-SET,ProxyGFWlist,节点选择
+  - RULE-SET,ProxyGFWlist,漏网之鱼
 
   # === GEOIP ===
   - GEOIP,CN,全球直连
