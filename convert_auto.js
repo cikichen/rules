@@ -604,16 +604,12 @@ function hasLowCost(config) {
     return (config.proxies || []).some(proxy => lowCostRegex.test(proxy.name));
 }
 
-function findLastMatch(regex, text) {
-    const flags = regex.flags.includes('g') ? regex.flags : `${regex.flags}g`;
+function findFirstMatch(regex, text) {
+    const flags = regex.flags.replace("g", "");
     const re = new RegExp(regex.source, flags);
-    let match = null;
-    let last = null;
-    while ((match = re.exec(text)) !== null) {
-        last = match;
-    }
-    if (!last) return null;
-    return { index: last.index, length: last[0].length };
+    const match = re.exec(text);
+    if (!match) return null;
+    return { index: match.index, length: match[0].length };
 }
 
 function parseCountries(config) {
@@ -639,12 +635,12 @@ function parseCountries(config) {
 
         // 找到最后一个匹配到的地区作为出口地区
         let bestCountry = null;
-        let bestIndex = -1;
+        let bestIndex = Infinity;
         let bestLength = -1;
         for (const [country, regex] of Object.entries(compiledRegex)) {
-            const match = findLastMatch(regex, name);
+            const match = findFirstMatch(regex, name);
             if (!match) continue;
-            if (match.index > bestIndex || (match.index === bestIndex && match.length > bestLength)) {
+            if (match.index < bestIndex || (match.index === bestIndex && match.length > bestLength)) {
                 bestCountry = country;
                 bestIndex = match.index;
                 bestLength = match.length;
@@ -701,18 +697,27 @@ function buildCountryProxyGroups({ countries, landing, loadBalance }) {
     return groups;
 }
 
-function buildRegionProxyGroups({ countryGroupNames, loadBalance }) {
+function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
     const groups = [];
+    const baseExcludeFilter = "0\\.[0-5]|低倍率|省流|大流量|实验性";
+    const landingExcludeFilter = "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地";
+    const groupType = loadBalance ? "load-balance" : "url-test";
     for (const [name, meta] of Object.entries(REGION_META)) {
-        const proxies = meta.countries
-            .map(country => `${country}${NODE_SUFFIX}`)
-            .filter(groupName => countryGroupNames.includes(groupName));
-        if (proxies.length < REGION_GROUP_MIN) continue;
+        const regionCountries = meta.countries
+            .filter(country => detectedCountries.includes(country));
+        if (regionCountries.length < REGION_GROUP_MIN) continue;
+        const filters = regionCountries
+            .map(country => countriesMeta[country])
+            .filter(Boolean)
+            .map(meta => normalizeCountryPattern(meta.pattern));
+        if (filters.length === 0) continue;
         const groupConfig = {
             "name": name,
             "icon": meta.icon,
-            "type": loadBalance ? "load-balance" : "url-test",
-            "proxies": proxies
+            "type": groupType,
+            "include-all": true,
+            "filter": filters.join("|"),
+            "exclude-filter": landing ? `${landingExcludeFilter}|${baseExcludeFilter}` : baseExcludeFilter
         };
         if (!loadBalance) {
             Object.assign(groupConfig, {
@@ -1058,7 +1063,8 @@ function main(config) {
 
     // 为地区构建对应的 url-test / load-balance 组
     const countryProxyGroups = buildCountryProxyGroups({ countries, landing, loadBalance });
-    const regionProxyGroups = buildRegionProxyGroups({ countryGroupNames, loadBalance });
+    const detectedCountries = countryInfo.map(item => item.country);
+    const regionProxyGroups = buildRegionProxyGroups({ detectedCountries, loadBalance, landing });
     const regionGroupNames = regionProxyGroups.map(group => group.name);
     const unrecognizedProxies = Array.from(new Set(
         (resultConfig.proxies || [])
