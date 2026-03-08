@@ -1,0 +1,4 @@
+# 临时单独指定代理行为的网站规则
+# 示例：
+# DOMAIN-SUFFIX,example.com
+# DOMAIN,test.example.com

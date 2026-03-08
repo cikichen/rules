@@ -14,6 +14,11 @@ https://github.com/powerfullz/override-rules
 */
 
 const NODE_SUFFIX = "节点";
+const PRIMARY_COUNTRIES = ["香港", "日本", "新加坡", "美国", "台湾", "韩国"];
+const COUNTRY_GROUP_DISPLAY_NAMES = {
+    "新加坡": "狮城"
+};
+const LANDING_NODE_REGEX = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;
 
 function parseBool(value) {
     if (typeof value === "boolean") return value;
@@ -74,15 +79,18 @@ const {
     countryThreshold
 } = buildFeatureFlags(rawArgs);
 
-function getCountryGroupNames(countryInfo, minCount) {
-    return countryInfo
-        .filter(item => item.count >= minCount)
-        .map(item => item.country + NODE_SUFFIX);
+function getCountryGroupDisplayName(country) {
+    return COUNTRY_GROUP_DISPLAY_NAMES[country] || country;
 }
 
-function stripNodeSuffix(groupNames) {
-    const suffixPattern = new RegExp(`${NODE_SUFFIX}$`);
-    return groupNames.map(name => name.replace(suffixPattern, ""));
+function buildCountryGroupItems(countryInfo, minCount, countryOrder) {
+    const countMap = new Map(countryInfo.map(item => [item.country, item.count]));
+    return countryOrder
+        .filter(country => (countMap.get(country) || 0) >= minCount)
+        .map(country => ({
+            country,
+            groupName: `${getCountryGroupDisplayName(country)}${NODE_SUFFIX}`
+        }));
 }
 
 const PROXY_GROUPS = {
@@ -93,6 +101,7 @@ const PROXY_GROUPS = {
     DIRECT: "全球直连",
     LANDING: "落地节点",
     LOW_COST: "低倍率节点",
+    OTHER: "其他节点",
 };
 const DEFAULT_GROUP_ICON = "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png";
 const AI_UNSUPPORTED_GROUPS = {
@@ -104,7 +113,7 @@ const AI_UNSUPPORTED_GROUPS = {
 
 // 辅助函数，用于根据条件构建数组，自动过滤掉无效值（如 false, null）
 const buildList = (...elements) => elements.flat().filter(Boolean);
-function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames }) {
+function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames, hasOtherNodes }) {
     // 使用辅助函数和常量，以声明方式构建各个代理列表
 
     // “选择节点”组的候选列表
@@ -114,6 +123,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames 
         landing && PROXY_GROUPS.LANDING,
         countryGroupNames,
         regionGroupNames,
+        hasOtherNodes && PROXY_GROUPS.OTHER,
         lowCost && PROXY_GROUPS.LOW_COST,
         PROXY_GROUPS.MANUAL,
         "DIRECT"
@@ -125,6 +135,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames 
         PROXY_GROUPS.AUTO,
         countryGroupNames,
         regionGroupNames,
+        hasOtherNodes && PROXY_GROUPS.OTHER,
         lowCost && PROXY_GROUPS.LOW_COST,
         PROXY_GROUPS.MANUAL,
         PROXY_GROUPS.DIRECT
@@ -135,6 +146,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames 
         PROXY_GROUPS.DIRECT,
         countryGroupNames,
         regionGroupNames,
+        hasOtherNodes && PROXY_GROUPS.OTHER,
         lowCost && PROXY_GROUPS.LOW_COST,
         PROXY_GROUPS.AUTO,
         PROXY_GROUPS.SELECT,
@@ -146,6 +158,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames 
         landing && PROXY_GROUPS.LANDING,
         countryGroupNames,
         regionGroupNames,
+        hasOtherNodes && PROXY_GROUPS.OTHER,
         lowCost && PROXY_GROUPS.LOW_COST,
         PROXY_GROUPS.MANUAL,
         "DIRECT"
@@ -203,6 +216,14 @@ const ruleProviders = {
         "url": "https://github.ithome.me/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/direct.list",
         "path": "./ruleset/DirectList.list"
     },
+    "Custom": {
+        "type": "http",
+        "behavior": "classical",
+        "format": "text",
+        "interval": 86400,
+        "url": "https://github.ithome.me/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/custom.list",
+        "path": "./ruleset/Custom.list"
+    },
     
     "OpenAI": {
         "type": "http",
@@ -247,6 +268,7 @@ const baseRules = [
     `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
+    "RULE-SET,Custom,自定义组",
     "RULE-SET,OpenAI,OpenAI",
     "RULE-SET,Claude,Claude",
     "RULE-SET,Gemini,Gemini",
@@ -365,7 +387,10 @@ const geoxURL = {
     "asn": "https://gcore.jsdelivr.net/gh/Loyalsoldier/geoip@release/GeoLite2-ASN.mmdb"
 };
 
-const REGION_GROUP_MIN = 2;
+const REGION_GROUP_DEFAULT_MIN = 2;
+const REGION_GROUP_MIN_OVERRIDES = {
+    "东南亚节点": 1
+};
 
 const REGION_META = {
     "欧洲节点": {
@@ -389,7 +414,8 @@ const REGION_META = {
             "波兰",
             "捷克",
             "乌克兰",
-            "俄罗斯"
+            "俄罗斯",
+            "土耳其"
         ]
     },
     "东南亚节点": {
@@ -614,8 +640,7 @@ function findFirstMatch(regex, text) {
 
 function parseCountries(config) {
     const proxies = config.proxies || [];
-    const ispRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;   // 需要排除的关键字
-    const matchedProxyNames = new Set();
+    const proxyCountryMap = Object.create(null);
 
     // 用来累计各国节点数
     const countryCounts = Object.create(null);
@@ -631,7 +656,7 @@ function parseCountries(config) {
         const name = proxy.name || '';
 
         // 过滤掉不想统计的 ISP 节点
-        if (ispRegex.test(name)) continue;
+        if (LANDING_NODE_REGEX.test(name)) continue;
 
         // 找到最后一个匹配到的地区作为出口地区
         let bestCountry = null;
@@ -648,7 +673,7 @@ function parseCountries(config) {
         }
         if (bestCountry) {
             countryCounts[bestCountry] = (countryCounts[bestCountry] || 0) + 1;
-            matchedProxyNames.add(name);
+            proxyCountryMap[name] = bestCountry;
         }
     }
 
@@ -658,23 +683,24 @@ function parseCountries(config) {
         result.push({ country, count });
     }
 
-    return { countryInfo: result, matchedProxyNames };
+    return { countryInfo: result, proxyCountryMap };
 }
 
 
-function buildCountryProxyGroups({ countries, landing, loadBalance }) {
+function buildCountryProxyGroups({ countryGroupItems, landing, loadBalance }) {
     const groups = [];
     const baseExcludeFilter = "0\\.[0-5]|低倍率|省流|大流量|实验性";
     const landingExcludeFilter = "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地";
     const groupType = loadBalance ? "load-balance" : "url-test";
 
-    for (const country of countries) {
+    for (const item of countryGroupItems) {
+        const { country, groupName } = item;
         const meta = countriesMeta[country];
         if (!meta) continue;
 
         const icon = meta.icon || DEFAULT_GROUP_ICON;
         const groupConfig = {
-            "name": `${country}${NODE_SUFFIX}`,
+            "name": groupName,
             "icon": icon,
             "include-all": true,
             "filter": normalizeCountryPattern(meta.pattern),
@@ -703,9 +729,10 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
     const landingExcludeFilter = "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地";
     const groupType = loadBalance ? "load-balance" : "url-test";
     for (const [name, meta] of Object.entries(REGION_META)) {
+        const groupMin = REGION_GROUP_MIN_OVERRIDES[name] || REGION_GROUP_DEFAULT_MIN;
         const regionCountries = meta.countries
             .filter(country => detectedCountries.includes(country));
-        if (regionCountries.length < REGION_GROUP_MIN) continue;
+        if (regionCountries.length < groupMin) continue;
         const filters = regionCountries
             .map(country => countriesMeta[country])
             .filter(Boolean)
@@ -732,12 +759,37 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
     return groups;
 }
 
+function getRegionCountriesFromGroups(regionGroups) {
+    const selected = new Set();
+    for (const group of regionGroups) {
+        const meta = REGION_META[group.name];
+        if (!meta || !Array.isArray(meta.countries)) continue;
+        for (const country of meta.countries) {
+            selected.add(country);
+        }
+    }
+    return selected;
+}
+
+function buildOtherProxyNames({ proxies, proxyCountryMap, includedCountries }) {
+    return Array.from(new Set(
+        (proxies || [])
+            .map(proxy => proxy.name)
+            .filter(name => {
+                if (!name) return false;
+                const matchedCountry = proxyCountryMap[name];
+                return !matchedCountry || !includedCountries.has(matchedCountry);
+            })
+    ));
+}
+
 function buildProxyGroups({
     landing,
     countries,
     countryProxyGroups,
     regionProxyGroups,
     countryGroupNames,
+    hasOtherNodes,
     unrecognizedProxies,
     lowCost,
     defaultProxies,
@@ -748,21 +800,17 @@ function buildProxyGroups({
     // 查看是否有特定地区的节点
     const hasTW = countries.includes("台湾");
     const hasHK = countries.includes("香港");
-    const hasUS = countries.includes("美国");
     // 排除落地节点、选择节点和故障转移以避免死循环
     const frontProxySelector = landing
         ? defaultSelector.filter(name => name !== PROXY_GROUPS.LANDING && name !== PROXY_GROUPS.FALLBACK)
         : [];
     const availableGroupNames = new Set([
         ...countryGroupNames,
-        ...regionProxyGroups.map(group => group.name)
-    ]);
-    const regionAliases = {
-        "狮城节点": "新加坡节点"
-    };
+        ...regionProxyGroups.map(group => group.name),
+        hasOtherNodes ? PROXY_GROUPS.OTHER : null
+    ].filter(Boolean));
     const pickRegion = (name) => {
-        const resolved = regionAliases[name] || name;
-        return availableGroupNames.has(resolved) ? resolved : null;
+        return availableGroupNames.has(name) ? name : null;
     };
     const pickRegions = (...names) => names.map(pickRegion).filter(Boolean);
     const aiGroupCandidates = Array.from(availableGroupNames);
@@ -778,7 +826,8 @@ function buildProxyGroups({
     };
     const manualGroupProxies = buildList(
         regionProxyGroups.map(group => group.name),
-        countryGroupNames
+        countryGroupNames,
+        hasOtherNodes && PROXY_GROUPS.OTHER
     );
     const fullProxies = defaultProxies;
     return [
@@ -869,6 +918,12 @@ function buildProxyGroups({
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png",
             "type": "select",
             "proxies": defaultProxies
+        },
+        {
+            "name": "自定义组",
+            "icon": DEFAULT_GROUP_ICON,
+            "type": "select",
+            "proxies": defaultProxiesDirect
         },
         {
             "name": "OpenAI",
@@ -1045,7 +1100,7 @@ function buildProxyGroups({
         ...regionProxyGroups,
         ...countryProxyGroups,
         (unrecognizedProxies && unrecognizedProxies.length > 0) ? {
-            "name": "其他节点",
+            "name": PROXY_GROUPS.OTHER,
             "icon": DEFAULT_GROUP_ICON,
             "type": "select",
             "proxies": unrecognizedProxies
@@ -1056,21 +1111,25 @@ function buildProxyGroups({
 function main(config) {
     const resultConfig = { proxies: config.proxies };
     // 解析地区与低倍率信息
-    const { countryInfo, matchedProxyNames } = parseCountries(resultConfig);
+    const { countryInfo, proxyCountryMap } = parseCountries(resultConfig);
     const lowCost = hasLowCost(resultConfig);
-    const countryGroupNames = getCountryGroupNames(countryInfo, countryThreshold);
-    const countries = stripNodeSuffix(countryGroupNames);
+    const countryGroupItems = buildCountryGroupItems(countryInfo, countryThreshold, PRIMARY_COUNTRIES);
+    const countryGroupNames = countryGroupItems.map(item => item.groupName);
+    const countries = countryGroupItems.map(item => item.country);
 
     // 为地区构建对应的 url-test / load-balance 组
-    const countryProxyGroups = buildCountryProxyGroups({ countries, landing, loadBalance });
+    const countryProxyGroups = buildCountryProxyGroups({ countryGroupItems, landing, loadBalance });
     const detectedCountries = countryInfo.map(item => item.country);
     const regionProxyGroups = buildRegionProxyGroups({ detectedCountries, loadBalance, landing });
     const regionGroupNames = regionProxyGroups.map(group => group.name);
-    const unrecognizedProxies = Array.from(new Set(
-        (resultConfig.proxies || [])
-            .map(proxy => proxy.name)
-            .filter(name => name && !matchedProxyNames.has(name))
-    ));
+    const regionCountries = getRegionCountriesFromGroups(regionProxyGroups);
+    const includedCountries = new Set([...countries, ...regionCountries]);
+    const unrecognizedProxies = buildOtherProxyNames({
+        proxies: resultConfig.proxies,
+        proxyCountryMap,
+        includedCountries
+    });
+    const hasOtherNodes = unrecognizedProxies.length > 0;
 
     // 构建基础数组
     const {
@@ -1078,7 +1137,7 @@ function main(config) {
         defaultProxiesDirect,
         defaultSelector,
         defaultFallback
-    } = buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames });
+    } = buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames, hasOtherNodes });
 
     // 生成代理组
     const proxyGroups = buildProxyGroups({
@@ -1087,6 +1146,7 @@ function main(config) {
         countryProxyGroups,
         regionProxyGroups,
         countryGroupNames,
+        hasOtherNodes,
         unrecognizedProxies,
         lowCost,
         defaultProxies,
