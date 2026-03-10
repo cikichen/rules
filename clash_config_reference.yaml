@@ -1,0 +1,1104 @@
+# ==================== 基础配置 ====================
+mixed-port: 7890
+redir-port: 7892
+tproxy-port: 7893
+routing-mark: 7894
+allow-lan: true
+ipv6: false
+mode: rule
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: "off"
+log-level: info
+external-controller: ":9999"
+disable-keep-alive: true
+
+# ==================== Profile 配置 ====================
+profile:
+  store-selected: true
+
+# ==================== Sniffer 嗅探配置 ====================
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  override-destination: false
+  sniff:
+    TLS:
+      ports: [443, 8443]
+    HTTP:
+      ports: [80, 8080, 8880]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "Mijia Cloud"
+    - "dlg.io.mi.com"
+    - "+.push.apple.com"
+
+# ==================== DNS 配置 ====================
+dns:
+  enable: true
+  ipv6: false
+  prefer-h3: true
+  enhanced-mode: redir-host
+  default-nameserver:
+    - 119.29.29.29
+    - 223.5.5.5
+  nameserver:
+    - system
+    - 223.5.5.5
+    - 119.29.29.29
+    - 180.184.1.1
+  fallback:
+    - quic://dns0.eu
+    - https://dns.cloudflare.com/dns-query
+    - https://dns.sb/dns-query
+    - tcp://208.67.222.222
+    - tcp://8.26.56.2
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+    - tls://dot.pub
+
+# ==================== GeoData 配置 ====================
+geodata-mode: true
+geo-auto-update: true
+geodata-loader: standard
+geo-update-interval: 24
+geox-url:
+  geoip: https://gcore.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat
+  geosite: https://gcore.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat
+  mmdb: https://gcore.jsdelivr.net/gh/Loyalsoldier/geoip@release/Country.mmdb
+  asn: https://gcore.jsdelivr.net/gh/Loyalsoldier/geoip@release/GeoLite2-ASN.mmdb
+
+# ==================== 代理组 ====================
+proxy-groups:
+  # === 核心策略组 ===
+  - name: 节点选择
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png
+    type: select
+    proxies:
+      - 全球手动
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 故障转移
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - DIRECT
+
+  - name: 全球手动
+    icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
+    type: select
+    include-all: true
+    proxies:
+      - DIRECT
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+
+  - name: 自动选择
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
+    type: url-test
+    include-all: true
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 全球优选
+    icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/Roundrobin.png
+    type: url-test
+    include-all: true
+    url: https://cp.cloudflare.com/generate_204
+    interval: 180
+    tolerance: 15
+    lazy: false
+
+  - name: 负载均衡
+    icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png
+    type: load-balance
+    include-all: true
+    url: https://cp.cloudflare.com/generate_204
+    interval: 180
+    strategy: round-robin
+    lazy: false
+
+  - name: 故障转移
+    icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
+    type: fallback
+    url: https://cp.cloudflare.com/generate_204
+    interval: 180
+    lazy: false
+    proxies:
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - DIRECT
+
+  - name: 全球直连
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: 全球拦截
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 广告拦截
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png
+    type: select
+    proxies:
+      - REJECT
+      - REJECT-DROP
+      - 全球直连
+
+  - name: 应用净化
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  # === AI 服务组 ===
+  - name: OpenAI
+    icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 美国节点
+      - 日本节点
+      - 狮城节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+
+  - name: Claude
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 美国节点
+      - 日本节点
+      - 狮城节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+
+  - name: Gemini
+    icon: https://gcore.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 美国节点
+      - 日本节点
+      - 狮城节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+
+  - name: 人工智能
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 美国节点
+      - 日本节点
+      - 狮城节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+
+  # === 常用服务组 ===
+  - name: TikTok
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 自定义组
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    type: select
+    proxies:
+      - 全球直连
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 节点选择
+      - 全球手动
+
+  - name: GitHub
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+      - DIRECT
+
+  - name: OneDrive
+    icon: https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/icons/Onedrive.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 微软服务
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 苹果服务
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 美国节点
+      - 香港节点
+      - 日本节点
+      - 全球手动
+
+  - name: 电报消息
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: YouTube Music
+    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@refs/heads/master/IconSet/Color/YouTube_Music.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 油管视频
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 谷歌服务
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 奈飞视频
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: Spotify
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: Bahamut
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bahamut.png
+    type: select
+    proxies:
+      - 台湾节点
+      - 节点选择
+      - 全球手动
+      - 全球直连
+
+  - name: 哔哩哔哩
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili.png
+    type: select
+    proxies:
+      - 全球直连
+      - 台湾节点
+      - 香港节点
+
+  - name: PikPak
+    icon: https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/icons/PikPak.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 国外媒体
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 国内媒体
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/DomesticMedia.png
+    type: select
+    proxies:
+      - DIRECT
+      - 香港节点
+      - 台湾节点
+      - 全球直连
+
+  - name: 推特X
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: Discord
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: Epic游戏
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Epic_Games.png
+    type: select
+    proxies:
+      - DIRECT
+      - 土耳其节点
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: 游戏平台
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  - name: PT站点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 全球手动
+
+  - name: 漏网之鱼
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 全球优选
+      - 负载均衡
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 台湾节点
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚节点
+      - 土耳其节点
+      - 其他地区
+      - 全球手动
+      - 全球直连
+
+  # === 地区节点组 ===
+  - name: 香港节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
+    type: url-test
+    include-all: true
+    filter: "香港|港|HK|hk|Hong Kong|HongKong|hongkong|🇭🇰"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 日本节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
+    type: url-test
+    include-all: true
+    filter: "日本|川日|东京|大阪|泉日|埼玉|沪日|深日|(?:^|[^A-Za-z])JP\\d*(?=$|[^A-Za-z])|Japan|🇯🇵"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 狮城节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
+    type: url-test
+    include-all: true
+    filter: "新加坡|坡|狮城|(?:^|[^A-Za-z])SG\\d*(?=$|[^A-Za-z])|Singapore|🇸🇬"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 美国节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
+    type: url-test
+    include-all: true
+    filter: "美国|美|(?:^|[^A-Za-z])US\\d*(?=$|[^A-Za-z])|United States|🇺🇸"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 台湾节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
+    type: url-test
+    include-all: true
+    filter: "台|新北|彰化|(?:^|[^A-Za-z])TW\\d*(?=$|[^A-Za-z])|Taiwan|🇹🇼"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 韩国节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
+    type: url-test
+    include-all: true
+    filter: "(?:^|[^A-Za-z])KR\\d*(?=$|[^A-Za-z])|Korea|KOR|首尔|韩|韓|🇰🇷"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 欧洲节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png
+    type: url-test
+    include-all: true
+    filter: "英国|United Kingdom|(?:^|[^A-Za-z])UK\\d*(?=$|[^A-Za-z])|伦敦|London|🇬🇧|德国|德|(?:^|[^A-Za-z])DE\\d*(?=$|[^A-Za-z])|Germany|🇩🇪|法国|法|(?:^|[^A-Za-z])FR\\d*(?=$|[^A-Za-z])|France|🇫🇷|荷兰|(?:^|[^A-Za-z])NL\\d*(?=$|[^A-Za-z])|Netherlands|🇳🇱|意大利|(?:^|[^A-Za-z])IT\\d*(?=$|[^A-Za-z])|Italy|🇮🇹|西班牙|(?:^|[^A-Za-z])ES\\d*(?=$|[^A-Za-z])|Spain|España|🇪🇸|葡萄牙|(?:^|[^A-Za-z])PT\\d*(?=$|[^A-Za-z])|Portugal|🇵🇹|瑞典|(?:^|[^A-Za-z])SE\\d*(?=$|[^A-Za-z])|Sweden|🇸🇪|挪威|(?:^|[^A-Za-z])NO\\d*(?=$|[^A-Za-z])|Norway|🇳🇴|芬兰|(?:^|[^A-Za-z])FI\\d*(?=$|[^A-Za-z])|Finland|🇫🇮|丹麦|(?:^|[^A-Za-z])DK\\d*(?=$|[^A-Za-z])|Denmark|🇩🇰|瑞士|(?:^|[^A-Za-z])CH\\d*(?=$|[^A-Za-z])|Switzerland|🇨🇭|奥地利|(?:^|[^A-Za-z])AT\\d*(?=$|[^A-Za-z])|Austria|🇦🇹|爱尔兰|(?:^|[^A-Za-z])IE\\d*(?=$|[^A-Za-z])|Ireland|🇮🇪|比利时|(?:^|[^A-Za-z])BE\\d*(?=$|[^A-Za-z])|Belgium|🇧🇪|波兰|(?:^|[^A-Za-z])PL\\d*(?=$|[^A-Za-z])|Poland|🇵🇱|捷克|(?:^|[^A-Za-z])CZ\\d*(?=$|[^A-Za-z])|Czech|Czechia|🇨🇿|乌克兰|(?:^|[^A-Za-z])UA\\d*(?=$|[^A-Za-z])|Ukraine|🇺🇦|俄罗斯|俄|(?:^|[^A-Za-z])RU\\d*(?=$|[^A-Za-z])|Russia|🇷🇺"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 东南亚节点
+    icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png
+    type: url-test
+    include-all: true
+    filter: "新加坡|坡|狮城|(?:^|[^A-Za-z])SG\\d*(?=$|[^A-Za-z])|Singapore|🇸🇬|马来西亚|马来|(?:^|[^A-Za-z])MY\\d*(?=$|[^A-Za-z])|Malaysia|🇲🇾|泰国|泰|(?:^|[^A-Za-z])TH\\d*(?=$|[^A-Za-z])|Thailand|🇹🇭|越南|(?:^|[^A-Za-z])VN\\d*(?=$|[^A-Za-z])|Vietnam|🇻🇳|菲律宾|(?:^|[^A-Za-z])PH\\d*(?=$|[^A-Za-z])|Philippines|🇵🇭|印度尼西亚|印尼|(?:^|[^A-Za-z])ID\\d*(?=$|[^A-Za-z])|Indonesia|🇮🇩"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 土耳其节点
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
+    type: url-test
+    include-all: true
+    filter: "土耳其|(?:^|[^A-Za-z])TR\\d*(?=$|[^A-Za-z])|Turkey|🇹🇷"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+  - name: 其他地区
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    type: url-test
+    include-all: true
+    filter: "(?i)^((?!(🇭🇰|香港|港|HK|Hong|🇹🇼|Taiwan|台|彰化|新北|TW|🇯🇵|Japan|JP|日本|东京|大阪|🇺🇸|美国|US|United States|🇸🇬|Singapore|SG|新加坡|狮城|坡|🇰🇷|Korea|KR|韩国|首尔|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇧🇪|🇵🇱|🇨🇿|🇺🇦|🇷🇺|UK|DE|FR|NL|IT|ES|PT|EU|欧洲|🇹🇷|Turkey|TR|土耳其|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|马来|泰国|越南|菲律宾|印尼|网站|地址|剩余|过期|实验性)).)*$"
+    exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 20
+    lazy: false
+
+# ==================== 规则提供者 ====================
+rule-providers:
+  BanAD:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanAD.list
+    path: ./ruleset/BanAD.list
+
+  BanProgramAD:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/BanProgramAD.list
+    path: ./ruleset/BanProgramAD.list
+
+  DirectList:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/direct.list
+    path: ./ruleset/DirectList.list
+
+  Custom:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/custom.list
+    path: ./ruleset/Custom.list
+
+  TikTok:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/TikTok.list
+    path: ./ruleset/TikTok.list
+
+  SteamFix:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/SteamFix.list
+    path: ./ruleset/SteamFix.list
+
+  GoogleFCM:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/FirebaseCloudMessaging.list
+    path: ./ruleset/FirebaseCloudMessaging.list
+
+  OpenAI:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml
+    path: ./ruleset/OpenAI.yaml
+
+  Claude:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.yaml
+    path: ./ruleset/Claude.yaml
+
+  Gemini:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.yaml
+    path: ./ruleset/Gemini.yaml
+
+  YouTubeMusic:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTubeMusic/YouTubeMusic.yaml
+    path: ./ruleset/YouTubeMusic.yaml
+
+  Apple:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml
+    path: ./ruleset/Apple.yaml
+
+  ChinaMedia:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMedia/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+
+  GlobalMedia:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia.yaml
+    path: ./ruleset/GlobalMedia.yaml
+
+  Twitter:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Twitter/Twitter.yaml
+    path: ./ruleset/Twitter.yaml
+
+  Discord:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Discord/Discord.yaml
+    path: ./ruleset/Discord.yaml
+
+  GitHub:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.yaml
+    path: ./ruleset/GitHub.yaml
+
+  Google:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml
+    path: ./ruleset/Google.yaml
+
+  Telegram:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml
+    path: ./ruleset/Telegram.yaml
+
+  Netflix:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.yaml
+    path: ./ruleset/Netflix.yaml
+
+  YouTube:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml
+    path: ./ruleset/YouTube.yaml
+
+  Microsoft:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml
+    path: ./ruleset/Microsoft.yaml
+
+  OneDrive:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OneDrive/OneDrive.yaml
+    path: ./ruleset/OneDrive.yaml
+
+  Spotify:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.yaml
+    path: ./ruleset/Spotify.yaml
+
+  Bahamut:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.yaml
+    path: ./ruleset/Bahamut.yaml
+
+  BiliBili:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.yaml
+    path: ./ruleset/BiliBili.yaml
+
+  PikPak:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PikPak/PikPak.yaml
+    path: ./ruleset/PikPak.yaml
+
+  Steam:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Steam/Steam.yaml
+    path: ./ruleset/Steam.yaml
+
+  Epic:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Epic/Epic.yaml
+    path: ./ruleset/Epic.yaml
+
+  PrivateTracker:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PrivateTracker/PrivateTracker.yaml
+    path: ./ruleset/PrivateTracker.yaml
+
+# ==================== 规则 ====================
+rules:
+  # === QUIC 阻断 ===
+  - AND,((DST-PORT,443),(NETWORK,UDP)),REJECT
+
+  # === 直连规则 ===
+  - GEOSITE,PRIVATE,全球直连
+  - GEOIP,PRIVATE,全球直连
+  - RULE-SET,DirectList,全球直连
+  - GEOSITE,CN,全球直连
+  - GEOIP,CN,全球直连
+
+  # === 拦截规则 ===
+  - RULE-SET,BanAD,广告拦截
+  - RULE-SET,BanProgramAD,应用净化
+
+  # === 自定义规则 ===
+  - RULE-SET,Custom,自定义组
+
+  # === AI 服务 ===
+  - RULE-SET,OpenAI,OpenAI
+  - RULE-SET,Claude,Claude
+  - RULE-SET,Gemini,Gemini
+  - GEOSITE,CATEGORY-AI-!CN,人工智能
+
+  # === 特殊修正规则 ===
+  - RULE-SET,TikTok,TikTok
+  - RULE-SET,SteamFix,全球直连
+  - RULE-SET,GoogleFCM,全球直连
+  - DOMAIN,services.googleapis.cn,节点选择
+  - GEOSITE,GOOGLE-PLAY@CN,全球直连
+  - GEOSITE,MICROSOFT@CN,全球直连
+
+  # === 常用服务 ===
+  - RULE-SET,Apple,苹果服务
+  - RULE-SET,ChinaMedia,国内媒体
+  - RULE-SET,GlobalMedia,国外媒体
+  - RULE-SET,Twitter,推特X
+  - RULE-SET,Discord,Discord
+  - RULE-SET,GitHub,GitHub
+  - RULE-SET,Google,谷歌服务
+  - RULE-SET,Telegram,电报消息
+  - RULE-SET,YouTubeMusic,YouTube Music
+  - RULE-SET,YouTube,油管视频
+  - RULE-SET,Netflix,奈飞视频
+  - RULE-SET,Microsoft,微软服务
+  - RULE-SET,OneDrive,OneDrive
+  - RULE-SET,Spotify,Spotify
+  - RULE-SET,Bahamut,Bahamut
+  - RULE-SET,BiliBili,哔哩哔哩
+  - RULE-SET,PikPak,PikPak
+
+  # === 游戏与下载 ===
+  - RULE-SET,Steam,游戏平台
+  - RULE-SET,Epic,Epic游戏
+  - RULE-SET,PrivateTracker,PT站点
+
+  # === 漏网之鱼 ===
+  - GEOSITE,GFW,漏网之鱼
+  - GEOIP,NETFLIX,奈飞视频,no-resolve
+  - GEOIP,TELEGRAM,电报消息,no-resolve
+  - MATCH,漏网之鱼
