@@ -7,8 +7,8 @@ https://github.com/powerfullz/override-rules
 - landing: 启用落地节点功能（如机场家宽/星链/落地分组，默认 false）
 - ipv6: 启用 IPv6 支持（默认 false）
 - full: 输出完整配置（适合纯内核启动，默认 false）
-- keepalive: 启用 tcp-keep-alive（默认 false）
-- fakeip: DNS 使用 FakeIP 模式（默认 false，false 为 RedirHost）
+- keepalive: 启用 tcp-keep-alive（默认 true）
+- fakeip: DNS 使用 FakeIP 模式（默认 true，false 为 RedirHost）
 - quic: 允许 QUIC 流量（UDP 443，默认 false）
 - threshold: 国家节点数量小于该值时不显示分组 (默认 0)
 */
@@ -55,9 +55,19 @@ function buildFeatureFlags(args) {
         fakeip: "fakeIPEnabled",
         quic: "quicEnabled"
     };
+    const defaults = {
+        loadBalance: false,
+        landing: false,
+        ipv6Enabled: false,
+        fullConfig: false,
+        keepAliveEnabled: true,
+        fakeIPEnabled: true,
+        quicEnabled: false
+    };
 
     const flags = Object.entries(spec).reduce((acc, [sourceKey, targetKey]) => {
-        acc[targetKey] = parseBool(args[sourceKey]) || false;
+        const hasKey = Object.prototype.hasOwnProperty.call(args, sourceKey);
+        acc[targetKey] = hasKey ? parseBool(args[sourceKey]) : defaults[targetKey];
         return acc;
     }, {});
 
@@ -105,11 +115,22 @@ const PROXY_GROUPS = {
 };
 const DEFAULT_GROUP_ICON = "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png";
 const AI_UNSUPPORTED_GROUPS = {
-    "OpenAI": ["香港节点"],
-    "Claude": ["香港节点"],
-    "Gemini": ["香港节点"],
-    "人工智能": ["香港节点"]
+    "OpenAI": [],
+    "Claude": [],
+    "Gemini": [],
+    "人工智能": []
 };
+const AI_PREFERRED_GROUPS = {
+    "OpenAI": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"],
+    "Claude": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"],
+    "Gemini": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"],
+    "人工智能": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"]
+};
+const PROXY_TEST_URL = "http://www.google.com/generate_204";
+const PROXY_TEST_INTERVAL = 300;
+const PROXY_TEST_TIMEOUT = 4000;
+const PROXY_TEST_TOLERANCE = 50;
+const PROXY_TEST_LAZY = true;
 
 // 辅助函数，用于根据条件构建数组，自动过滤掉无效值（如 false, null）
 const buildList = (...elements) => elements.flat().filter(Boolean);
@@ -275,7 +296,7 @@ const baseRules = [
     "GEOSITE,CATEGORY-AI-!CN,人工智能",
     `RULE-SET,TikTok,TikTok`,
     `RULE-SET,SteamFix,${PROXY_GROUPS.DIRECT}`,
-    `RULE-SET,GoogleFCM,${PROXY_GROUPS.DIRECT}`,
+    `RULE-SET,GoogleFCM,${PROXY_GROUPS.SELECT}`,
     `DOMAIN,services.googleapis.cn,${PROXY_GROUPS.SELECT}`,
     `GEOSITE,GOOGLE-PLAY@CN,${PROXY_GROUPS.DIRECT}`,
     `GEOSITE,MICROSOFT@CN,${PROXY_GROUPS.DIRECT}`,
@@ -328,29 +349,35 @@ const snifferConfig = {
     ]
 };
 
-function buildDnsConfig({ mode, fakeIpFilter }) {
+function buildDnsConfig({ mode, fakeIpFilter, enableQuicDns }) {
+    const fallbackServers = buildList(
+        enableQuicDns && "quic://dns0.eu",
+        "https://hk.pms.loc.cc/dohgo",
+        "https://runtime.webn.cc:2083/dnsgo",
+        "https://us.pms.loc.cc/dohgo",
+        "https://dns.cloudflare.com/dns-query",
+        "https://dns.sb/dns-query",
+        "tcp://208.67.222.222",
+        "tcp://8.26.56.2"
+    );
     const config = {
         "enable": true,
         "ipv6": ipv6Enabled,
         "prefer-h3": true,
         "enhanced-mode": mode,
         "default-nameserver": [
+            "8.8.8.8",
             "119.29.29.29",
             "223.5.5.5"
         ],
         "nameserver": [
             "system",
+            "8.8.8.8",
             "223.5.5.5",
             "119.29.29.29",
             "180.184.1.1"
         ],
-        "fallback": [
-            "quic://dns0.eu",
-            "https://dns.cloudflare.com/dns-query",
-            "https://dns.sb/dns-query",
-            "tcp://208.67.222.222",
-            "tcp://8.26.56.2"
-        ],
+        "fallback": fallbackServers,
         "proxy-server-nameserver": [
             "https://dns.alidns.com/dns-query",
             "tls://dot.pub"
@@ -364,9 +391,13 @@ function buildDnsConfig({ mode, fakeIpFilter }) {
     return config;
 }
 
-const dnsConfig = buildDnsConfig({ mode: "redir-host" });
+const dnsConfig = buildDnsConfig({
+    mode: "redir-host",
+    enableQuicDns: quicEnabled
+});
 const dnsConfigFakeIp = buildDnsConfig({
     mode: "fake-ip",
+    enableQuicDns: quicEnabled,
     fakeIpFilter: [
         "geosite:private",
         "geosite:connectivity-check",
@@ -374,6 +405,35 @@ const dnsConfigFakeIp = buildDnsConfig({
         "Mijia Cloud",
         "dlg.io.mi.com",
         "localhost.ptlogin2.qq.com",
+        "localhost",
+        "*.lan",
+        "*.local",
+        "*.home.arpa",
+        "router.asus.com",
+        "www.asusrouter.com",
+        "instant.arubanetworks.com",
+        "setmeup.arubanetworks.com",
+        "my.router",
+        "router.ctc",
+        "routerlogin.com",
+        "*.routerlogin.com",
+        "*.tplogin.cn",
+        "wifi.cmcc",
+        "*.miwifi.com",
+        "captive.apple.com",
+        "e.crashlytics.com",
+        "time.apple.com",
+        "*.push.apple.com",
+        "*.msftconnecttest.com",
+        "*.msftncsi.com",
+        "*.srv.nintendo.net",
+        "*.stun.playstation.net",
+        "xbox.*.microsoft.com",
+        "*.xboxlive.com",
+        "*.logon.battlenet.com.cn",
+        "*.logon.battle.net",
+        "stun.l.google.com",
+        "challenges.cloudflare.com",
         "*.icloud.com",
         "*.stun.*.*",
         "*.stun.*.*.*"
@@ -393,6 +453,21 @@ const REGION_GROUP_MIN_OVERRIDES = {
 };
 
 const REGION_META = {
+    "北美节点": {
+        icon: DEFAULT_GROUP_ICON,
+        countries: [
+            "美国",
+            "加拿大",
+            "墨西哥"
+        ]
+    },
+    "大洋洲节点": {
+        icon: DEFAULT_GROUP_ICON,
+        countries: [
+            "澳大利亚",
+            "新西兰"
+        ]
+    },
     "欧洲节点": {
         icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png",
         countries: [
@@ -427,6 +502,14 @@ const REGION_META = {
             "越南",
             "菲律宾",
             "印度尼西亚"
+        ]
+    },
+    "中东节点": {
+        icon: DEFAULT_GROUP_ICON,
+        countries: [
+            "阿联酋",
+            "沙特",
+            "以色列"
         ]
     }
 };
@@ -710,10 +793,11 @@ function buildCountryProxyGroups({ countryGroupItems, landing, loadBalance }) {
 
         if (!loadBalance) {
             Object.assign(groupConfig, {
-                "url": "https://cp.cloudflare.com/generate_204",
-                "interval": 60,
-                "tolerance": 20,
-                "lazy": false
+                "url": PROXY_TEST_URL,
+                "interval": PROXY_TEST_INTERVAL,
+                "timeout": PROXY_TEST_TIMEOUT,
+                "tolerance": PROXY_TEST_TOLERANCE,
+                "lazy": PROXY_TEST_LAZY
             });
         }
 
@@ -748,10 +832,11 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
         };
         if (!loadBalance) {
             Object.assign(groupConfig, {
-                "url": "https://cp.cloudflare.com/generate_204",
-                "interval": 60,
-                "tolerance": 20,
-                "lazy": false
+                "url": PROXY_TEST_URL,
+                "interval": PROXY_TEST_INTERVAL,
+                "timeout": PROXY_TEST_TIMEOUT,
+                "tolerance": PROXY_TEST_TOLERANCE,
+                "lazy": PROXY_TEST_LAZY
             });
         }
         groups.push(groupConfig);
@@ -813,13 +898,18 @@ function buildProxyGroups({
         return availableGroupNames.has(name) ? name : null;
     };
     const pickRegions = (...names) => names.map(pickRegion).filter(Boolean);
-    const aiGroupCandidates = Array.from(availableGroupNames);
+    const aiGroupCandidates = Array.from(availableGroupNames).sort();
     const buildAiGroupProxies = (groupName) => {
-        const exclusions = AI_UNSUPPORTED_GROUPS[groupName] || [];
-        const allowedGroups = aiGroupCandidates.filter(name => !exclusions.includes(name));
+        const exclusions = new Set(AI_UNSUPPORTED_GROUPS[groupName] || []);
+        const preferredNames = AI_PREFERRED_GROUPS[groupName] || AI_PREFERRED_GROUPS["人工智能"];
+        const preferredGroups = preferredNames
+            .filter(name => availableGroupNames.has(name) && !exclusions.has(name));
+        const allowedGroups = aiGroupCandidates
+            .filter(name => !exclusions.has(name) && !preferredGroups.includes(name));
         return buildList(
-            PROXY_GROUPS.SELECT,
+            preferredGroups,
             PROXY_GROUPS.AUTO,
+            PROXY_GROUPS.SELECT,
             allowedGroups,
             PROXY_GROUPS.MANUAL
         );
@@ -849,10 +939,11 @@ function buildProxyGroups({
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
             "type": "url-test",
             "include-all": true,
-            "url": "https://cp.cloudflare.com/generate_204",
-            "interval": 60,
-            "tolerance": 20,
-            "lazy": false
+            "url": PROXY_TEST_URL,
+            "interval": PROXY_TEST_INTERVAL,
+            "timeout": PROXY_TEST_TIMEOUT,
+            "tolerance": PROXY_TEST_TOLERANCE,
+            "lazy": PROXY_TEST_LAZY
         },
         (landing) ? {
             "name": "前置代理",
@@ -873,11 +964,12 @@ function buildProxyGroups({
             "name": PROXY_GROUPS.FALLBACK,
             "icon": "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png",
             "type": "fallback",
-            "url": "https://cp.cloudflare.com/generate_204",
+            "url": PROXY_TEST_URL,
             "proxies": defaultFallback,
-            "interval": 180,
-            "tolerance": 20,
-            "lazy": false
+            "interval": PROXY_TEST_INTERVAL,
+            "timeout": PROXY_TEST_TIMEOUT,
+            "tolerance": PROXY_TEST_TOLERANCE,
+            "lazy": PROXY_TEST_LAZY
         },
         {
             "name": PROXY_GROUPS.DIRECT,
@@ -1093,7 +1185,11 @@ function buildProxyGroups({
             "name": PROXY_GROUPS.LOW_COST,
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
             "type": "url-test",
-            "url": "https://cp.cloudflare.com/generate_204",
+            "url": PROXY_TEST_URL,
+            "interval": PROXY_TEST_INTERVAL,
+            "timeout": PROXY_TEST_TIMEOUT,
+            "tolerance": PROXY_TEST_TOLERANCE,
+            "lazy": PROXY_TEST_LAZY,
             "include-all": true,
             "filter": "(?i)0\.[0-5]|低倍率|省流|大流量|实验性"
         } : null,

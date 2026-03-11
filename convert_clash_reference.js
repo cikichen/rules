@@ -11,7 +11,8 @@
 - loadbalance: 启用地区组负载均衡（默认 false，false 为 url-test）
 - landing: 启用落地节点分组（默认 false）
 - ipv6: 启用 IPv6 支持（默认 false）
-- full: 输出完整配置（默认 false）
+- full: 输出完整配置（默认 false；false 时仅输出共享策略层）
+- profile: 运行时配置模板（legacy | client | router，仅在 full=true 时生效，默认 legacy）
 - keepalive: 启用 tcp-keep-alive（默认 false）
 - fakeip: DNS 使用 FakeIP 模式（默认 false）
 - quic: 允许 QUIC 流量（默认 false）
@@ -41,6 +42,17 @@ function parseNumber(value, defaultValue = 0) {
     return Number.isNaN(num) ? defaultValue : num;
 }
 
+function parseProfile(value) {
+    if (typeof value !== "string") return "legacy";
+
+    const normalized = value.trim().toLowerCase();
+    if (["legacy", "client", "router"].includes(normalized)) {
+        return normalized;
+    }
+
+    return "legacy";
+}
+
 function buildFeatureFlags(args) {
     const spec = {
         loadbalance: "loadBalance",
@@ -58,6 +70,7 @@ function buildFeatureFlags(args) {
     }, {});
 
     flags.countryThreshold = parseNumber(args.threshold, 0);
+    flags.runtimeProfile = parseProfile(args.profile);
     return flags;
 }
 
@@ -70,7 +83,8 @@ const {
     keepAliveEnabled,
     fakeIPEnabled,
     quicEnabled,
-    countryThreshold
+    countryThreshold,
+    runtimeProfile
 } = buildFeatureFlags(rawArgs);
 
 function getCountryGroupDisplayName(country) {
@@ -94,6 +108,7 @@ const PROXY_GROUPS = {
     BALANCE: "负载均衡",
     MANUAL: "全球手动",
     FALLBACK: "故障转移",
+    AI_FALLBACK: "AI 故障转移",
     DIRECT: "全球直连",
     LANDING: "落地节点",
     LOW_COST: "低倍率节点",
@@ -308,8 +323,6 @@ const baseRules = [
     `GEOSITE,PRIVATE,${PROXY_GROUPS.DIRECT}`,
     `GEOIP,PRIVATE,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
-    `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
-    `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
     "RULE-SET,Custom,自定义组",
@@ -343,6 +356,8 @@ const baseRules = [
     "RULE-SET,Steam,游戏平台",
     "RULE-SET,Epic,Epic游戏",
     "RULE-SET,PrivateTracker,PT站点",
+    `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
+    `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     "GEOSITE,GFW,漏网之鱼",
     "GEOIP,NETFLIX,奈飞视频,no-resolve",
     "GEOIP,TELEGRAM,电报消息,no-resolve",
@@ -355,6 +370,61 @@ function buildRules({ quicEnabled }) {
         ruleList.unshift("AND,((DST-PORT,443),(NETWORK,UDP)),REJECT");
     }
     return ruleList;
+}
+
+function buildRuntimeProfileConfig({ profile }) {
+    const sharedRuntime = {
+        ipv6: ipv6Enabled,
+        mode: "rule",
+        "unified-delay": true,
+        "tcp-concurrent": true,
+        "find-process-mode": "off",
+        "log-level": "info",
+        "geodata-loader": "standard",
+        "disable-keep-alive": !keepAliveEnabled,
+        profile: {
+            "store-selected": true
+        }
+    };
+
+    if (profile === "client") {
+        return Object.assign({}, sharedRuntime, {
+            "mixed-port": 7890,
+            "allow-lan": false,
+            "external-controller": "127.0.0.1:9999"
+        });
+    }
+
+    if (profile === "router") {
+        return Object.assign({}, sharedRuntime, {
+            "redir-port": 7892,
+            "tproxy-port": 7893,
+            "routing-mark": 7894,
+            "allow-lan": true,
+            "external-controller": "127.0.0.1:9999"
+        });
+    }
+
+    return Object.assign({}, sharedRuntime, {
+        "mixed-port": 7890,
+        "redir-port": 7892,
+        "tproxy-port": 7893,
+        "routing-mark": 7894,
+        "allow-lan": true,
+        "external-controller": ":9999"
+    });
+}
+
+function buildSharedConfig({ proxyGroups, finalRules }) {
+    return {
+        "proxy-groups": proxyGroups,
+        "rule-providers": ruleProviders,
+        rules: finalRules,
+        sniffer: snifferConfig,
+        dns: fakeIPEnabled ? dnsConfigFakeIp : dnsConfig,
+        "geodata-mode": true,
+        "geox-url": geoxURL
+    };
 }
 
 const snifferConfig = {
@@ -588,7 +658,7 @@ function buildCountryProxyGroups({ countryGroupItems, landing, loadBalance }) {
             Object.assign(groupConfig, {
                 url: "https://cp.cloudflare.com/generate_204",
                 interval: 60,
-                tolerance: 20,
+                tolerance: 50,
                 lazy: false
             });
         }
@@ -630,7 +700,7 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
             Object.assign(groupConfig, {
                 url: "https://cp.cloudflare.com/generate_204",
                 interval: 60,
-                tolerance: 20,
+                tolerance: 50,
                 lazy: false
             });
         }
@@ -716,10 +786,12 @@ function buildProxyGroups({
     const pickRegion = name => availableGroupNames.has(name) ? name : null;
     const pickRegions = (...names) => names.map(pickRegion).filter(Boolean);
     const aiGroupCandidates = Array.from(availableGroupNames);
+
     const buildAiGroupProxies = groupName => {
         const exclusions = AI_UNSUPPORTED_GROUPS[groupName] || [];
         const allowedGroups = aiGroupCandidates.filter(name => !exclusions.includes(name));
         return buildList(
+            PROXY_GROUPS.AI_FALLBACK,
             PROXY_GROUPS.SELECT,
             PROXY_GROUPS.AUTO,
             PROXY_GROUPS.BEST,
@@ -758,7 +830,7 @@ function buildProxyGroups({
             "include-all": true,
             url: "https://cp.cloudflare.com/generate_204",
             interval: 60,
-            tolerance: 20,
+            tolerance: 50,
             lazy: false
         },
         {
@@ -768,7 +840,7 @@ function buildProxyGroups({
             "include-all": true,
             url: "https://cp.cloudflare.com/generate_204",
             interval: 180,
-            tolerance: 15,
+            tolerance: 50,
             lazy: false
         },
         {
@@ -797,10 +869,21 @@ function buildProxyGroups({
             name: PROXY_GROUPS.FALLBACK,
             icon: "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png",
             type: "fallback",
+            "include-all": true,
             url: "https://cp.cloudflare.com/generate_204",
-            proxies: defaultFallback,
-            interval: 180,
-            tolerance: 20,
+            interval: 60,
+            tolerance: 50,
+            lazy: false
+        },
+        {
+            name: PROXY_GROUPS.AI_FALLBACK,
+            icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png",
+            type: "fallback",
+            "include-all": true,
+            "exclude-filter": "(?i)香港|Hong Kong|HK|🇭🇰|中国|China|CN|🇨🇳|内地|澳门|Macao|MO|🇲🇴",
+            url: "https://api.openai.com",
+            interval: 60,
+            tolerance: 50,
             lazy: false
         },
         {
@@ -1068,36 +1151,10 @@ function main(config) {
     const finalRules = buildRules({ quicEnabled });
 
     if (fullConfig) {
-        Object.assign(resultConfig, {
-            "mixed-port": 7890,
-            "redir-port": 7892,
-            "tproxy-port": 7893,
-            "routing-mark": 7894,
-            "allow-lan": true,
-            ipv6: ipv6Enabled,
-            mode: "rule",
-            "unified-delay": true,
-            "tcp-concurrent": true,
-            "find-process-mode": "off",
-            "log-level": "info",
-            "geodata-loader": "standard",
-            "external-controller": ":9999",
-            "disable-keep-alive": !keepAliveEnabled,
-            profile: {
-                "store-selected": true
-            }
-        });
+        Object.assign(resultConfig, buildRuntimeProfileConfig({ profile: runtimeProfile }));
     }
 
-    Object.assign(resultConfig, {
-        "proxy-groups": proxyGroups,
-        "rule-providers": ruleProviders,
-        rules: finalRules,
-        sniffer: snifferConfig,
-        dns: fakeIPEnabled ? dnsConfigFakeIp : dnsConfig,
-        "geodata-mode": true,
-        "geox-url": geoxURL
-    });
+    Object.assign(resultConfig, buildSharedConfig({ proxyGroups, finalRules }));
 
     return resultConfig;
 }
