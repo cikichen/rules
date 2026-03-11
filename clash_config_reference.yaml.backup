@@ -303,27 +303,6 @@ proxy-groups:
       - 全球手动
 
   - name: GitHub
-
-  - name: Linux.do
-    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
-    type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 全球优选
-      - 香港节点
-      - 日本节点
-      - 狮城节点
-      - 美国节点
-      - 台湾节点
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚节点
-      - 土耳其节点
-      - 其他地区
-      - 全球手动
-
-  - name: GitHub
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
     type: select
     proxies:
@@ -1079,10 +1058,6 @@ rules:
 
   # === 自定义规则 ===
   - RULE-SET,Custom,自定义组
-
-  # === Linux.do 专用规则 ===
-  - DOMAIN-SUFFIX,linux.do,Linux.do
-  - DOMAIN,linux.do,Linux.do
 
   # === AI 服务 ===
   - RULE-SET,OpenAI,OpenAI

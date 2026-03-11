@@ -1,0 +1,9 @@
+# Linux.do 域名规则集
+# 用于 Clash Rule-Set
+
+# 主域名
+DOMAIN-SUFFIX,linux.do
+DOMAIN,linux.do
+
+# 可能的 CDN 域名（如果有）
+# DOMAIN-SUFFIX,cdn.linux.do
