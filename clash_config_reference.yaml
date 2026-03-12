@@ -302,7 +302,6 @@ proxy-groups:
       - 节点选择
       - 全球手动
 
-  - name: GitHub
 
   - name: Linux.do
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
