@@ -149,6 +149,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
         PROXY_GROUPS.AUTO,
         PROXY_GROUPS.BEST,
         PROXY_GROUPS.BALANCE,
+        PROXY_GROUPS.FALLBACK,
         dynamicGroups,
         PROXY_GROUPS.MANUAL,
         PROXY_GROUPS.DIRECT
@@ -160,6 +161,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
         PROXY_GROUPS.AUTO,
         PROXY_GROUPS.BEST,
         PROXY_GROUPS.BALANCE,
+        PROXY_GROUPS.FALLBACK,
         PROXY_GROUPS.SELECT,
         PROXY_GROUPS.MANUAL
     );
@@ -325,7 +327,9 @@ const baseRules = [
     `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
-    "RULE-SET,Custom,自定义组",
+    "RULE-SET,Custom,custom",
+    "DOMAIN-SUFFIX,linux.do,Linux.do",
+    "DOMAIN,linux.do,Linux.do",
     "RULE-SET,OpenAI,OpenAI",
     "RULE-SET,Claude,Claude",
     "RULE-SET,Gemini,Gemini",
@@ -806,6 +810,16 @@ function buildProxyGroups({
         countryGroupNames,
         hasOtherNodes && PROXY_GROUPS.OTHER
     );
+    const linuxDoProxies = buildList(
+        PROXY_GROUPS.SELECT,
+        PROXY_GROUPS.AUTO,
+        PROXY_GROUPS.BEST,
+        PROXY_GROUPS.FALLBACK,
+        countryGroupNames,
+        regionProxyGroups.map(group => group.name),
+        hasOtherNodes && PROXY_GROUPS.OTHER,
+        PROXY_GROUPS.MANUAL
+    );
     const fullProxies = defaultProxies;
     const otherGroupType = loadBalance ? "load-balance" : "url-test";
 
@@ -917,10 +931,16 @@ function buildProxyGroups({
             proxies: defaultProxies
         },
         {
-            name: "自定义组",
+            name: "custom",
             icon: DEFAULT_GROUP_ICON,
             type: "select",
             proxies: defaultProxiesDirect
+        },
+        {
+            name: "Linux.do",
+            icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
+            type: "select",
+            proxies: linuxDoProxies
         },
         {
             name: "OpenAI",

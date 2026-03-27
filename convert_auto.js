@@ -111,7 +111,7 @@ const PROXY_GROUPS = {
     DIRECT: "全球直连",
     LANDING: "落地节点",
     LOW_COST: "低倍率节点",
-    OTHER: "其他节点",
+    OTHER: "其他地区",
 };
 const DEFAULT_GROUP_ICON = "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png";
 const AI_UNSUPPORTED_GROUPS = {
@@ -289,7 +289,7 @@ const baseRules = [
     `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
-    "RULE-SET,Custom,自定义组",
+    "RULE-SET,Custom,custom",
     "RULE-SET,OpenAI,OpenAI",
     "RULE-SET,Claude,Claude",
     "RULE-SET,Gemini,Gemini",

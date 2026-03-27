@@ -1,0 +1,13 @@
+{
+  "name": "clash-rules",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Clash/Mihomo subscription conversion scripts",
+  "scripts": {
+    "gen": "node gen_config.mjs",
+    "test": "node --test tests/*.test.cjs"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

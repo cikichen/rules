@@ -106,3 +106,39 @@ test('client and router profiles preserve shared policy sections', () => {
   assert.deepEqual(client.dns, router.dns);
   assert.deepEqual(client.sniffer, router.sniffer);
 });
+
+test('linux.do group and rules are included in generated config', () => {
+  const result = runGenerator({ full: false });
+  const linuxDoGroup = result['proxy-groups'].find(group => group.name === 'Linux.do');
+
+  assert.ok(linuxDoGroup);
+  assert.equal(linuxDoGroup.type, 'select');
+  assert.deepEqual(
+    linuxDoGroup.proxies.slice(0, 4),
+    ['节点选择', '自动选择', '全球优选', '故障转移']
+  );
+  assert.ok(result.rules.includes('DOMAIN-SUFFIX,linux.do,Linux.do'));
+  assert.ok(result.rules.includes('DOMAIN,linux.do,Linux.do'));
+});
+
+test('ai groups prioritize AI fallback and expose AI fallback group', () => {
+  const result = runGenerator({ full: false });
+  const aiFallbackGroup = result['proxy-groups'].find(group => group.name === 'AI 故障转移');
+  const openAiGroup = result['proxy-groups'].find(group => group.name === 'OpenAI');
+  const claudeGroup = result['proxy-groups'].find(group => group.name === 'Claude');
+
+  assert.ok(aiFallbackGroup);
+  assert.equal(aiFallbackGroup.type, 'fallback');
+  assert.equal(openAiGroup.proxies[0], 'AI 故障转移');
+  assert.equal(claudeGroup.proxies[0], 'AI 故障转移');
+});
+
+test('custom group uses english name and Custom rules target it', () => {
+  const result = runGenerator({ full: false });
+  const customGroup = result['proxy-groups'].find(group => group.name === 'custom');
+
+  assert.ok(customGroup);
+  assert.equal(customGroup.type, 'select');
+  assert.ok(result.rules.includes('RULE-SET,Custom,custom'));
+  assert.equal(result['proxy-groups'].some(group => group.name === '自定义组'), false);
+});
