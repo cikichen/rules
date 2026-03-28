@@ -126,7 +126,7 @@ const AI_PREFERRED_GROUPS = {
     "Gemini": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"],
     "人工智能": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"]
 };
-const PROXY_TEST_URL = "http://www.google.com/generate_204";
+const PROXY_TEST_URL = "https://cp.cloudflare.com/generate_204";
 const PROXY_TEST_INTERVAL = 300;
 const PROXY_TEST_TIMEOUT = 4000;
 const PROXY_TEST_TOLERANCE = 50;

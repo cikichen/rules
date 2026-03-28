@@ -142,3 +142,32 @@ test('custom group uses english name and Custom rules target it', () => {
   assert.ok(result.rules.includes('RULE-SET,Custom,custom'));
   assert.equal(result['proxy-groups'].some(group => group.name === '自定义组'), false);
 });
+
+test('conservative health-check defaults reduce probe frequency and enable lazy mode', () => {
+  const result = runGenerator({ full: false });
+  const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
+
+  assert.equal(groups.get('自动选择').url, 'https://cp.cloudflare.com/generate_204');
+  assert.equal(groups.get('自动选择').interval, 300);
+  assert.equal(groups.get('自动选择').timeout, 4000);
+  assert.equal(groups.get('自动选择').tolerance, 50);
+  assert.equal(groups.get('自动选择').lazy, true);
+
+  assert.equal(groups.get('全球优选').interval, 300);
+  assert.equal(groups.get('全球优选').timeout, 4000);
+  assert.equal(groups.get('全球优选').lazy, true);
+
+  assert.equal(groups.get('故障转移').interval, 300);
+  assert.equal(groups.get('故障转移').timeout, 4000);
+  assert.equal(groups.get('故障转移').tolerance, 50);
+  assert.equal(groups.get('故障转移').lazy, true);
+
+  assert.equal(groups.get('AI 故障转移').interval, 300);
+  assert.equal(groups.get('AI 故障转移').timeout, 4000);
+  assert.equal(groups.get('AI 故障转移').lazy, true);
+
+  assert.equal(groups.get('香港节点').interval, 300);
+  assert.equal(groups.get('香港节点').timeout, 4000);
+  assert.equal(groups.get('香港节点').tolerance, 50);
+  assert.equal(groups.get('香港节点').lazy, true);
+});

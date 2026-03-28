@@ -122,6 +122,13 @@ const AI_UNSUPPORTED_GROUPS = {
     "Gemini": ["香港节点"],
     "人工智能": ["香港节点"]
 };
+const PROXY_TEST_URL = "https://cp.cloudflare.com/generate_204";
+const PROXY_TEST_INTERVAL = 300;
+const PROXY_TEST_TIMEOUT = 4000;
+const PROXY_TEST_TOLERANCE = 50;
+const PROXY_TEST_LAZY = true;
+const LOAD_BALANCE_STRATEGY = "round-robin";
+const AI_TEST_URL = "https://api.openai.com";
 
 const buildList = (...elements) => elements.flat().filter(Boolean);
 
@@ -660,10 +667,11 @@ function buildCountryProxyGroups({ countryGroupItems, landing, loadBalance }) {
 
         if (!loadBalance) {
             Object.assign(groupConfig, {
-                url: "https://cp.cloudflare.com/generate_204",
-                interval: 60,
-                tolerance: 50,
-                lazy: false
+                url: PROXY_TEST_URL,
+                interval: PROXY_TEST_INTERVAL,
+                timeout: PROXY_TEST_TIMEOUT,
+                tolerance: PROXY_TEST_TOLERANCE,
+                lazy: PROXY_TEST_LAZY
             });
         }
 
@@ -702,10 +710,11 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
 
         if (!loadBalance) {
             Object.assign(groupConfig, {
-                url: "https://cp.cloudflare.com/generate_204",
-                interval: 60,
-                tolerance: 50,
-                lazy: false
+                url: PROXY_TEST_URL,
+                interval: PROXY_TEST_INTERVAL,
+                timeout: PROXY_TEST_TIMEOUT,
+                tolerance: PROXY_TEST_TOLERANCE,
+                lazy: PROXY_TEST_LAZY
             });
         }
 
@@ -842,27 +851,32 @@ function buildProxyGroups({
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
             type: "url-test",
             "include-all": true,
-            url: "https://cp.cloudflare.com/generate_204",
-            interval: 60,
-            tolerance: 50,
-            lazy: false
+            url: PROXY_TEST_URL,
+            interval: PROXY_TEST_INTERVAL,
+            timeout: PROXY_TEST_TIMEOUT,
+            tolerance: PROXY_TEST_TOLERANCE,
+            lazy: PROXY_TEST_LAZY
         },
         {
             name: PROXY_GROUPS.BEST,
             icon: "https://raw.githubusercontent.com/Orz-3/mini/master/Color/Roundrobin.png",
             type: "url-test",
             "include-all": true,
-            url: "https://cp.cloudflare.com/generate_204",
-            interval: 180,
-            tolerance: 50,
-            lazy: false
+            url: PROXY_TEST_URL,
+            interval: PROXY_TEST_INTERVAL,
+            timeout: PROXY_TEST_TIMEOUT,
+            tolerance: PROXY_TEST_TOLERANCE,
+            lazy: PROXY_TEST_LAZY
         },
         {
             name: PROXY_GROUPS.BALANCE,
             icon: "https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png",
             type: "load-balance",
             "include-all": true,
-            url: "https://cp.cloudflare.com/generate_204"
+            url: PROXY_TEST_URL,
+            interval: PROXY_TEST_INTERVAL,
+            strategy: LOAD_BALANCE_STRATEGY,
+            lazy: PROXY_TEST_LAZY
         },
         landing ? {
             name: "前置代理",
@@ -884,10 +898,11 @@ function buildProxyGroups({
             icon: "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png",
             type: "fallback",
             "include-all": true,
-            url: "https://cp.cloudflare.com/generate_204",
-            interval: 60,
-            tolerance: 50,
-            lazy: false
+            url: PROXY_TEST_URL,
+            interval: PROXY_TEST_INTERVAL,
+            timeout: PROXY_TEST_TIMEOUT,
+            tolerance: PROXY_TEST_TOLERANCE,
+            lazy: PROXY_TEST_LAZY
         },
         {
             name: PROXY_GROUPS.AI_FALLBACK,
@@ -895,10 +910,11 @@ function buildProxyGroups({
             type: "fallback",
             "include-all": true,
             "exclude-filter": "(?i)香港|Hong Kong|HK|🇭🇰|中国|China|CN|🇨🇳|内地|澳门|Macao|MO|🇲🇴",
-            url: "https://api.openai.com",
-            interval: 60,
-            tolerance: 50,
-            lazy: false
+            url: AI_TEST_URL,
+            interval: PROXY_TEST_INTERVAL,
+            timeout: PROXY_TEST_TIMEOUT,
+            tolerance: PROXY_TEST_TOLERANCE,
+            lazy: PROXY_TEST_LAZY
         },
         {
             name: PROXY_GROUPS.DIRECT,
@@ -1100,12 +1116,13 @@ function buildProxyGroups({
             name: PROXY_GROUPS.LOW_COST,
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
             type: "url-test",
-            url: "https://cp.cloudflare.com/generate_204",
+            url: PROXY_TEST_URL,
             "include-all": true,
             filter: "(?i)0\.[0-5]|低倍率|省流|大流量|实验性",
-            interval: 60,
-            tolerance: 20,
-            lazy: false
+            interval: PROXY_TEST_INTERVAL,
+            timeout: PROXY_TEST_TIMEOUT,
+            tolerance: PROXY_TEST_TOLERANCE,
+            lazy: PROXY_TEST_LAZY
         } : null,
         ...regionProxyGroups,
         ...countryProxyGroups,

@@ -115,34 +115,38 @@ proxy-groups:
     type: url-test
     include-all: true
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 全球优选
     icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/Roundrobin.png
     type: url-test
     include-all: true
     url: https://cp.cloudflare.com/generate_204
-    interval: 180
-    tolerance: 15
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 负载均衡
     icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png
     type: load-balance
     include-all: true
     url: https://cp.cloudflare.com/generate_204
-    interval: 180
+    interval: 300
     strategy: round-robin
-    lazy: false
+    lazy: true
 
   - name: 故障转移
     icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
     type: fallback
     url: https://cp.cloudflare.com/generate_204
-    interval: 180
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
     proxies:
       - 香港节点
       - 日本节点
@@ -735,9 +739,10 @@ proxy-groups:
     filter: "香港|港|HK|hk|Hong Kong|HongKong|hongkong|🇭🇰"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 日本节点
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
@@ -746,9 +751,10 @@ proxy-groups:
     filter: "日本|川日|东京|大阪|泉日|埼玉|沪日|深日|(?:^|[^A-Za-z])JP\\d*(?=$|[^A-Za-z])|Japan|🇯🇵"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 狮城节点
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
@@ -757,9 +763,10 @@ proxy-groups:
     filter: "新加坡|坡|狮城|(?:^|[^A-Za-z])SG\\d*(?=$|[^A-Za-z])|Singapore|🇸🇬"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 美国节点
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
@@ -768,9 +775,10 @@ proxy-groups:
     filter: "美国|美|(?:^|[^A-Za-z])US\\d*(?=$|[^A-Za-z])|United States|🇺🇸"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 台湾节点
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
@@ -779,9 +787,10 @@ proxy-groups:
     filter: "台|新北|彰化|(?:^|[^A-Za-z])TW\\d*(?=$|[^A-Za-z])|Taiwan|🇹🇼"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 韩国节点
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
@@ -790,9 +799,10 @@ proxy-groups:
     filter: "(?:^|[^A-Za-z])KR\\d*(?=$|[^A-Za-z])|Korea|KOR|首尔|韩|韓|🇰🇷"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 欧洲节点
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png
@@ -801,9 +811,10 @@ proxy-groups:
     filter: "英国|United Kingdom|(?:^|[^A-Za-z])UK\\d*(?=$|[^A-Za-z])|伦敦|London|🇬🇧|德国|德|(?:^|[^A-Za-z])DE\\d*(?=$|[^A-Za-z])|Germany|🇩🇪|法国|法|(?:^|[^A-Za-z])FR\\d*(?=$|[^A-Za-z])|France|🇫🇷|荷兰|(?:^|[^A-Za-z])NL\\d*(?=$|[^A-Za-z])|Netherlands|🇳🇱|意大利|(?:^|[^A-Za-z])IT\\d*(?=$|[^A-Za-z])|Italy|🇮🇹|西班牙|(?:^|[^A-Za-z])ES\\d*(?=$|[^A-Za-z])|Spain|España|🇪🇸|葡萄牙|(?:^|[^A-Za-z])PT\\d*(?=$|[^A-Za-z])|Portugal|🇵🇹|瑞典|(?:^|[^A-Za-z])SE\\d*(?=$|[^A-Za-z])|Sweden|🇸🇪|挪威|(?:^|[^A-Za-z])NO\\d*(?=$|[^A-Za-z])|Norway|🇳🇴|芬兰|(?:^|[^A-Za-z])FI\\d*(?=$|[^A-Za-z])|Finland|🇫🇮|丹麦|(?:^|[^A-Za-z])DK\\d*(?=$|[^A-Za-z])|Denmark|🇩🇰|瑞士|(?:^|[^A-Za-z])CH\\d*(?=$|[^A-Za-z])|Switzerland|🇨🇭|奥地利|(?:^|[^A-Za-z])AT\\d*(?=$|[^A-Za-z])|Austria|🇦🇹|爱尔兰|(?:^|[^A-Za-z])IE\\d*(?=$|[^A-Za-z])|Ireland|🇮🇪|比利时|(?:^|[^A-Za-z])BE\\d*(?=$|[^A-Za-z])|Belgium|🇧🇪|波兰|(?:^|[^A-Za-z])PL\\d*(?=$|[^A-Za-z])|Poland|🇵🇱|捷克|(?:^|[^A-Za-z])CZ\\d*(?=$|[^A-Za-z])|Czech|Czechia|🇨🇿|乌克兰|(?:^|[^A-Za-z])UA\\d*(?=$|[^A-Za-z])|Ukraine|🇺🇦|俄罗斯|俄|(?:^|[^A-Za-z])RU\\d*(?=$|[^A-Za-z])|Russia|🇷🇺"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 东南亚节点
     icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png
@@ -812,9 +823,10 @@ proxy-groups:
     filter: "新加坡|坡|狮城|(?:^|[^A-Za-z])SG\\d*(?=$|[^A-Za-z])|Singapore|🇸🇬|马来西亚|马来|(?:^|[^A-Za-z])MY\\d*(?=$|[^A-Za-z])|Malaysia|🇲🇾|泰国|泰|(?:^|[^A-Za-z])TH\\d*(?=$|[^A-Za-z])|Thailand|🇹🇭|越南|(?:^|[^A-Za-z])VN\\d*(?=$|[^A-Za-z])|Vietnam|🇻🇳|菲律宾|(?:^|[^A-Za-z])PH\\d*(?=$|[^A-Za-z])|Philippines|🇵🇭|印度尼西亚|印尼|(?:^|[^A-Za-z])ID\\d*(?=$|[^A-Za-z])|Indonesia|🇮🇩"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 土耳其节点
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
@@ -823,9 +835,10 @@ proxy-groups:
     filter: "土耳其|(?:^|[^A-Za-z])TR\\d*(?=$|[^A-Za-z])|Turkey|🇹🇷"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
   - name: 其他地区
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
@@ -834,9 +847,10 @@ proxy-groups:
     filter: "(?i)^((?!(🇭🇰|香港|港|HK|Hong|🇹🇼|Taiwan|台|彰化|新北|TW|🇯🇵|Japan|JP|日本|东京|大阪|🇺🇸|美国|US|United States|🇸🇬|Singapore|SG|新加坡|狮城|坡|🇰🇷|Korea|KR|韩国|首尔|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇧🇪|🇵🇱|🇨🇿|🇺🇦|🇷🇺|UK|DE|FR|NL|IT|ES|PT|EU|欧洲|🇹🇷|Turkey|TR|土耳其|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|马来|泰国|越南|菲律宾|印尼|网站|地址|剩余|过期|实验性)).)*$"
     exclude-filter: "0\\.[0-5]|低倍率|省流|大流量|实验性"
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
-    tolerance: 20
-    lazy: false
+    interval: 300
+    timeout: 4000
+    tolerance: 50
+    lazy: true
 
 # ==================== 规则提供者 ====================
 rule-providers:
