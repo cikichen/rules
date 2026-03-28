@@ -1012,7 +1012,7 @@ function buildProxyGroups({
             "proxies": defaultProxies
         },
         {
-            "name": "自定义组",
+            "name": "custom",
             "icon": DEFAULT_GROUP_ICON,
             "type": "select",
             "proxies": defaultProxiesDirect
