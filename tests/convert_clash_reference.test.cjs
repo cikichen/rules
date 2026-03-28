@@ -172,6 +172,22 @@ test('hybrid health-check defaults keep selectors conservative and fallback resp
   assert.equal(groups.get('香港节点').lazy, true);
 });
 
+test('fallback groups use direct-node include-all semantics instead of nested region groups', () => {
+  const result = runGenerator({ full: false });
+  const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
+  const fallback = groups.get('故障转移');
+  const aiFallback = groups.get('AI 故障转移');
+
+  assert.equal(fallback.type, 'fallback');
+  assert.equal(fallback['include-all'], true);
+  assert.equal('proxies' in fallback, false);
+
+  assert.equal(aiFallback.type, 'fallback');
+  assert.equal(aiFallback['include-all'], true);
+  assert.equal('proxies' in aiFallback, false);
+  assert.ok(typeof aiFallback['exclude-filter'] === 'string');
+});
+
 test('dual load-balance groups expose hashing and round-robin strategies', () => {
   const result = runGenerator({ full: false });
   const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));

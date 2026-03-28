@@ -188,18 +188,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
         PROXY_GROUPS.MANUAL
     );
 
-    // “故障转移”组的代理列表
-    const defaultFallback = buildList(
-        landing && PROXY_GROUPS.LANDING,
-        countryGroupNames,
-        regionGroupNames,
-        hasOtherNodes && PROXY_GROUPS.OTHER,
-        lowCost && PROXY_GROUPS.LOW_COST,
-        PROXY_GROUPS.MANUAL,
-        "DIRECT"
-    );
-
-    return { defaultProxies, defaultProxiesDirect, defaultSelector, defaultFallback };
+    return { defaultProxies, defaultProxiesDirect, defaultSelector };
 }
 
 function createLoadBalanceGroup(name, strategy) {
@@ -993,8 +982,8 @@ function buildProxyGroups({
             "name": PROXY_GROUPS.FALLBACK,
             "icon": "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png",
             "type": "fallback",
+            "include-all": true,
             "url": PROXY_TEST_URL,
-            "proxies": defaultFallback,
             "interval": FALLBACK_TEST_INTERVAL,
             "timeout": PROXY_TEST_TIMEOUT,
             "tolerance": PROXY_TEST_TOLERANCE,
