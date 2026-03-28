@@ -20,8 +20,9 @@ proxy-groups:
       - 全球手动
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -46,28 +47,42 @@ proxy-groups:
     type: url-test
     include-all: true
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
+    lazy: true
   - name: 全球优选
     icon: https://raw.githubusercontent.com/Orz-3/mini/master/Color/Roundrobin.png
     type: url-test
     include-all: true
     url: https://cp.cloudflare.com/generate_204
-    interval: 180
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
-  - name: 负载均衡
+    lazy: true
+  - name: 负载均衡-散列
     icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png
     type: load-balance
     include-all: true
     url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    strategy: consistent-hashing
+    lazy: true
+  - name: 负载均衡-轮询
+    icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png
+    type: load-balance
+    include-all: true
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    strategy: round-robin
+    lazy: true
   - name: 故障转移
     icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
     type: fallback
     include-all: true
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 120
+    timeout: 4000
     tolerance: 50
     lazy: false
   - name: AI 故障转移
@@ -76,7 +91,8 @@ proxy-groups:
     include-all: true
     exclude-filter: (?i)香港|Hong Kong|HK|🇭🇰|中国|China|CN|🇨🇳|内地|澳门|Macao|MO|🇲🇴
     url: https://api.openai.com
-    interval: 60
+    interval: 120
+    timeout: 4000
     tolerance: 50
     lazy: false
   - name: 全球直连
@@ -111,8 +127,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -134,8 +151,9 @@ proxy-groups:
       - 韩国节点
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 节点选择
       - 全球手动
   - name: Linux.do
@@ -146,6 +164,8 @@ proxy-groups:
       - 自动选择
       - 全球优选
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -216,8 +236,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -239,8 +260,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -330,8 +352,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -348,8 +371,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -376,9 +400,10 @@ proxy-groups:
     exclude-filter: 0\.[0-5]|低倍率|省流|大流量|实验性
     type: url-test
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
+    lazy: true
   - name: 日本节点
     icon: https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/jp.svg
     include-all: true
@@ -386,9 +411,10 @@ proxy-groups:
     exclude-filter: 0\.[0-5]|低倍率|省流|大流量|实验性
     type: url-test
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
+    lazy: true
   - name: 狮城节点
     icon: https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/sg.svg
     include-all: true
@@ -396,9 +422,10 @@ proxy-groups:
     exclude-filter: 0\.[0-5]|低倍率|省流|大流量|实验性
     type: url-test
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
+    lazy: true
   - name: 美国节点
     icon: https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/us.svg
     include-all: true
@@ -406,9 +433,10 @@ proxy-groups:
     exclude-filter: 0\.[0-5]|低倍率|省流|大流量|实验性
     type: url-test
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
+    lazy: true
   - name: 台湾节点
     icon: https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/tw.svg
     include-all: true
@@ -416,9 +444,10 @@ proxy-groups:
     exclude-filter: 0\.[0-5]|低倍率|省流|大流量|实验性
     type: url-test
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
+    lazy: true
   - name: 韩国节点
     icon: https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/kr.svg
     include-all: true
@@ -426,9 +455,10 @@ proxy-groups:
     exclude-filter: 0\.[0-5]|低倍率|省流|大流量|实验性
     type: url-test
     url: https://cp.cloudflare.com/generate_204
-    interval: 60
+    interval: 300
+    timeout: 4000
     tolerance: 50
-    lazy: false
+    lazy: true
 rule-providers:
   BanAD:
     type: http

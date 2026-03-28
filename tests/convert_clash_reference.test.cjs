@@ -143,7 +143,7 @@ test('custom group uses english name and Custom rules target it', () => {
   assert.equal(result['proxy-groups'].some(group => group.name === '自定义组'), false);
 });
 
-test('conservative health-check defaults reduce probe frequency and enable lazy mode', () => {
+test('hybrid health-check defaults keep selectors conservative and fallback responsive', () => {
   const result = runGenerator({ full: false });
   const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
 
@@ -157,17 +157,36 @@ test('conservative health-check defaults reduce probe frequency and enable lazy 
   assert.equal(groups.get('全球优选').timeout, 4000);
   assert.equal(groups.get('全球优选').lazy, true);
 
-  assert.equal(groups.get('故障转移').interval, 300);
+  assert.equal(groups.get('故障转移').interval, 120);
   assert.equal(groups.get('故障转移').timeout, 4000);
   assert.equal(groups.get('故障转移').tolerance, 50);
-  assert.equal(groups.get('故障转移').lazy, true);
+  assert.equal(groups.get('故障转移').lazy, false);
 
-  assert.equal(groups.get('AI 故障转移').interval, 300);
+  assert.equal(groups.get('AI 故障转移').interval, 120);
   assert.equal(groups.get('AI 故障转移').timeout, 4000);
-  assert.equal(groups.get('AI 故障转移').lazy, true);
+  assert.equal(groups.get('AI 故障转移').lazy, false);
 
   assert.equal(groups.get('香港节点').interval, 300);
   assert.equal(groups.get('香港节点').timeout, 4000);
   assert.equal(groups.get('香港节点').tolerance, 50);
   assert.equal(groups.get('香港节点').lazy, true);
+});
+
+test('dual load-balance groups expose hashing and round-robin strategies', () => {
+  const result = runGenerator({ full: false });
+  const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
+  const selector = groups.get('节点选择');
+  const custom = groups.get('custom');
+
+  assert.ok(groups.get('负载均衡-散列'));
+  assert.ok(groups.get('负载均衡-轮询'));
+  assert.equal(groups.get('负载均衡-散列').type, 'load-balance');
+  assert.equal(groups.get('负载均衡-散列').strategy, 'consistent-hashing');
+  assert.equal(groups.get('负载均衡-轮询').type, 'load-balance');
+  assert.equal(groups.get('负载均衡-轮询').strategy, 'round-robin');
+
+  assert.ok(selector.proxies.includes('负载均衡-散列'));
+  assert.ok(selector.proxies.includes('负载均衡-轮询'));
+  assert.ok(custom.proxies.includes('负载均衡-散列'));
+  assert.ok(custom.proxies.includes('负载均衡-轮询'));
 });

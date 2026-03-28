@@ -106,6 +106,8 @@ function buildCountryGroupItems(countryInfo, minCount, countryOrder) {
 const PROXY_GROUPS = {
     SELECT: "节点选择",
     AUTO: "自动选择",
+    BALANCE_HASH: "负载均衡-散列",
+    BALANCE_ROUND_ROBIN: "负载均衡-轮询",
     MANUAL: "手动切换",
     FALLBACK: "故障转移",
     DIRECT: "全球直连",
@@ -131,6 +133,10 @@ const PROXY_TEST_INTERVAL = 300;
 const PROXY_TEST_TIMEOUT = 4000;
 const PROXY_TEST_TOLERANCE = 50;
 const PROXY_TEST_LAZY = true;
+const FALLBACK_TEST_INTERVAL = 120;
+const FALLBACK_TEST_LAZY = false;
+const LOAD_BALANCE_HASH_STRATEGY = "consistent-hashing";
+const LOAD_BALANCE_ROUND_ROBIN_STRATEGY = "round-robin";
 
 // 辅助函数，用于根据条件构建数组，自动过滤掉无效值（如 false, null）
 const buildList = (...elements) => elements.flat().filter(Boolean);
@@ -141,6 +147,8 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
     const defaultSelector = buildList(
         PROXY_GROUPS.AUTO,
         PROXY_GROUPS.FALLBACK,
+        PROXY_GROUPS.BALANCE_HASH,
+        PROXY_GROUPS.BALANCE_ROUND_ROBIN,
         landing && PROXY_GROUPS.LANDING,
         countryGroupNames,
         regionGroupNames,
@@ -154,6 +162,9 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
     const defaultProxies = buildList(
         PROXY_GROUPS.SELECT,
         PROXY_GROUPS.AUTO,
+        PROXY_GROUPS.FALLBACK,
+        PROXY_GROUPS.BALANCE_HASH,
+        PROXY_GROUPS.BALANCE_ROUND_ROBIN,
         countryGroupNames,
         regionGroupNames,
         hasOtherNodes && PROXY_GROUPS.OTHER,
@@ -170,6 +181,9 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
         hasOtherNodes && PROXY_GROUPS.OTHER,
         lowCost && PROXY_GROUPS.LOW_COST,
         PROXY_GROUPS.AUTO,
+        PROXY_GROUPS.FALLBACK,
+        PROXY_GROUPS.BALANCE_HASH,
+        PROXY_GROUPS.BALANCE_ROUND_ROBIN,
         PROXY_GROUPS.SELECT,
         PROXY_GROUPS.MANUAL
     );
@@ -186,6 +200,19 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
     );
 
     return { defaultProxies, defaultProxiesDirect, defaultSelector, defaultFallback };
+}
+
+function createLoadBalanceGroup(name, strategy) {
+    return {
+        "name": name,
+        "icon": "https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png",
+        "type": "load-balance",
+        "include-all": true,
+        "url": PROXY_TEST_URL,
+        "interval": PROXY_TEST_INTERVAL,
+        "strategy": strategy,
+        "lazy": PROXY_TEST_LAZY
+    };
 }
 
 const ruleProviders = {
@@ -945,6 +972,8 @@ function buildProxyGroups({
             "tolerance": PROXY_TEST_TOLERANCE,
             "lazy": PROXY_TEST_LAZY
         },
+        createLoadBalanceGroup(PROXY_GROUPS.BALANCE_HASH, LOAD_BALANCE_HASH_STRATEGY),
+        createLoadBalanceGroup(PROXY_GROUPS.BALANCE_ROUND_ROBIN, LOAD_BALANCE_ROUND_ROBIN_STRATEGY),
         (landing) ? {
             "name": "前置代理",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Area.png",
@@ -966,10 +995,10 @@ function buildProxyGroups({
             "type": "fallback",
             "url": PROXY_TEST_URL,
             "proxies": defaultFallback,
-            "interval": PROXY_TEST_INTERVAL,
+            "interval": FALLBACK_TEST_INTERVAL,
             "timeout": PROXY_TEST_TIMEOUT,
             "tolerance": PROXY_TEST_TOLERANCE,
-            "lazy": PROXY_TEST_LAZY
+            "lazy": FALLBACK_TEST_LAZY
         },
         {
             "name": PROXY_GROUPS.DIRECT,

@@ -79,8 +79,9 @@ proxy-groups:
       - 全球手动
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -130,7 +131,16 @@ proxy-groups:
     tolerance: 50
     lazy: true
 
-  - name: 负载均衡
+  - name: 负载均衡-散列
+    icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png
+    type: load-balance
+    include-all: true
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    strategy: consistent-hashing
+    lazy: true
+
+  - name: 负载均衡-轮询
     icon: https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png
     type: load-balance
     include-all: true
@@ -143,10 +153,10 @@ proxy-groups:
     icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
     type: fallback
     url: https://cp.cloudflare.com/generate_204
-    interval: 300
+    interval: 120
     timeout: 4000
     tolerance: 50
-    lazy: true
+    lazy: false
     proxies:
       - 香港节点
       - 日本节点
@@ -160,6 +170,17 @@ proxy-groups:
       - 其他地区
       - 全球手动
       - DIRECT
+
+  - name: AI 故障转移
+    icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    type: fallback
+    include-all: true
+    exclude-filter: "(?i)香港|Hong Kong|HK|🇭🇰|中国|China|CN|🇨🇳|内地|澳门|Macao|MO|🇲🇴"
+    url: https://api.openai.com
+    interval: 120
+    timeout: 4000
+    tolerance: 50
+    lazy: false
 
   - name: 全球直连
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png
@@ -198,8 +219,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -230,8 +252,9 @@ proxy-groups:
       - 其他地区
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 节点选择
       - 全球手动
 
@@ -244,6 +267,8 @@ proxy-groups:
       - 自动选择
       - 全球优选
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -262,6 +287,7 @@ proxy-groups:
     icon: https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
     type: select
     proxies:
+      - AI 故障转移
       - 节点选择
       - 自动选择
       - 全球优选
@@ -280,6 +306,7 @@ proxy-groups:
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
     proxies:
+      - AI 故障转移
       - 节点选择
       - 自动选择
       - 全球优选
@@ -298,6 +325,7 @@ proxy-groups:
     icon: https://gcore.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
     type: select
     proxies:
+      - AI 故障转移
       - 节点选择
       - 自动选择
       - 全球优选
@@ -316,6 +344,7 @@ proxy-groups:
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
     proxies:
+      - AI 故障转移
       - 节点选择
       - 自动选择
       - 全球优选
@@ -337,8 +366,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -360,8 +390,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -383,8 +414,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -416,8 +448,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -438,8 +471,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -460,8 +494,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -482,8 +517,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -504,8 +540,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -526,8 +563,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -565,8 +603,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -587,8 +626,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -618,8 +658,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -640,8 +681,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -664,8 +706,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -686,8 +729,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -716,8 +760,9 @@ proxy-groups:
       - 节点选择
       - 自动选择
       - 全球优选
-      - 负载均衡
       - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港节点
       - 日本节点
       - 狮城节点
