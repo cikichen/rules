@@ -300,12 +300,12 @@ const ruleProviders = {
 const baseRules = [
     `GEOSITE,PRIVATE,${PROXY_GROUPS.DIRECT}`,
     `GEOIP,PRIVATE,${PROXY_GROUPS.DIRECT}`,
+    "RULE-SET,Custom,custom",
     `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
     `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
     `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
-    "RULE-SET,Custom,custom",
     "RULE-SET,OpenAI,OpenAI",
     "RULE-SET,Claude,Claude",
     "RULE-SET,Gemini,Gemini",

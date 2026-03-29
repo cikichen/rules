@@ -1135,14 +1135,12 @@ rules:
   # === 直连规则 ===
   - GEOSITE,PRIVATE,全球直连
   - GEOIP,PRIVATE,全球直连
+  - RULE-SET,Custom,custom
   - RULE-SET,DirectList,全球直连
 
   # === 拦截规则 ===
   - RULE-SET,BanAD,广告拦截
   - RULE-SET,BanProgramAD,应用净化
-
-  # === 自定义规则 ===
-  - RULE-SET,Custom,custom
 
   # === Linux.do 专用规则 ===
   - DOMAIN-SUFFIX,linux.do,Linux.do

@@ -674,10 +674,10 @@ rules:
   - AND,((DST-PORT,443),(NETWORK,UDP)),REJECT
   - GEOSITE,PRIVATE,全球直连
   - GEOIP,PRIVATE,全球直连
+  - RULE-SET,Custom,custom
   - RULE-SET,DirectList,全球直连
   - RULE-SET,BanAD,广告拦截
   - RULE-SET,BanProgramAD,应用净化
-  - RULE-SET,Custom,custom
   - DOMAIN-SUFFIX,linux.do,Linux.do
   - DOMAIN,linux.do,Linux.do
   - RULE-SET,OpenAI,OpenAI

@@ -136,10 +136,15 @@ test('ai groups prioritize AI fallback and expose AI fallback group', () => {
 test('custom group uses english name and Custom rules target it', () => {
   const result = runGenerator({ full: false });
   const customGroup = result['proxy-groups'].find(group => group.name === 'custom');
+  const customRuleIndex = result.rules.indexOf('RULE-SET,Custom,custom');
+  const directRuleIndex = result.rules.indexOf('RULE-SET,DirectList,全球直连');
 
   assert.ok(customGroup);
   assert.equal(customGroup.type, 'select');
   assert.ok(result.rules.includes('RULE-SET,Custom,custom'));
+  assert.ok(customRuleIndex >= 0);
+  assert.ok(directRuleIndex >= 0);
+  assert.ok(customRuleIndex < directRuleIndex);
   assert.equal(result['proxy-groups'].some(group => group.name === '自定义组'), false);
 });
 
