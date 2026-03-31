@@ -133,18 +133,19 @@ test('ai groups prioritize AI fallback and expose AI fallback group', () => {
   assert.equal(claudeGroup.proxies[0], 'AI 故障转移');
 });
 
-test('custom group uses english name and Custom rules target it', () => {
+test('custom group uses friendly chinese name and Custom rules target it', () => {
   const result = runGenerator({ full: false });
-  const customGroup = result['proxy-groups'].find(group => group.name === 'custom');
-  const customRuleIndex = result.rules.indexOf('RULE-SET,Custom,custom');
+  const customGroup = result['proxy-groups'].find(group => group.name === '自定义规则');
+  const customRuleIndex = result.rules.indexOf('RULE-SET,Custom,自定义规则');
   const directRuleIndex = result.rules.indexOf('RULE-SET,DirectList,全球直连');
 
   assert.ok(customGroup);
   assert.equal(customGroup.type, 'select');
-  assert.ok(result.rules.includes('RULE-SET,Custom,custom'));
+  assert.ok(result.rules.includes('RULE-SET,Custom,自定义规则'));
   assert.ok(customRuleIndex >= 0);
   assert.ok(directRuleIndex >= 0);
   assert.ok(customRuleIndex < directRuleIndex);
+  assert.equal(result['proxy-groups'].some(group => group.name === 'custom'), false);
   assert.equal(result['proxy-groups'].some(group => group.name === '自定义组'), false);
 });
 
@@ -197,7 +198,7 @@ test('dual load-balance groups expose hashing and round-robin strategies', () =>
   const result = runGenerator({ full: false });
   const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
   const selector = groups.get('节点选择');
-  const custom = groups.get('custom');
+  const custom = groups.get('自定义规则');
 
   assert.ok(groups.get('负载均衡-散列'));
   assert.ok(groups.get('负载均衡-轮询'));

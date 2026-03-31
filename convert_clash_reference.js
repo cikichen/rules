@@ -110,6 +110,7 @@ const PROXY_GROUPS = {
     MANUAL: "全球手动",
     FALLBACK: "故障转移",
     AI_FALLBACK: "AI 故障转移",
+    CUSTOM: "自定义规则",
     DIRECT: "全球直连",
     LANDING: "落地节点",
     LOW_COST: "低倍率节点",
@@ -338,7 +339,7 @@ const ruleProviders = {
 const baseRules = [
     `GEOSITE,PRIVATE,${PROXY_GROUPS.DIRECT}`,
     `GEOIP,PRIVATE,${PROXY_GROUPS.DIRECT}`,
-    "RULE-SET,Custom,custom",
+    `RULE-SET,Custom,${PROXY_GROUPS.CUSTOM}`,
     `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
@@ -961,7 +962,7 @@ function buildProxyGroups({
             proxies: defaultProxies
         },
         {
-            name: "custom",
+            name: PROXY_GROUPS.CUSTOM,
             icon: DEFAULT_GROUP_ICON,
             type: "select",
             proxies: defaultProxiesDirect

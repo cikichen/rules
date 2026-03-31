@@ -138,7 +138,7 @@ proxy-groups:
       - 韩国节点
       - 全球手动
       - 全球直连
-  - name: custom
+  - name: 自定义规则
     icon: https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     type: select
     proxies:
@@ -674,7 +674,7 @@ rules:
   - AND,((DST-PORT,443),(NETWORK,UDP)),REJECT
   - GEOSITE,PRIVATE,全球直连
   - GEOIP,PRIVATE,全球直连
-  - RULE-SET,Custom,custom
+  - RULE-SET,Custom,自定义规则
   - RULE-SET,DirectList,全球直连
   - RULE-SET,BanAD,广告拦截
   - RULE-SET,BanProgramAD,应用净化
