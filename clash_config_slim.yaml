@@ -843,6 +843,7 @@ rules:
   - RULE-SET,SteamCN,全球直连
   - RULE-SET,Direct,全球直连
   - RULE-SET,Lan,全球直连
+  - DOMAIN,browser.events.data.microsoft.com,人工智能
   - RULE-SET,ChinaMedia,国内媒体
   - RULE-SET,Alibaba,阿里服务
   - RULE-SET,China,全球直连
