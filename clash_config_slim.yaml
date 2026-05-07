@@ -95,8 +95,9 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
     type: select
     proxies:
-      - 节点选择
-      - 自动选择
+      - 人工智能
+      - AI专线
+      - AI可用区
       - 狮城节点
       - 台湾节点
       - 日本节点
@@ -108,8 +109,9 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
     proxies:
-      - 节点选择
-      - 自动选择
+      - 人工智能
+      - AI专线
+      - AI可用区
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -120,8 +122,9 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
     type: select
     proxies:
-      - 节点选择
-      - 自动选择
+      - 人工智能
+      - AI专线
+      - AI可用区
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -134,14 +137,41 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
     proxies:
-      - 节点选择
+      - AI专线
+      - AI可用区
+      - AI手动切换
       - 美国节点
       - 日本节点
       - 狮城节点
       - 台湾节点
       - 韩国节点
       - 欧洲节点
+      - 节点选择
       - 手动切换
+
+  - name: AI专线
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
+    include-all: true
+    filter: (?i)(AI|GPT|OpenAI|Claude|Gemini|Copilot|ChatGPT)
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: AI可用区
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    include-all: true
+    filter: (?i)(美|US|United States|日本|JP|Japan|新加坡|狮城|SG|Singapore|台|TW|Taiwan|韩|KR|Korea|EU|欧洲|UK|DE|FR|NL)
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: AI手动切换
+    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
+    include-all: true
+    filter: (?i)(AI|GPT|OpenAI|Claude|Gemini|Copilot|ChatGPT|美|US|United States|日本|JP|Japan|新加坡|狮城|SG|Singapore|台|TW|Taiwan|韩|KR|Korea|EU|欧洲|UK|DE|FR|NL)
+    type: select
 
   # === 常用服务组 ===
   - name: 油管视频
@@ -254,6 +284,18 @@ proxy-groups:
       - 日本节点
       - 手动切换
 
+  - name: 阿里服务
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 手动切换
+
   - name: GitHub
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
     type: select
@@ -314,11 +356,18 @@ proxy-groups:
     proxies:
       - DIRECT
       - 节点选择
+      - 乌克兰节点
+      - 印度节点
+      - 印尼节点
       - 日本节点
       - 美国节点
+      - 智利节点
+      - 阿根廷节点
+      - 巴西节点
       - 香港节点
       - 韩国节点
       - 土耳其节点
+      - 尼日利亚节点
       - 手动切换
 
   - name: 游戏平台
@@ -327,11 +376,19 @@ proxy-groups:
     proxies:
       - DIRECT
       - 节点选择
+      - 乌克兰节点
+      - 印度节点
+      - 印尼节点
       - 日本节点
       - 美国节点
+      - 智利节点
+      - 阿根廷节点
+      - 巴西节点
       - 香港节点
       - 韩国节点
       - 狮城节点
+      - 土耳其节点
+      - 尼日利亚节点
       - 手动切换
 
   - name: PT站点
@@ -419,6 +476,69 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
     include-all: true
     filter: (?i)🇹🇷|土耳其|Turkey|TR
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: 乌克兰节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Ukraine.png
+    include-all: true
+    filter: (?i)🇺🇦|乌克兰|Ukraine|Kyiv|Kiev
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: 印度节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/India.png
+    include-all: true
+    filter: (?i)🇮🇳|印度|India|Mumbai|Delhi
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: 印尼节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Indonesia.png
+    include-all: true
+    filter: (?i)🇮🇩|印尼|印度尼西亚|Indonesia|Jakarta
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: 智利节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Chile.png
+    include-all: true
+    filter: (?i)🇨🇱|智利|Chile|Santiago
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: 阿根廷节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png
+    include-all: true
+    filter: (?i)🇦🇷|阿根廷|Argentina|Buenos Aires
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: 巴西节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Brazil.png
+    include-all: true
+    filter: (?i)🇧🇷|巴西|Brazil|Sao Paulo|Rio
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: 尼日利亚节点
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Nigeria.png
+    include-all: true
+    filter: (?i)🇳🇬|尼日利亚|Nigeria|Lagos|Abuja
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -681,6 +801,14 @@ rule-providers:
     format: yaml
     type: http
 
+  Alibaba:
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Alibaba/Alibaba.yaml
+    path: ./ruleset/Alibaba.list
+    behavior: classical
+    interval: 86400
+    format: yaml
+    type: http
+
   # === 社交媒体规则 (新增) ===
   Twitter:
     url: https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Twitter/Twitter.yaml
@@ -715,11 +843,12 @@ rules:
   - RULE-SET,SteamCN,全球直连
   - RULE-SET,Direct,全球直连
   - RULE-SET,Lan,全球直连
+  - RULE-SET,ChinaMedia,国内媒体
+  - RULE-SET,Alibaba,阿里服务
   - RULE-SET,China,全球直连
   - RULE-SET,ChinaDomain,全球直连
   - RULE-SET,ChinaCompanyIp,全球直连
   - RULE-SET,Download,全球直连
-  - RULE-SET,ChinaMedia,国内媒体
 
   # === 拦截规则 ===
   - RULE-SET,BanAD,全球拦截
