@@ -91,7 +91,7 @@ proxy-groups:
       - DIRECT
 
   # === AI 服务组 ===
-  - name: OpenAi
+  - name: OpenAI
     icon: https://fastly.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
     type: select
     proxies:
@@ -513,7 +513,7 @@ rule-providers:
     format: text
     type: http
 
-  OpenAi:
+  OpenAI:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/OpenAi.list
     path: ./ruleset/OpenAi.list
     behavior: classical
@@ -726,7 +726,7 @@ rules:
   - RULE-SET,BanProgramAD,应用净化
 
   # === AI 服务 ===
-  - RULE-SET,OpenAi,OpenAi
+  - RULE-SET,OpenAI,OpenAI
   - RULE-SET,Claude,Claude
   - RULE-SET,Gemini,Gemini
   - RULE-SET,AI,人工智能
