@@ -476,7 +476,8 @@ proxy-groups:
   - name: 香港节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
     include-all: true
-    filter: (?i)🇭🇰|^(?!.*(🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|台湾|日本|新加坡|狮城|美国|韩国|英国|德国|法国|荷兰|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b)).*(香港|\bHK\b|Hong\s*Kong)
+    filter: (?i)🇭🇰|香港|\bHK\b|Hong\s*Kong
+    exclude-filter: (?i)🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|台湾|日本|新加坡|狮城|美国|韩国|英国|德国|法国|荷兰|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -485,7 +486,8 @@ proxy-groups:
   - name: 台湾节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
     include-all: true
-    filter: (?i)🇹🇼|^(?!.*(🇭🇰|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|日本|新加坡|狮城|美国|韩国|英国|德国|法国|荷兰|\bHK\b|\bJP\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b)).*(台湾|台北|新北|彰化|\bTW\b|Taiwan)
+    filter: (?i)🇹🇼|台湾|台北|新北|彰化|\bTW\b|Taiwan
+    exclude-filter: (?i)🇭🇰|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|日本|新加坡|狮城|美国|韩国|英国|德国|法国|荷兰|\bHK\b|\bJP\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -494,7 +496,8 @@ proxy-groups:
   - name: 日本节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
     include-all: true
-    filter: (?i)🇯🇵|^(?!.*(🇭🇰|🇹🇼|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|新加坡|狮城|美国|韩国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b)).*(日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\bJP\b|Japan)
+    filter: (?i)🇯🇵|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\bJP\b|Japan
+    exclude-filter: (?i)🇭🇰|🇹🇼|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|新加坡|狮城|美国|韩国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -503,7 +506,8 @@ proxy-groups:
   - name: 美国节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
     include-all: true
-    filter: (?i)🇺🇸|^(?!.*(🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|日本|新加坡|狮城|韩国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b)).*(美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States)
+    filter: (?i)🇺🇸|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States
+    exclude-filter: (?i)🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|日本|新加坡|狮城|韩国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -512,7 +516,8 @@ proxy-groups:
   - name: 狮城节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
     include-all: true
-    filter: (?i)🇸🇬|^(?!.*(🇭🇰|🇹🇼|🇯🇵|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|日本|美国|韩国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bJP\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b)).*(新加坡|狮城|\bSG\b|Singapore)
+    filter: (?i)🇸🇬|新加坡|狮城|\bSG\b|Singapore
+    exclude-filter: (?i)🇭🇰|🇹🇼|🇯🇵|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|日本|美国|韩国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bJP\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -521,7 +526,8 @@ proxy-groups:
   - name: 韩国节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
     include-all: true
-    filter: (?i)🇰🇷|^(?!.*(🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|日本|新加坡|狮城|美国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b)).*(韩国|韓國|首尔|\bKR\b|\bKOR\b|Korea|韩|韓)
+    filter: (?i)🇰🇷|韩国|韓國|首尔|\bKR\b|\bKOR\b|Korea|韩|韓
+    exclude-filter: (?i)🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|香港|台湾|日本|新加坡|狮城|美国|英国|德国|法国|荷兰|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -620,7 +626,7 @@ proxy-groups:
   - name: 其他地区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     include-all: true
-    filter: (?i)^((?!(🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇹🇷|🇺🇦|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇨🇱|🇦🇷|🇧🇷|🇳🇬|香港|台湾|台北|新北|彰化|日本|东京|大阪|新加坡|狮城|韩国|首尔|美国|美西|美东|英国|德国|法国|荷兰|土耳其|乌克兰|印度|印尼|马来|泰国|越南|菲律宾|柬埔寨|缅甸|智利|阿根廷|巴西|尼日利亚|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bTR\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|网站|地址|剩余|过期|实验性|日用|重置)).)*$
+    exclude-filter: (?i)🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇹🇷|🇺🇦|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇨🇱|🇦🇷|🇧🇷|🇳🇬|香港|台湾|台北|新北|彰化|日本|东京|大阪|新加坡|狮城|韩国|首尔|美国|美西|美东|英国|德国|法国|荷兰|土耳其|乌克兰|印度|印尼|马来|泰国|越南|菲律宾|柬埔寨|缅甸|智利|阿根廷|巴西|尼日利亚|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bTR\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|网站|地址|剩余|过期|实验性|日用|重置
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
