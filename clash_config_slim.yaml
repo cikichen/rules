@@ -496,7 +496,7 @@ proxy-groups:
     tolerance: 5
 
   - name: 印尼节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Indonesia.png
+    icon: https://testingcf.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f1ee-1f1e9.png
     include-all: true
     filter: (?i)🇮🇩|印尼|印度尼西亚|Indonesia|Jakarta
     type: url-test
@@ -505,7 +505,7 @@ proxy-groups:
     tolerance: 5
 
   - name: 智利节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Chile.png
+    icon: https://testingcf.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f1e8-1f1f1.png
     include-all: true
     filter: (?i)🇨🇱|智利|Chile|Santiago
     type: url-test
@@ -532,7 +532,7 @@ proxy-groups:
     tolerance: 5
 
   - name: 尼日利亚节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Nigeria.png
+    icon: https://testingcf.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f1f3-1f1ec.png
     include-all: true
     filter: (?i)🇳🇬|尼日利亚|Nigeria|Lagos|Abuja
     type: url-test
