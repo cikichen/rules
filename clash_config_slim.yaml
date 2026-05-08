@@ -640,14 +640,246 @@ proxy-groups:
 
 # ==================== 规则提供者 ====================
 rule-providers:
-  LocalAreaNetwork:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/LocalAreaNetwork.list
-    path: ./ruleset/LocalAreaNetwork.list
-    behavior: classical
+  # ==================== OCD (Mihomo mrs 优化格式) ====================
+  # === AI ===
+  OpenAI_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/OpenAI/OpenAI_OCD_Domain.mrs
+    path: ./ruleset/OpenAI_Domain.mrs
+    behavior: domain
     interval: 86400
-    format: text
+    format: mrs
     type: http
 
+  OpenAI_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/OpenAI/OpenAI_OCD_IP.mrs
+    path: ./ruleset/OpenAI_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  Claude_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Claude/Claude_OCD_Domain.mrs
+    path: ./ruleset/Claude_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Gemini_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Gemini/Gemini_OCD_Domain.mrs
+    path: ./ruleset/Gemini_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  # === 流媒体 ===
+  YouTube_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/YouTube/YouTube_OCD_Domain.mrs
+    path: ./ruleset/YouTube_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  YouTube_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/YouTube/YouTube_OCD_IP.mrs
+    path: ./ruleset/YouTube_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  Netflix_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Netflix/Netflix_OCD_Domain.mrs
+    path: ./ruleset/Netflix_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Netflix_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Netflix/Netflix_OCD_IP.mrs
+    path: ./ruleset/Netflix_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  # === 社交媒体 ===
+  Twitter_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Twitter/Twitter_OCD_Domain.mrs
+    path: ./ruleset/Twitter_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Twitter_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Twitter/Twitter_OCD_IP.mrs
+    path: ./ruleset/Twitter_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  Discord_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Discord/Discord_OCD_Domain.mrs
+    path: ./ruleset/Discord_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  TikTok_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/TikTok/TikTok_OCD_Domain.mrs
+    path: ./ruleset/TikTok_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Telegram_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Telegram/Telegram_OCD_Domain.mrs
+    path: ./ruleset/Telegram_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Telegram_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Telegram/Telegram_OCD_IP.mrs
+    path: ./ruleset/Telegram_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  # === 平台服务 ===
+  Microsoft_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Microsoft/Microsoft_OCD_Domain.mrs
+    path: ./ruleset/Microsoft_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Apple_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Apple/Apple_OCD_Domain.mrs
+    path: ./ruleset/Apple_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Apple_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Apple/Apple_OCD_IP.mrs
+    path: ./ruleset/Apple_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  Google_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Google/Google_OCD_Domain.mrs
+    path: ./ruleset/Google_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Google_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Google/Google_OCD_IP.mrs
+    path: ./ruleset/Google_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  GitHub_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/GitHub/GitHub_OCD_Domain.mrs
+    path: ./ruleset/GitHub_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Alibaba_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Alibaba/Alibaba_OCD_Domain.mrs
+    path: ./ruleset/Alibaba_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Alibaba_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Alibaba/Alibaba_OCD_IP.mrs
+    path: ./ruleset/Alibaba_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  # === 游戏 ===
+  Steam_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Steam/Steam_OCD_Domain.mrs
+    path: ./ruleset/Steam_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Epic_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Epic/Epic_OCD_Domain.mrs
+    path: ./ruleset/Epic_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  # === 直连/局域网 ===
+  Direct_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Direct/Direct_OCD_Domain.mrs
+    path: ./ruleset/Direct_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Lan_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Lan/Lan_OCD_Domain.mrs
+    path: ./ruleset/Lan_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  Lan_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Lan/Lan_OCD_IP.mrs
+    path: ./ruleset/Lan_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  China_Domain:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/China/China_OCD_Domain.mrs
+    path: ./ruleset/China_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  China_IP:
+    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/China/China_OCD_IP.mrs
+    path: ./ruleset/China_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
+  # ==================== ACL4SSR/其他来源 (OCD 未覆盖) ====================
   UnBan:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/UnBan.list
     path: ./ruleset/UnBan.list
@@ -688,49 +920,9 @@ rule-providers:
     format: text
     type: http
 
-  Microsoft:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list
-    path: ./ruleset/Microsoft.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Apple:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Apple.list
-    path: ./ruleset/Apple.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Telegram:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Telegram.list
-    path: ./ruleset/Telegram.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  OpenAI:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/OpenAi.list
-    path: ./ruleset/OpenAi.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  YouTube:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/YouTube.list
-    path: ./ruleset/YouTube.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Netflix:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/Netflix.list
-    path: ./ruleset/Netflix.list
+  AI:
+    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/AI.list
+    path: ./ruleset/AI.list
     behavior: classical
     interval: 86400
     format: text
@@ -768,41 +960,9 @@ rule-providers:
     format: text
     type: http
 
-  ChinaDomain:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ChinaDomain.list
-    path: ./ruleset/ChinaDomain.list
-    behavior: domain
-    interval: 86400
-    format: text
-    type: http
-
-  ChinaCompanyIp:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ChinaCompanyIp.list
-    path: ./ruleset/ChinaCompanyIp.list
-    behavior: ipcidr
-    interval: 86400
-    format: text
-    type: http
-
   Download:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Download.list
     path: ./ruleset/Download.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Steam:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/Steam.list
-    path: ./ruleset/Steam.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Epic:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/Epic.list
-    path: ./ruleset/Epic.list
     behavior: classical
     interval: 86400
     format: text
@@ -816,108 +976,20 @@ rule-providers:
     format: text
     type: http
 
-  GitHub:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GitHub/GitHub.yaml
-    path: ./ruleset/GitHub.list
-    behavior: classical
-    interval: 86400
-    format: yaml
-    type: http
-
-  Claude:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Claude/Claude.list
-    path: ./ruleset/Claude.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Gemini:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Gemini/Gemini.yaml
-    path: ./ruleset/Gemini.list
-    behavior: classical
-    interval: 86400
-    format: yaml
-    type: http
-
-  AI:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/AI.list
-    path: ./ruleset/AI.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Google:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Google/Google.list
-    path: ./ruleset/Google.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Direct:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Direct/Direct.list
-    path: ./ruleset/Direct.list
-    behavior: classical
-    interval: 86400
-    format: text
-    type: http
-
-  Lan:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Lan/Lan.yaml
-    path: ./ruleset/Lan.list
-    behavior: classical
-    interval: 86400
-    format: yaml
-    type: http
-
-  Alibaba:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Alibaba/Alibaba.yaml
-    path: ./ruleset/Alibaba.list
-    behavior: classical
-    interval: 86400
-    format: yaml
-    type: http
-
-  # === 社交媒体规则 (新增) ===
-  Twitter:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Twitter/Twitter.yaml
-    path: ./ruleset/Twitter.list
-    behavior: classical
-    interval: 86400
-    format: yaml
-    type: http
-
-  Discord:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Discord/Discord.yaml
-    path: ./ruleset/Discord.list
-    behavior: classical
-    interval: 86400
-    format: yaml
-    type: http
-
-  TikTok:
-    url: https://testingcf.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok.yaml
-    path: ./ruleset/TikTok.list
-    behavior: classical
-    interval: 86400
-    format: yaml
-    type: http
-
 # ==================== 规则 ====================
 rules:
   # === 直连规则 (最高优先级) ===
-  - RULE-SET,LocalAreaNetwork,全球直连
+  - RULE-SET,Lan_Domain,全球直连
+  - RULE-SET,Lan_IP,全球直连,no-resolve
   - RULE-SET,UnBan,全球直连
   - RULE-SET,GoogleCN,全球直连
   - RULE-SET,SteamCN,全球直连
-  - RULE-SET,Direct,全球直连
-  - RULE-SET,Lan,全球直连
+  - RULE-SET,Direct_Domain,全球直连
   - RULE-SET,ChinaMedia,国内媒体
-  - RULE-SET,Alibaba,阿里服务
-  - RULE-SET,ChinaDomain,全球直连
-  - RULE-SET,ChinaCompanyIp,全球直连
+  - RULE-SET,Alibaba_Domain,阿里服务
+  - RULE-SET,Alibaba_IP,阿里服务,no-resolve
+  - RULE-SET,China_Domain,全球直连
+  - RULE-SET,China_IP,全球直连,no-resolve
   - RULE-SET,Download,全球直连
 
   # === 拦截规则 ===
@@ -927,32 +999,39 @@ rules:
   # === AI 服务 ===
   - DOMAIN,browser.events.data.microsoft.com,人工智能
   - DOMAIN-KEYWORD,antigravity,人工智能
-  - RULE-SET,OpenAI,OpenAI
-  - RULE-SET,Claude,Claude
-  - RULE-SET,Gemini,Gemini
+  - RULE-SET,OpenAI_Domain,OpenAI
+  - RULE-SET,OpenAI_IP,OpenAI,no-resolve
+  - RULE-SET,Claude_Domain,Claude
+  - RULE-SET,Gemini_Domain,Gemini
   - RULE-SET,AI,人工智能
 
   # === 社交媒体 ===
-  - RULE-SET,Twitter,推特X
-  - RULE-SET,Discord,Discord
-  - RULE-SET,TikTok,TikTok
+  - RULE-SET,Twitter_Domain,推特X
+  - RULE-SET,Twitter_IP,推特X,no-resolve
+  - RULE-SET,Discord_Domain,Discord
+  - RULE-SET,TikTok_Domain,TikTok
 
   # === 流媒体 ===
-  - RULE-SET,YouTube,油管视频
-  - RULE-SET,Netflix,奈飞视频
+  - RULE-SET,YouTube_Domain,油管视频
+  - RULE-SET,YouTube_IP,油管视频,no-resolve
+  - RULE-SET,Netflix_Domain,奈飞视频
+  - RULE-SET,Netflix_IP,奈飞视频,no-resolve
   - RULE-SET,Bilibili,哔哩哔哩
   - RULE-SET,ProxyMedia,国外媒体
 
   # === 常用服务 ===
-  - RULE-SET,Telegram,电报消息
-  - RULE-SET,Microsoft,微软服务
-  - RULE-SET,Apple,苹果服务
-  - RULE-SET,Google,谷歌服务
-  - RULE-SET,GitHub,GitHub
+  - RULE-SET,Telegram_Domain,电报消息
+  - RULE-SET,Telegram_IP,电报消息,no-resolve
+  - RULE-SET,Microsoft_Domain,微软服务
+  - RULE-SET,Apple_Domain,苹果服务
+  - RULE-SET,Apple_IP,苹果服务,no-resolve
+  - RULE-SET,Google_Domain,谷歌服务
+  - RULE-SET,Google_IP,谷歌服务,no-resolve
+  - RULE-SET,GitHub_Domain,GitHub
 
   # === 游戏 ===
-  - RULE-SET,Steam,游戏平台
-  - RULE-SET,Epic,Epic游戏
+  - RULE-SET,Steam_Domain,游戏平台
+  - RULE-SET,Epic_Domain,Epic游戏
 
   # === PT站点 ===
   - RULE-SET,PT,PT站点
@@ -961,7 +1040,7 @@ rules:
   - RULE-SET,ProxyGFWlist,漏网之鱼
 
   # === GEOIP ===
-  - GEOIP,CN,全球直连
+  - GEOIP,CN,全球直连,no-resolve
 
   # === MATCH (兜底) ===
   - MATCH,漏网之鱼
