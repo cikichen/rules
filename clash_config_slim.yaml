@@ -87,6 +87,7 @@ proxy-groups:
     proxies:
       - OpenAI专线
       - OpenAI可用区
+      - 人工智能
       - 狮城节点
       - 台湾节点
       - 日本节点
@@ -102,6 +103,7 @@ proxy-groups:
     proxies:
       - Claude专线
       - Claude可用区
+      - 人工智能
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -117,6 +119,7 @@ proxy-groups:
     proxies:
       - Gemini专线
       - Gemini可用区
+      - 人工智能
       - 美国节点
       - 日本节点
       - 狮城节点
