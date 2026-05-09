@@ -85,26 +85,29 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
     type: select
     proxies:
-      - 人工智能
-      - AI专线
-      - AI可用区
+      - OpenAI专线
+      - OpenAI可用区
       - 狮城节点
       - 台湾节点
       - 日本节点
       - 美国节点
       - 韩国节点
+      - 东南亚节点
+      - 欧洲节点
       - 手动切换
 
   - name: Claude
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
     proxies:
-      - 人工智能
-      - AI专线
-      - AI可用区
+      - Claude专线
+      - Claude可用区
       - 美国节点
       - 日本节点
       - 狮城节点
+      - 台湾节点
+      - 韩国节点
+      - 东南亚节点
       - 欧洲节点
       - 手动切换
 
@@ -112,46 +115,86 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
     type: select
     proxies:
-      - 人工智能
-      - AI专线
-      - AI可用区
+      - Gemini专线
+      - Gemini可用区
       - 美国节点
       - 日本节点
       - 狮城节点
       - 台湾节点
       - 韩国节点
+      - 东南亚节点
       - 欧洲节点
+      - 香港节点
       - 手动切换
 
   - name: 人工智能
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
     proxies:
-      - AI专线
-      - AI可用区
+      - OpenAI
+      - Claude
+      - Gemini
       - AI手动切换
+      - 香港节点
       - 美国节点
       - 日本节点
       - 狮城节点
       - 台湾节点
       - 韩国节点
+      - 东南亚节点
       - 欧洲节点
       - 节点选择
       - 手动切换
 
-  - name: AI专线
+  - name: OpenAI专线
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
     include-all: true
-    filter: (?i)(AI|GPT|OpenAI|Claude|Gemini|Copilot|ChatGPT)
+    filter: (?i)(OpenAI|ChatGPT|GPT|Codex)
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
     tolerance: 5
 
-  - name: AI可用区
+  - name: Claude专线
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
+    include-all: true
+    filter: (?i)(Claude|Anthropic)
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: Gemini专线
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
+    include-all: true
+    filter: (?i)(Gemini|Bard)
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: OpenAI可用区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     include-all: true
-    filter: (?i)🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|United\s*States|Japan|Singapore|Taiwan|Korea|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
+    filter: (?i)🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: Claude可用区
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    include-all: true
+    filter: (?i)🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 5
+
+  - name: Gemini可用区
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
+    include-all: true
+    filter: (?i)🇭🇰|🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|Hong\s*Kong|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bHK\b|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
     type: url-test
     url: http://cp.cloudflare.com/generate_204
     interval: 300
@@ -160,7 +203,7 @@ proxy-groups:
   - name: AI手动切换
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
     include-all: true
-    filter: (?i)AI|GPT|OpenAI|Claude|Gemini|Copilot|ChatGPT|🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|United\s*States|Japan|Singapore|Taiwan|Korea|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b
+    filter: (?i)AI|GPT|OpenAI|Claude|Gemini|Copilot|ChatGPT|Codex|Anthropic|Bard|🇭🇰|🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|Hong\s*Kong|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bHK\b|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
     type: select
 
   # === 常用服务组 ===
@@ -915,11 +958,11 @@ rules:
   - RULE-SET,Claude_Domain,Claude
   - RULE-SET,Gemini_Domain,Gemini
   - RULE-SET,AI,人工智能
-  - PROCESS-NAME,Codex,人工智能
-  - PROCESS-NAME,codex,人工智能
-  - PROCESS-NAME,Codex Helper,人工智能
-  - PROCESS-NAME,Codex Helper (Renderer),人工智能
-  - PROCESS-NAME,gemini,人工智能
+  - PROCESS-NAME,Codex,OpenAI
+  - PROCESS-NAME,codex,OpenAI
+  - PROCESS-NAME,Codex Helper,OpenAI
+  - PROCESS-NAME,Codex Helper (Renderer),OpenAI
+  - PROCESS-NAME,gemini,Gemini
 
   # === 社交媒体 ===
   - RULE-SET,Twitter_Domain,推特X
