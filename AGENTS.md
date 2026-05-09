@@ -56,3 +56,12 @@ Search results can flood context. Use `context-mode_ctx_execute(language: "shell
 | `ctx stats` | Call the `stats` MCP tool and display the full output verbatim |
 | `ctx doctor` | Call the `doctor` MCP tool, run the returned shell command, display as checklist |
 | `ctx upgrade` | Call the `upgrade` MCP tool, run the returned shell command, display as checklist |
+
+
+<claude-mem-context>
+# Memory Context
+
+# [rules] recent context, 2026-05-09 11:47am GMT+8
+
+No previous sessions found.
+</claude-mem-context>
