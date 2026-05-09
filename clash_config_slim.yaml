@@ -134,9 +134,6 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
     proxies:
-      - OpenAI
-      - Claude
-      - Gemini
       - AI手动切换
       - 香港节点
       - 美国节点
