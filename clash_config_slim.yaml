@@ -963,6 +963,7 @@ rules:
   - PROCESS-NAME,Codex Helper,OpenAI
   - PROCESS-NAME,Codex Helper (Renderer),OpenAI
   - PROCESS-NAME,gemini,Gemini
+  - PROCESS-NAME,language_server_macos_arm,人工智能
 
   # === 社交媒体 ===
   - RULE-SET,Twitter_Domain,推特X
