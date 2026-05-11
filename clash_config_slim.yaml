@@ -23,7 +23,7 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
     type: url-test
     include-all: true
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -31,7 +31,7 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
     type: fallback
     include-all: true
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     timeout: 3000
 
@@ -151,7 +151,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(OpenAI|ChatGPT|GPT|Codex)
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -160,7 +160,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(Claude|Anthropic)
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -169,7 +169,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(Gemini|Bard)
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -178,7 +178,7 @@ proxy-groups:
     include-all: true
     filter: (?i)🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -187,7 +187,7 @@ proxy-groups:
     include-all: true
     filter: (?i)🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -196,7 +196,7 @@ proxy-groups:
     include-all: true
     filter: (?i)🇭🇰|🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|Hong\s*Kong|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bHK\b|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -438,7 +438,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇭🇰)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:香港|\bHK\b|Hong\s*Kong))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -447,7 +447,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇼)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:台湾|台北|新北|彰化|\bTW\b|Taiwan))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -456,7 +456,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇯🇵)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\bJP\b|Japan))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -465,7 +465,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇸)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -474,7 +474,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|\bSG\b|Singapore))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -483,7 +483,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇰🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:韩国|韓國|首尔|\bKR\b|\bKOR\b|Korea))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -492,7 +492,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|乌克兰|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bUA\b|\bEU\b|Europe|European))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -501,7 +501,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|\bSG\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Singapore|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -510,7 +510,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:土耳其|Turkey|\bTR\b))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -519,7 +519,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇦)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:乌克兰|Ukraine|Kyiv|Kiev))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -528,7 +528,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇮🇳)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:印度|India|Mumbai|Delhi))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -537,7 +537,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇮🇩)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:印尼|印度尼西亚|Indonesia|Jakarta))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -546,7 +546,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇨🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:智利|Chile|Santiago))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -555,7 +555,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇦🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:阿根廷|Argentina|Buenos Aires))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -564,7 +564,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇧🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:巴西|Brazil|Sao Paulo|Rio))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -573,7 +573,7 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇳🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:尼日利亚|Nigeria|Lagos|Abuja))
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
@@ -582,7 +582,7 @@ proxy-groups:
     include-all: true
     exclude-filter: (?i)^(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬|香港|台湾|台北|新北|彰化|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|新加坡|狮城|韩国|韓國|首尔|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|乌克兰|土耳其|印度|印尼|印度尼西亚|马来|马来西亚|泰国|越南|菲律宾|柬埔寨|缅甸|文莱|老挝|东帝汶|智利|阿根廷|巴西|尼日利亚|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bKOR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bUA\b|\bEU\b|\bTR\b|\bIN\b|\bID\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|\bCL\b|\bAR\b|\bBR\b|\bNG\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|Europe|European|Turkey|Ukraine|India|Indonesia|Malaysia|Thailand|Vietnam|Philippines|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|Chile|Argentina|Brazil|Nigeria|网站|地址|剩余|过期|实验性|日用|重置)
     type: url-test
-    url: http://cp.cloudflare.com/generate_204
+    url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
 
