@@ -875,11 +875,11 @@ rule-providers:
     type: http
 
   AI:
-    url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/AI.list
-    path: ./ruleset/AI.list
-    behavior: classical
+    url: https://github.com/666OS/rules/raw/release/mihomo/domain/AI.mrs
+    path: ./ruleset/AI.mrs
+    behavior: domain
     interval: 86400
-    format: text
+    format: mrs
     type: http
 
   Bilibili:
