@@ -824,6 +824,33 @@ function buildProxyGroups({
     const buildAiGroupProxies = groupName => {
         const exclusions = AI_UNSUPPORTED_GROUPS[groupName] || [];
         const allowedGroups = aiGroupCandidates.filter(name => !exclusions.includes(name));
+
+        if (groupName === "OpenAI" || groupName === "Claude" || groupName === "Gemini") {
+            return buildList(
+                "人工智能",
+                PROXY_GROUPS.AI_FALLBACK,
+                PROXY_GROUPS.SELECT,
+                PROXY_GROUPS.AUTO,
+                PROXY_GROUPS.BEST,
+                allowedGroups,
+                PROXY_GROUPS.MANUAL
+            );
+        }
+
+        if (groupName === "人工智能") {
+            const hasUS = allowedGroups.includes("美国节点");
+            const otherGroups = allowedGroups.filter(name => name !== "美国节点");
+            return buildList(
+                hasUS ? "美国节点" : null,
+                PROXY_GROUPS.AI_FALLBACK,
+                PROXY_GROUPS.SELECT,
+                PROXY_GROUPS.AUTO,
+                PROXY_GROUPS.BEST,
+                otherGroups,
+                PROXY_GROUPS.MANUAL
+            );
+        }
+
         return buildList(
             PROXY_GROUPS.AI_FALLBACK,
             PROXY_GROUPS.SELECT,

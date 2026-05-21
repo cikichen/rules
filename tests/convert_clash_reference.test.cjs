@@ -121,16 +121,19 @@ test('linux.do group and rules are included in generated config', () => {
   assert.ok(result.rules.includes('DOMAIN,linux.do,Linux.do'));
 });
 
-test('ai groups prioritize AI fallback and expose AI fallback group', () => {
+test('ai groups prioritize 人工智能 group and default 人工智能 to US node', () => {
   const result = runGenerator({ full: false });
   const aiFallbackGroup = result['proxy-groups'].find(group => group.name === 'AI 故障转移');
   const openAiGroup = result['proxy-groups'].find(group => group.name === 'OpenAI');
   const claudeGroup = result['proxy-groups'].find(group => group.name === 'Claude');
+  const aiGroup = result['proxy-groups'].find(group => group.name === '人工智能');
 
   assert.ok(aiFallbackGroup);
   assert.equal(aiFallbackGroup.type, 'fallback');
-  assert.equal(openAiGroup.proxies[0], 'AI 故障转移');
-  assert.equal(claudeGroup.proxies[0], 'AI 故障转移');
+  assert.equal(openAiGroup.proxies[0], '人工智能');
+  assert.equal(claudeGroup.proxies[0], '人工智能');
+  assert.ok(aiGroup);
+  assert.equal(aiGroup.proxies[0], '美国节点');
 });
 
 test('custom group uses friendly chinese name and Custom rules target it', () => {
