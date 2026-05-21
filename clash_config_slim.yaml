@@ -1,3 +1,19 @@
+# ==================== DNS 配置 ====================
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  fallback:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
 # ==================== 代理组 ====================
 proxy-groups:
   # === 核心策略组 ===
@@ -594,6 +610,15 @@ proxy-groups:
 
 # ==================== 规则提供者 ====================
 rule-providers:
+  # ==================== DNS 防泄露 ====================
+  prevent_dns_leak:
+    url: https://raw.githubusercontent.com/xishang0128/rules/main/clash%20or%20stash/prevent_dns_leak/prevent_dns_leak_domain.list
+    path: ./ruleset/prevent_dns_leak.text
+    behavior: domain
+    interval: 86400
+    format: text
+    type: http
+
   # ==================== OCD (Mihomo mrs 优化格式) ====================
   # === AI ===
   OpenAI_Domain:
@@ -932,6 +957,9 @@ rule-providers:
 
 # ==================== 规则 ====================
 rules:
+  # === DNS防泄露 ===
+  - RULE-SET,prevent_dns_leak,漏网之鱼
+
   # === 直连规则 (最高优先级) ===
   - RULE-SET,Lan_Domain,全球直连
   - RULE-SET,Lan_IP,全球直连,no-resolve
@@ -943,7 +971,7 @@ rules:
   - RULE-SET,Alibaba_Domain,阿里服务
   - RULE-SET,Alibaba_IP,阿里服务,no-resolve
   - RULE-SET,China_Domain,全球直连
-  - RULE-SET,China_IP,全球直连
+  - RULE-SET,China_IP,全球直连,no-resolve
   - RULE-SET,Download,全球直连
 
   # === 拦截规则 ===
@@ -997,7 +1025,7 @@ rules:
   - RULE-SET,PT,PT站点
 
   # === GEOIP ===
-  - GEOIP,CN,全球直连
+  - GEOIP,CN,全球直连,no-resolve
 
   # === 代理规则 ===
   - RULE-SET,ProxyGFWlist,漏网之鱼
