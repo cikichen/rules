@@ -7,12 +7,19 @@ dns:
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
+    - 180.184.1.1
   nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
-  fallback:
-    - https://doh.pub/dns-query
     - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  fake-ip-filter:
+    - rule-set:Lan_Domain
+    - rule-set:Direct_Domain
+    - rule-set:China_Domain
+    - rule-set:China_YYDS_Domain
+    - +.miwifi.com
+    - +.docker.io
+    - +.market.xiaomi.com
+    - +.push.apple.com
 
 # ==================== 代理组 ====================
 proxy-groups:
@@ -858,6 +865,22 @@ rule-providers:
     format: mrs
     type: http
 
+  China_YYDS_Domain:
+    url: https://github.com/666OS/rules/raw/release/mihomo/domain/China.mrs
+    path: ./ruleset/China_YYDS_Domain.mrs
+    behavior: domain
+    interval: 86400
+    format: mrs
+    type: http
+
+  China_YYDS_IP:
+    url: https://github.com/666OS/rules/raw/release/mihomo/ip/China.mrs
+    path: ./ruleset/China_YYDS_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
+    type: http
+
   # ==================== ACL4SSR/其他来源 (OCD 未覆盖) ====================
   UnBan:
     url: https://testingcf.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/UnBan.list
@@ -971,7 +994,9 @@ rules:
   - RULE-SET,Alibaba_Domain,阿里服务
   - RULE-SET,Alibaba_IP,阿里服务,no-resolve
   - RULE-SET,China_Domain,全球直连
-  - RULE-SET,China_IP,全球直连,no-resolve
+  - RULE-SET,China_YYDS_Domain,全球直连
+  - RULE-SET,China_IP,全球直连
+  - RULE-SET,China_YYDS_IP,全球直连
   - RULE-SET,Download,全球直连
 
   # === 拦截规则 ===
@@ -1025,7 +1050,7 @@ rules:
   - RULE-SET,PT,PT站点
 
   # === GEOIP ===
-  - GEOIP,CN,全球直连,no-resolve
+  - GEOIP,CN,全球直连
 
   # === 代理规则 ===
   - RULE-SET,ProxyGFWlist,漏网之鱼
