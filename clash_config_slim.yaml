@@ -11,7 +11,11 @@ dns:
   nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+    - tls://dot.pub
   fake-ip-filter:
+    - rule-set:Private_Domain
     - rule-set:Lan_Domain
     - rule-set:Direct_Domain
     - rule-set:China_Domain
@@ -617,13 +621,21 @@ proxy-groups:
 
 # ==================== 规则提供者 ====================
 rule-providers:
-  # ==================== DNS 防泄露 ====================
-  prevent_dns_leak:
-    url: https://raw.githubusercontent.com/xishang0128/rules/main/clash%20or%20stash/prevent_dns_leak/prevent_dns_leak_domain.list
-    path: ./ruleset/prevent_dns_leak.text
+  # ==================== 私有/局域网 ====================
+  Private_Domain:
+    url: https://github.com/666OS/rules/raw/release/mihomo/domain/Private.mrs
+    path: ./ruleset/Private_Domain.mrs
     behavior: domain
     interval: 86400
-    format: text
+    format: mrs
+    type: http
+
+  Private_IP:
+    url: https://github.com/666OS/rules/raw/release/mihomo/ip/Private.mrs
+    path: ./ruleset/Private_IP.mrs
+    behavior: ipcidr
+    interval: 86400
+    format: mrs
     type: http
 
   # ==================== OCD (Mihomo mrs 优化格式) ====================
@@ -980,10 +992,9 @@ rule-providers:
 
 # ==================== 规则 ====================
 rules:
-  # === DNS防泄露 ===
-  - RULE-SET,prevent_dns_leak,漏网之鱼
-
   # === 直连规则 (最高优先级) ===
+  - RULE-SET,Private_Domain,全球直连
+  - RULE-SET,Private_IP,全球直连,no-resolve
   - RULE-SET,Lan_Domain,全球直连
   - RULE-SET,Lan_IP,全球直连,no-resolve
   - RULE-SET,UnBan,全球直连
