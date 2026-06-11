@@ -113,8 +113,7 @@ proxy-groups:
     type: select
     proxies:
       - 人工智能
-      - OpenAI专线
-      - OpenAI可用区
+      - AI可用区
       - 狮城节点
       - 台湾节点
       - 日本节点
@@ -129,8 +128,7 @@ proxy-groups:
     type: select
     proxies:
       - 人工智能
-      - Claude专线
-      - Claude可用区
+      - AI可用区
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -145,8 +143,7 @@ proxy-groups:
     type: select
     proxies:
       - 人工智能
-      - Gemini专线
-      - Gemini可用区
+      - AI可用区
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -162,7 +159,6 @@ proxy-groups:
     type: select
     proxies:
       - 美国节点
-      - AI手动切换
       - 香港节点
       - 日本节点
       - 狮城节点
@@ -173,52 +169,7 @@ proxy-groups:
       - 节点选择
       - 手动切换
 
-  - name: OpenAI专线
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
-    include-all: true
-    filter: (?i)(OpenAI|ChatGPT|GPT|Codex)
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: Claude专线
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
-    include-all: true
-    filter: (?i)(Claude|Anthropic)
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: Gemini专线
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
-    include-all: true
-    filter: (?i)(Gemini|Bard)
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: OpenAI可用区
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
-    include-all: true
-    filter: (?i)🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: Claude可用区
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
-    include-all: true
-    filter: (?i)🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: Gemini可用区
+  - name: AI可用区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     include-all: true
     filter: (?i)🇭🇰|🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|Hong\s*Kong|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bHK\b|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
@@ -226,12 +177,6 @@ proxy-groups:
     url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
-
-  - name: AI手动切换
-    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
-    include-all: true
-    filter: (?i)AI|GPT|OpenAI|Claude|Gemini|Copilot|ChatGPT|Codex|Anthropic|Bard|🇭🇰|🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|Hong\s*Kong|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bHK\b|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
-    type: select
 
   # === 常用服务组 ===
   - name: 油管视频
@@ -269,6 +214,14 @@ proxy-groups:
       - 其他地区
       - 手动切换
 
+  - name: 国内媒体
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/DomesticMedia.png
+    type: select
+    proxies:
+      - DIRECT
+      - 香港节点
+      - 台湾节点
+
   - name: 国外媒体
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
     type: select
@@ -285,22 +238,6 @@ proxy-groups:
       - 东南亚节点
       - 其他地区
       - 手动切换
-
-  - name: 国内媒体
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/DomesticMedia.png
-    type: select
-    proxies:
-      - DIRECT
-      - 香港节点
-      - 台湾节点
-
-  - name: 哔哩哔哩
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili.png
-    type: select
-    proxies:
-      - 全球直连
-      - 台湾节点
-      - 香港节点
 
   - name: 电报消息
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
@@ -364,23 +301,6 @@ proxy-groups:
       - 台湾节点
       - 日本节点
       - 狮城节点
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚节点
-      - 其他地区
-      - 手动切换
-
-  - name: 阿里服务
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
-    type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-      - 香港节点
-      - 台湾节点
-      - 日本节点
-      - 狮城节点
-      - 美国节点
       - 韩国节点
       - 欧洲节点
       - 东南亚节点
@@ -464,22 +384,17 @@ proxy-groups:
     proxies:
       - DIRECT
       - 节点选择
-      - 乌克兰节点
       - 印度节点
-      - 印尼节点
       - 台湾节点
       - 日本节点
       - 美国节点
-      - 智利节点
       - 阿根廷节点
-      - 巴西节点
       - 香港节点
       - 韩国节点
       - 狮城节点
       - 欧洲节点
       - 东南亚节点
       - 土耳其节点
-      - 尼日利亚节点
       - 其他地区
       - 手动切换
 
@@ -489,22 +404,17 @@ proxy-groups:
     proxies:
       - DIRECT
       - 节点选择
-      - 乌克兰节点
       - 印度节点
-      - 印尼节点
       - 台湾节点
       - 日本节点
       - 美国节点
-      - 智利节点
       - 阿根廷节点
-      - 巴西节点
       - 香港节点
       - 韩国节点
       - 狮城节点
       - 欧洲节点
       - 东南亚节点
       - 土耳其节点
-      - 尼日利亚节点
       - 其他地区
       - 手动切换
 
@@ -598,37 +508,10 @@ proxy-groups:
     interval: 300
     tolerance: 5
 
-  - name: 乌克兰节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Ukraine.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇦)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:乌克兰|Ukraine|Kyiv|Kiev))
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
   - name: 印度节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/India.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇮🇳)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:印度|India|Mumbai|Delhi))
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: 印尼节点
-    icon: https://testingcf.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f1ee-1f1e9.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇮🇩)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:印尼|印度尼西亚|Indonesia|Jakarta))
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: 智利节点
-    icon: https://testingcf.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f1e8-1f1f1.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇨🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:智利|Chile|Santiago))
     type: url-test
     url: https://www.gstatic.com/generate_204
     interval: 300
@@ -643,28 +526,10 @@ proxy-groups:
     interval: 300
     tolerance: 5
 
-  - name: 巴西节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Brazil.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇧🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:巴西|Brazil|Sao Paulo|Rio))
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
-  - name: 尼日利亚节点
-    icon: https://testingcf.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/1f1f3-1f1ec.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇳🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:尼日利亚|Nigeria|Lagos|Abuja))
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
-
   - name: 其他地区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     include-all: true
-    exclude-filter: (?i)^(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬|香港|台湾|台北|新北|彰化|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|新加坡|狮城|韩国|韓國|首尔|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|乌克兰|土耳其|印度|印尼|印度尼西亚|马来|马来西亚|泰国|越南|菲律宾|柬埔寨|缅甸|文莱|老挝|东帝汶|智利|阿根廷|巴西|尼日利亚|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bKOR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bUA\b|\bEU\b|\bTR\b|\bIN\b|\bID\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|\bCL\b|\bAR\b|\bBR\b|\bNG\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|Europe|European|Turkey|Ukraine|India|Indonesia|Malaysia|Thailand|Vietnam|Philippines|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|Chile|Argentina|Brazil|Nigeria|网站|地址|剩余|过期|实验性|日用|重置)
+    exclude-filter: (?i)^(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇹🇷|🇮🇳|🇦🇷|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|台湾|台北|新北|彰化|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|新加坡|狮城|韩国|韓國|首尔|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|土耳其|印度|阿根廷|马来|马来西亚|泰国|越南|菲律宾|柬埔寨|缅甸|文莱|老挝|东帝汶|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bKOR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bEU\b|\bTR\b|\bIN\b|\bAR\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|Europe|European|Turkey|India|Argentina|Malaysia|Thailand|Vietnam|Philippines|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|网站|地址|剩余|过期|实验性|日用|重置)
     type: url-test
     url: https://www.gstatic.com/generate_204
     interval: 300
@@ -1059,8 +924,8 @@ rules:
   - RULE-SET,SteamCN,全球直连
   - RULE-SET,Direct_Domain,全球直连
   - RULE-SET,ChinaMedia,国内媒体
-  - RULE-SET,Alibaba_Domain,阿里服务
-  - RULE-SET,Alibaba_IP,阿里服务,no-resolve
+  - RULE-SET,Alibaba_Domain,全球直连
+  - RULE-SET,Alibaba_IP,全球直连,no-resolve
   - RULE-SET,China_Domain,全球直连
   - RULE-SET,China_YYDS_Domain,全球直连
   - RULE-SET,China_IP,全球直连
@@ -1097,7 +962,7 @@ rules:
   - RULE-SET,YouTube_IP,油管视频,no-resolve
   - RULE-SET,Netflix_Domain,奈飞视频
   - RULE-SET,Netflix_IP,奈飞视频,no-resolve
-  - RULE-SET,Bilibili,哔哩哔哩
+  - RULE-SET,Bilibili,国内媒体
   - RULE-SET,ProxyMedia,国外媒体
 
   # === 常用服务 ===
