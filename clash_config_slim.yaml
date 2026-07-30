@@ -256,6 +256,32 @@ proxy-groups:
       - 其他地区
       - 手动切换
 
+  - name: TG-亚洲 (DC5)
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
+    type: select
+    proxies:
+      - 狮城节点
+      - 香港节点
+      - 日本节点
+      - 台湾节点
+      - 韩国节点
+      - 东南亚节点
+      - 电报消息
+
+  - name: TG-美洲 (DC1/3)
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
+    type: select
+    proxies:
+      - 美国节点
+      - 电报消息
+
+  - name: TG-欧洲 (DC2)
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
+    type: select
+    proxies:
+      - 欧洲节点
+      - 电报消息
+
   - name: 谷歌服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
     type: select
@@ -966,6 +992,19 @@ rules:
   - RULE-SET,ProxyMedia,国外媒体
 
   # === 常用服务 ===
+  # -- Telegram DC 优选 --
+  - IP-ASN,44907,TG-亚洲 (DC5),no-resolve
+  - IP-ASN,62014,TG-亚洲 (DC5),no-resolve
+  - DOMAIN-SUFFIX,flora.web.telegram.org,TG-亚洲 (DC5)
+  - IP-ASN,59930,TG-美洲 (DC1/3),no-resolve
+  - DOMAIN-SUFFIX,pluto.web.telegram.org,TG-美洲 (DC1/3)
+  - DOMAIN-SUFFIX,aurora.web.telegram.org,TG-美洲 (DC1/3)
+  - IP-ASN,62041,TG-欧洲 (DC2),no-resolve
+  - IP-ASN,211157,TG-欧洲 (DC2),no-resolve
+  - IP-CIDR,5.28.192.0/18,TG-欧洲 (DC2),no-resolve
+  - IP-CIDR,109.239.140.0/24,TG-欧洲 (DC2),no-resolve
+  - DOMAIN-SUFFIX,venus.web.telegram.org,TG-欧洲 (DC2)
+  - DOMAIN-SUFFIX,vesta.web.telegram.org,TG-欧洲 (DC2)
   - RULE-SET,Telegram_Domain,电报消息
   - RULE-SET,Telegram_IP,电报消息,no-resolve
   - RULE-SET,Microsoft_Domain,微软服务
