@@ -402,8 +402,8 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
     proxies:
-      - DIRECT
       - 节点选择
+      - DIRECT
       - 印度节点
       - 台湾节点
       - 日本节点
