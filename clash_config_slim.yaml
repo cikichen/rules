@@ -20,6 +20,8 @@ dns:
     - rule-set:Direct_Domain
     - rule-set:China_Domain
     - rule-set:China_YYDS_Domain
+    # 阿里域名需真实 IP, 供 AND,(...,(GEOIP,CN)) 判定国内/海外
+    - rule-set:Alibaba_Domain
     - +.miwifi.com
     - +.docker.io
     - +.market.xiaomi.com
@@ -450,6 +452,18 @@ proxy-groups:
     proxies:
       - DIRECT
       - 节点选择
+      - 手动切换
+
+  - name: 阿里海外
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
       - 手动切换
 
   # === 地区节点组 ===
@@ -950,8 +964,43 @@ rules:
   - RULE-SET,SteamCN,全球直连
   - RULE-SET,Direct_Domain,全球直连
   - RULE-SET,ChinaMedia,国内媒体
-  - RULE-SET,Alibaba_Domain,全球直连
-  - RULE-SET,Alibaba_IP,全球直连,no-resolve
+  # -- 阿里: 国内段直连, 海外段/海外域名走「阿里海外」 --
+  # GEOIP,CN 库缺 8 个国内段, 先白名单兜底 (no-resolve)
+  - IP-CIDR,8.128.0.0/10,全球直连,no-resolve
+  - IP-CIDR,43.242.168.0/22,全球直连,no-resolve
+  - IP-CIDR,45.112.212.0/22,全球直连,no-resolve
+  - IP-CIDR,59.82.240.0/21,全球直连,no-resolve
+  - IP-CIDR,59.82.248.0/22,全球直连,no-resolve
+  - IP-CIDR,103.38.56.0/22,全球直连,no-resolve
+  - IP-CIDR,103.52.76.0/22,全球直连,no-resolve
+  - IP-CIDR,119.38.224.0/20,全球直连,no-resolve
+  # 阿里明确的海外业务域名 → 直接走「阿里海外」
+  - DOMAIN-SUFFIX,aliexpress.com,阿里海外
+  - DOMAIN-SUFFIX,aliexpress.ru,阿里海外
+  - DOMAIN-SUFFIX,lazada.com,阿里海外
+  - DOMAIN-SUFFIX,alibaba.com,阿里海外
+  - DOMAIN-SUFFIX,alibabacloud.com,阿里海外
+  - DOMAIN-SUFFIX,alibabacloud.co.in,阿里海外
+  - DOMAIN-SUFFIX,alibabacloud.com.au,阿里海外
+  - DOMAIN-SUFFIX,alibabacloud.com.hk,阿里海外
+  - DOMAIN-SUFFIX,alibabacloud.com.my,阿里海外
+  - DOMAIN-SUFFIX,alibabacloud.com.sg,阿里海外
+  - DOMAIN-SUFFIX,alibabacloud.com.tw,阿里海外
+  - DOMAIN-SUFFIX,alibabagroup.com,阿里海外
+  - DOMAIN-SUFFIX,alicloud.com,阿里海外
+  - DOMAIN-SUFFIX,qwen.ai,阿里海外
+  - DOMAIN-SUFFIX,tmall.hk,阿里海外
+  - DOMAIN-SUFFIX,tmall.ru,阿里海外
+  - DOMAIN-SUFFIX,alipay.hk,阿里海外
+  - DOMAIN-SUFFIX,alipayplus.com,阿里海外
+  - DOMAIN-SUFFIX,alihealth.hk,阿里海外
+  - DOMAIN-SUFFIX,fliggy.hk,阿里海外
+  # 阿里域名/IP → 国内走直连
+  - AND,((RULE-SET,Alibaba_Domain),(GEOIP,CN)),全球直连
+  - AND,((RULE-SET,Alibaba_IP),(GEOIP,CN)),全球直连
+  # 阿里域名/IP → 海外走「阿里海外」
+  - RULE-SET,Alibaba_Domain,阿里海外
+  - RULE-SET,Alibaba_IP,阿里海外
   - RULE-SET,China_Domain,全球直连
   - RULE-SET,China_YYDS_Domain,全球直连
   - RULE-SET,China_IP,全球直连
