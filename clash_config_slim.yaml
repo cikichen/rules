@@ -109,6 +109,18 @@ proxy-groups:
       - 手动切换
       - DIRECT
 
+  - name: 中转站
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 手动切换
+
   # === AI 服务组 ===
   - name: OpenAI
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
@@ -452,18 +464,6 @@ proxy-groups:
     proxies:
       - DIRECT
       - 节点选择
-      - 手动切换
-
-  - name: 中转站
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
-    type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-      - 香港节点
-      - 日本节点
-      - 狮城节点
-      - 美国节点
       - 手动切换
 
   - name: 阿里海外
