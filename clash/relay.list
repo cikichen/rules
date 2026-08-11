@@ -1,0 +1,11 @@
+# 中转站规则
+# 独立分组「中转站」, 默认直连, 网络异常时可手动切换节点
+#
+# hezubus.cc      -> Cloudflare CDN (境外)
+# air-outer.com   -> 阿里云海外 8.214.x
+# fcapp.run       -> 阿里云函数计算 上海 47.117.x (国内)
+
+DOMAIN-SUFFIX,hezubus.cc
+DOMAIN-SUFFIX,air-outer.com
+# fcapp.run 是阿里云函数计算公共域名, 用 DOMAIN 精确匹配避免覆盖他人函数
+DOMAIN,a-ocnfniawgw.cn-shanghai.fcapp.run

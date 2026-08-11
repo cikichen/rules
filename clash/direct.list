@@ -5,10 +5,6 @@ DOMAIN-SUFFIX,ithome.me
 DOMAIN-SUFFIX,210111.xyz
 DOMAIN-SUFFIX,book5.top
 DOMAIN-SUFFIX,jsdelivr.net
-DOMAIN-SUFFIX,hezubus.cc
-DOMAIN-SUFFIX,air-outer.com
-# 阿里云函数计算, 用 DOMAIN 精确匹配避免覆盖他人 fcapp.run 函数
-DOMAIN,a-ocnfniawgw.cn-shanghai.fcapp.run
 
 # 本地/局域网地址
 DOMAIN-SUFFIX,ip6-localhost

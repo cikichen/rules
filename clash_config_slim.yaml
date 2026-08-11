@@ -454,6 +454,18 @@ proxy-groups:
       - 节点选择
       - 手动切换
 
+  - name: 中转站
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+      - 香港节点
+      - 日本节点
+      - 狮城节点
+      - 美国节点
+      - 手动切换
+
   - name: 阿里海外
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
     type: select
@@ -952,6 +964,14 @@ rule-providers:
     format: text
     type: http
 
+  Relay:
+    url: https://testingcf.jsdelivr.net/gh/cikichen/rules@main/clash/relay.list
+    path: ./ruleset/relay.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
 # ==================== 规则 ====================
 rules:
   # === 直连规则 (最高优先级) ===
@@ -959,6 +979,8 @@ rules:
   - RULE-SET,Private_IP,全球直连,no-resolve
   - RULE-SET,Lan_Domain,全球直连
   - RULE-SET,Lan_IP,全球直连,no-resolve
+  # === 中转站 (需早于直连/阿里规则, 否则会被抢先命中) ===
+  - RULE-SET,Relay,中转站
   - RULE-SET,UnBan,全球直连
   - RULE-SET,GoogleCN,全球直连
   - RULE-SET,SteamCN,全球直连
