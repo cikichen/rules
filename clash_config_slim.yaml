@@ -152,8 +152,6 @@ proxy-groups:
     proxies:
       - 人工智能
       - AI-负载均衡
-      - AI可用区
-      - AI-手动切换
       - 狮城节点
       - 台湾节点
       - 日本节点
@@ -171,8 +169,6 @@ proxy-groups:
     proxies:
       - 人工智能
       - AI-负载均衡
-      - AI可用区
-      - AI-手动切换
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -190,8 +186,6 @@ proxy-groups:
     proxies:
       - 人工智能
       - AI-负载均衡
-      - AI可用区
-      - AI-手动切换
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -209,7 +203,6 @@ proxy-groups:
     exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
     proxies:
       - AI-负载均衡
-      - AI-手动切换
       - 美国节点
       - 香港节点
       - 日本节点
@@ -230,21 +223,6 @@ proxy-groups:
     url: https://api.openai.com
     interval: 300
     lazy: true
-
-  - name: AI-手动切换
-    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
-    type: select
-    include-all: true
-    exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
-
-  - name: AI可用区
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
-    include-all: true
-    filter: (?i)🇭🇰|🇺🇸|🇯🇵|🇸🇬|🇹🇼|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|美国|美西|美东|日本|新加坡|狮城|台湾|韩国|欧洲|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|Hong\s*Kong|United\s*States|Japan|Singapore|Taiwan|Korea|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|\bHK\b|\bUS\b|\bJP\b|\bSG\b|\bTW\b|\bKR\b|\bEU\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b
-    type: url-test
-    url: https://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 5
 
   # === 常用服务组 ===
   - name: 油管视频
