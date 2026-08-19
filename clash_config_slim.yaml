@@ -35,6 +35,8 @@ proxy-groups:
     type: select
     proxies:
       - 自动选择
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 故障转移
       - 香港节点
       - 台湾节点
@@ -55,6 +57,24 @@ proxy-groups:
     url: https://www.gstatic.com/generate_204
     interval: 300
     tolerance: 5
+
+  - name: 负载均衡-散列
+    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
+    type: load-balance
+    strategy: consistent-hashing
+    include-all: true
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    lazy: true
+
+  - name: 负载均衡-轮询
+    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
+    type: load-balance
+    strategy: round-robin
+    include-all: true
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    lazy: true
 
   - name: 故障转移
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
@@ -96,6 +116,8 @@ proxy-groups:
     proxies:
       - 节点选择
       - 自动选择
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 故障转移
       - 香港节点
       - 台湾节点
@@ -125,9 +147,13 @@ proxy-groups:
   - name: OpenAI
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
     type: select
+    include-all: true
+    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
     proxies:
       - 人工智能
+      - AI-负载均衡
       - AI可用区
+      - AI-手动切换
       - 狮城节点
       - 台湾节点
       - 日本节点
@@ -140,9 +166,13 @@ proxy-groups:
   - name: Claude
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
+    include-all: true
+    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
     proxies:
       - 人工智能
+      - AI-负载均衡
       - AI可用区
+      - AI-手动切换
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -155,9 +185,13 @@ proxy-groups:
   - name: Gemini
     icon: https://testingcf.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
     type: select
+    include-all: true
+    exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
     proxies:
       - 人工智能
+      - AI-负载均衡
       - AI可用区
+      - AI-手动切换
       - 美国节点
       - 日本节点
       - 狮城节点
@@ -171,7 +205,11 @@ proxy-groups:
   - name: 人工智能
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
+    include-all: true
+    exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
     proxies:
+      - AI-负载均衡
+      - AI-手动切换
       - 美国节点
       - 香港节点
       - 日本节点
@@ -182,6 +220,22 @@ proxy-groups:
       - 欧洲节点
       - 节点选择
       - 手动切换
+
+  - name: AI-负载均衡
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    type: load-balance
+    strategy: consistent-hashing
+    include-all: true
+    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
+    url: https://api.openai.com
+    interval: 300
+    lazy: true
+
+  - name: AI-手动切换
+    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
+    type: select
+    include-all: true
+    exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
 
   - name: AI可用区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
@@ -981,6 +1035,12 @@ rules:
   - RULE-SET,Lan_IP,全球直连,no-resolve
   # === 中转站 (需早于直连/阿里规则, 否则会被抢先命中) ===
   - RULE-SET,Relay,中转站
+
+  # === 拦截规则 (需早于国内白名单规则，避免广告被国内直连放行) ===
+  - RULE-SET,BanAD,全球拦截
+  - RULE-SET,BanProgramAD,应用净化
+
+  # === 直连规则 ===
   - RULE-SET,UnBan,全球直连
   - RULE-SET,GoogleCN,全球直连
   - RULE-SET,SteamCN,全球直连
@@ -1028,10 +1088,6 @@ rules:
   - RULE-SET,China_IP,全球直连
   - RULE-SET,China_YYDS_IP,全球直连
   - RULE-SET,Download,全球直连
-
-  # === 拦截规则 ===
-  - RULE-SET,BanAD,全球拦截
-  - RULE-SET,BanProgramAD,应用净化
 
   # === AI 服务 ===
   - DOMAIN,browser.events.data.microsoft.com,人工智能
