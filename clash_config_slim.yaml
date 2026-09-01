@@ -1047,12 +1047,13 @@ rule-providers:
     format: mrs
     type: http
 
-  # === 自定义直连白名单（本地文件，防止广告规则误拦） ===
+  # === 自定义直连白名单（防止广告规则误拦） ===
   Custom_Direct:
-    path: ./clash/direct.list
+    url: https://testingcf.jsdelivr.net/gh/cikichen/rules@main/clash/direct.list
+    path: ./ruleset/Custom_Direct.list
     behavior: classical
     interval: 86400
-    type: file
+    type: http
 
   # === 直连/局域网 ===
   Direct_Domain:
