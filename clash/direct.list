@@ -46,89 +46,88 @@ DOMAIN-SUFFIX,wifi.cmcc
 
 # 规则修正
 # >>>>>>>>>>>>>>> ✅ 1 ✅ <<<<<<<<<<<<<<
-DOMAIN,ad.12306.cn,DIRECT
+DOMAIN,ad.12306.cn
 
 # >>>>>>>>>>>>>>> ✅ A ✅ <<<<<<<<<<<<<<
-DOMAIN,anti-ad.net,DIRECT
-DOMAIN,log.mmstat.com,DIRECT
-DOMAIN,sycm.mmstat.com,DIRECT
+DOMAIN,anti-ad.net
+DOMAIN,log.mmstat.com
+DOMAIN,sycm.mmstat.com
 
 # >>>>>>>>>>>>>>> ✅ 爱影视 <<<<<<<<<<<<<<
-DOMAIN,static.jssp.tv,DIRECT
-DOMAIN,lain.bgm.tv,DIRECT
-DOMAIN,tiao.cjkypo.com,DIRECT
-DOMAIN,ok.zuidapic.com,DIRECT
-DOMAIN,ts.thefilehosting.com,DIRECT
-DOMAIN,deo.shopeemobile.com,DIRECT
-DOMAIN,m3u8.255tv.tk,DIRECT
-DOMAIN,m3u8.mstopq.com,DIRECT
-DOMAIN,ain.bgm.tv,DIRECT
-DOMAIN-SUFFIX,vip.lz-cdn,DIRECT
-DOMAIN-SUFFIX,ax1x.com,DIRECT
-DOMAIN-SUFFIX,o.lencr.org,DIRECT
-DOMAIN-SUFFIX,ttcdn-tos.kkimg.cc,DIRECT
+DOMAIN,static.jssp.tv
+DOMAIN,lain.bgm.tv
+DOMAIN,tiao.cjkypo.com
+DOMAIN,ok.zuidapic.com
+DOMAIN,ts.thefilehosting.com
+DOMAIN,deo.shopeemobile.com
+DOMAIN,m3u8.255tv.tk
+DOMAIN,m3u8.mstopq.com
+DOMAIN,ain.bgm.tv
+DOMAIN-SUFFIX,vip.lz-cdn
+DOMAIN-SUFFIX,ax1x.com
+DOMAIN-SUFFIX,o.lencr.org
+DOMAIN-SUFFIX,ttcdn-tos.kkimg.cc
 
 # >>>>>>>>>>>>>>> ✅ D ✅ <<<<<<<<<<<<<<
-DOMAIN,sdk.alibaba.com.ailbaba.me,DIRECT
-DOMAIN,img.ffzypic.com,DIRECT
-DOMAIN,img.liangzipic.com,DIRECT
-DOMAIN,img.bfzypic.com,DIRECT
-DOMAIN,img.kuaikanzy.net,DIRECT
-DOMAIN,vip.imgffzy.com,DIRECT
-DOMAIN,vip.ffzyread.com,DIRECT
-DOMAIN,cdn.jsdelivr.net,DIRECT
-DOMAIN,image.maimn.com,DIRECT
-DOMAIN-SUFFIX,bfzycdn.com,DIRECT
-DOMAIN-SUFFIX,vip.kuaikan-cdn,DIRECT
-DOMAIN-SUFFIX,vip.ffzy-play,DIRECT
-DOMAIN-SUFFIX,vip.ffzy-online,DIRECT
+DOMAIN,sdk.alibaba.com.ailbaba.me
+DOMAIN,img.ffzypic.com
+DOMAIN,img.liangzipic.com
+DOMAIN,img.bfzypic.com
+DOMAIN,img.kuaikanzy.net
+DOMAIN,vip.imgffzy.com
+DOMAIN,vip.ffzyread.com
+DOMAIN,cdn.jsdelivr.net
+DOMAIN,image.maimn.com
+DOMAIN-SUFFIX,bfzycdn.com
+DOMAIN-SUFFIX,vip.kuaikan-cdn
+DOMAIN-SUFFIX,vip.ffzy-play
+DOMAIN-SUFFIX,vip.ffzy-online
 
 # >>>>>>>>>>>>>>> ✅ P ✅ <<<<<<<<<<<<<<
-DOMAIN-SUFFIX,push.apple.com,DIRECT
-DOMAIN,time.apple.com,DIRECT
-DOMAIN-SUFFIX,weather-edge.apple.com,DIRECT
-DOMAIN-SUFFIX,weather-adge.apple.com,DIRECT
-DOMAIN-SUFFIX,weather-data.apple.com,DIRECT
-DOMAIN-SUFFIX,weather-map.apple.com,DIRECT
-DOMAIN-SUFFIX,weather-analytics-events.apple.com,DIRECT
-DOMAIN-SUFFIX,buy.itunes.apple.com,DIRECT
-DOMAIN-SUFFIX,icloud.com,DIRECT
-DOMAIN-SUFFIX,api.smoot.apple.com,DIRECT
-DOMAIN-SUFFIX,api.smoot.apple.cn,DIRECT
-DOMAIN,init.ess.apple.com,DIRECT
-DOMAIN-SUFFIX,ssl.apple.com,DIRECT
-DOMAIN-SUFFIX,humb.apple.com,DIRECT
-DOMAIN,smp-device-content.apple.com,DIRECT
-DOMAIN-SUFFIX,api-adservices.apple.com,DIRECT
-DOMAIN-SUFFIX,ls.apple.com,DIRECT
-DOMAIN-SUFFIX,gsa.apple.com,DIRECT
-DOMAIN-SUFFIX,ess.apple.com,DIRECT
-DOMAIN,itunes.apple.com,DIRECT
+DOMAIN-SUFFIX,push.apple.com
+DOMAIN,time.apple.com
+DOMAIN-SUFFIX,weather-edge.apple.com
+DOMAIN-SUFFIX,weather-adge.apple.com
+DOMAIN-SUFFIX,weather-data.apple.com
+DOMAIN-SUFFIX,weather-map.apple.com
+DOMAIN-SUFFIX,weather-analytics-events.apple.com
+DOMAIN-SUFFIX,buy.itunes.apple.com
+DOMAIN-SUFFIX,icloud.com
+DOMAIN-SUFFIX,api.smoot.apple.com
+DOMAIN-SUFFIX,api.smoot.apple.cn
+DOMAIN,init.ess.apple.com
+DOMAIN-SUFFIX,ssl.apple.com
+DOMAIN-SUFFIX,humb.apple.com
+DOMAIN,smp-device-content.apple.com
+DOMAIN-SUFFIX,api-adservices.apple.com
+DOMAIN-SUFFIX,ls.apple.com
+DOMAIN-SUFFIX,gsa.apple.com
+DOMAIN-SUFFIX,ess.apple.com
+DOMAIN,itunes.apple.com
 
 # >>>>>>>>>>>>>>> ✅ Q ✅ <<<<<<<<<<<<<<
-DOMAIN-SUFFIX,ctc.qzs.qzone.qq.com,DIRECT
+DOMAIN-SUFFIX,ctc.qzs.qzone.qq.com
+DOMAIN-SUFFIX,bugly.qq.com
 
 # >>>>>>>>>>>>>>> ✅ S ✅ <<<<<<<<<<<<<<
-DOMAIN,analytics.strava.com,DIRECT
+DOMAIN,analytics.strava.com
 
 # >>>>>>>>>>>>>>> ✅ T ✅ <<<<<<<<<<<<<<
-DOMAIN,fairplay.l.qq.com,DIRECT
-DOMAIN,livew.l.qq.com,DIRECT
-DOMAIN,vd.l.qq.com,DIRECT
-DOMAIN,vi.l.qq.com,DIRECT
+DOMAIN,fairplay.l.qq.com
+DOMAIN,livew.l.qq.com
+DOMAIN,vd.l.qq.com
+DOMAIN,vi.l.qq.com
 
 # >>>>>>>>>>>>>>> ✅ U ✅ <<<<<<<<<<<<<<
-DOMAIN,msg.umeng.com,DIRECT
-DOMAIN,msg.umengcloud.com,DIRECT
+DOMAIN,msg.umeng.com
+DOMAIN,msg.umengcloud.com
 
 # >>>>>>>>>>>>>>> ✅ X ✅ <<<<<<<<<<<<<<
-DOMAIN-SUFFIX,aw-s.tripcdn.com,DIRECT
-DOMAIN-SUFFIX,trip.com,DIRECT
+DOMAIN-SUFFIX,aw-s.tripcdn.com
+DOMAIN-SUFFIX,trip.com
 
 # >>>>>>>>>>>>>>> 其他分流修正 <<<<<<<<<<<<<<
-IP-CIDR,192.168.0.1/24,DIRECT
-IP-CIDR,192.168.1.1/24,DIRECT
+IP-CIDR,192.168.0.1/24,no-resolve
+IP-CIDR,192.168.1.1/24,no-resolve
 
-DOMAIN-SUFFIX,challenges.cloudflare.com,DIRECT
-
-DOMAIN-SUFFIX,bugly.qq.com,DIRECT
+DOMAIN-SUFFIX,challenges.cloudflare.com
