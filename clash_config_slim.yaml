@@ -1053,6 +1053,7 @@ rule-providers:
     path: ./ruleset/Custom_Direct.list
     behavior: classical
     interval: 86400
+    format: text
     type: http
 
   # === 直连/局域网 ===
