@@ -1219,6 +1219,9 @@ rules:
   # === 中转站 (需早于直连/阿里规则, 否则会被抢先命中) ===
   - RULE-SET,Relay,中转站
 
+  # === 自定义直连白名单 (优先级最高，防止被广告规则误拦) ===
+  - RULE-SET,Direct_Domain,全球直连
+
   # === 拦截规则 (需早于国内白名单规则，避免广告被国内直连放行) ===
   - RULE-SET,BanAD,全球拦截
   - RULE-SET,BanProgramAD,应用净化
@@ -1227,7 +1230,6 @@ rules:
   - RULE-SET,UnBan,全球直连
   - RULE-SET,GoogleCN,全球直连
   - RULE-SET,SteamCN,全球直连
-  - RULE-SET,Direct_Domain,全球直连
   - RULE-SET,ChinaMedia,国内媒体
   # -- 阿里: 国内段直连, 海外段/海外域名走「阿里海外」 --
   # GEOIP,CN 库缺 8 个国内段, 先白名单兜底 (no-resolve)
