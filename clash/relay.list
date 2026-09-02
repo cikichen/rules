@@ -10,3 +10,4 @@ DOMAIN-SUFFIX,air-outer.com
 # fcapp.run 是阿里云函数计算公共域名, 用 DOMAIN 精确匹配避免覆盖他人函数
 DOMAIN,a-ocnfniawgw.cn-shanghai.fcapp.run
 DOMAIN-SUFFIX,ooioo.work
+DOMAIN-SUFFIX,api.justwoker.icu
