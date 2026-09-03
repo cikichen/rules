@@ -343,6 +343,7 @@ const baseRules = [
     `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
+    "DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证",
     "DOMAIN-SUFFIX,linux.do,Linux.do",
     "DOMAIN,linux.do,Linux.do",
     "RULE-SET,OpenAI,OpenAI",
@@ -879,6 +880,19 @@ function buildProxyGroups({
         hasOtherNodes && PROXY_GROUPS.OTHER,
         PROXY_GROUPS.MANUAL
     );
+    const cloudflareProxies = buildList(
+        PROXY_GROUPS.SELECT,
+        PROXY_GROUPS.DIRECT,
+        PROXY_GROUPS.AUTO,
+        PROXY_GROUPS.BEST,
+        PROXY_GROUPS.FALLBACK,
+        PROXY_GROUPS.BALANCE_HASH,
+        PROXY_GROUPS.BALANCE_ROUND_ROBIN,
+        countryGroupNames,
+        regionProxyGroups.map(group => group.name),
+        hasOtherNodes && PROXY_GROUPS.OTHER,
+        PROXY_GROUPS.MANUAL
+    );
     const fullProxies = defaultProxies;
     const otherGroupType = loadBalance ? "load-balance" : "url-test";
 
@@ -993,6 +1007,12 @@ function buildProxyGroups({
             icon: DEFAULT_GROUP_ICON,
             type: "select",
             proxies: defaultProxiesDirect
+        },
+        {
+            name: "Cloudflare验证",
+            icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png",
+            type: "select",
+            proxies: cloudflareProxies
         },
         {
             name: "Linux.do",

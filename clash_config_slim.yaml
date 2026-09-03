@@ -496,6 +496,34 @@ proxy-groups:
       - 手动切换
       - DIRECT
 
+  - name: Cloudflare验证
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png
+    type: select
+    proxies:
+      - 节点选择
+      - 全球直连
+      - 自动选择
+      - 负载均衡-散列
+      - 负载均衡-轮询
+      - 故障转移
+      - 香港-自动选择
+      - 香港-负载均衡
+      - 台湾-自动选择
+      - 台湾-负载均衡
+      - 日本-自动选择
+      - 日本-负载均衡
+      - 美国-自动选择
+      - 美国-负载均衡
+      - 狮城-自动选择
+      - 狮城-负载均衡
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚-自动选择
+      - 东南亚-负载均衡
+      - 其他地区
+      - 手动切换
+      - DIRECT
+
   # === 社交媒体组 ===
   - name: 推特X
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png
@@ -1283,6 +1311,9 @@ rules:
   - RULE-SET,China_IP,全球直连
   - RULE-SET,China_YYDS_IP,全球直连
   - RULE-SET,Download,全球直连
+
+  # === Cloudflare 验证 ===
+  - DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证
 
   # === AI 服务 ===
   - DOMAIN,browser.events.data.microsoft.com,人工智能

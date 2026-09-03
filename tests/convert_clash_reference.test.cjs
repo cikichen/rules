@@ -121,6 +121,19 @@ test('linux.do group and rules are included in generated config', () => {
   assert.ok(result.rules.includes('DOMAIN,linux.do,Linux.do'));
 });
 
+test('Cloudflare验证 group and rules are included in generated config', () => {
+  const result = runGenerator({ full: false });
+  const cfGroup = result['proxy-groups'].find(group => group.name === 'Cloudflare验证');
+
+  assert.ok(cfGroup);
+  assert.equal(cfGroup.type, 'select');
+  assert.deepEqual(
+    cfGroup.proxies.slice(0, 4),
+    ['节点选择', '全球直连', '自动选择', '全球优选']
+  );
+  assert.ok(result.rules.includes('DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证'));
+});
+
 test('ai groups prioritize 人工智能 group and default 人工智能 to US node', () => {
   const result = runGenerator({ full: false });
   const aiFallbackGroup = result['proxy-groups'].find(group => group.name === 'AI 故障转移');
