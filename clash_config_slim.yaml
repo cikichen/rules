@@ -20,8 +20,6 @@ dns:
     - rule-set:Direct_Domain
     - rule-set:China_Domain
     - rule-set:China_YYDS_Domain
-    # 阿里域名需真实 IP, 供 AND,(...,(GEOIP,CN)) 判定国内/海外
-    - rule-set:Alibaba_Domain
     - +.miwifi.com
     - +.docker.io
     - +.market.xiaomi.com
@@ -205,6 +203,30 @@ proxy-groups:
       - 东南亚-负载均衡
       - 欧洲节点
       - 手动切换
+
+  # Claude 桌面端更新下载, 不限制地区节点
+  - name: Claude更新
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
+    type: select
+    include-all: true
+    proxies:
+      - 节点选择
+      - 自动选择
+      - 香港-自动选择
+      - 香港-负载均衡
+      - 日本-自动选择
+      - 日本-负载均衡
+      - 狮城-自动选择
+      - 狮城-负载均衡
+      - 美国-自动选择
+      - 美国-负载均衡
+      - 台湾-自动选择
+      - 台湾-负载均衡
+      - 韩国节点
+      - 欧洲节点
+      - 其他地区
+      - 手动切换
+      - DIRECT
 
   - name: Gemini
     icon: https://testingcf.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
@@ -1042,22 +1064,6 @@ rule-providers:
     format: mrs
     type: http
 
-  Alibaba_Domain:
-    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Alibaba/Alibaba_OCD_Domain.mrs
-    path: ./ruleset/Alibaba_Domain.mrs
-    behavior: domain
-    interval: 86400
-    format: mrs
-    type: http
-
-  Alibaba_IP:
-    url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Alibaba/Alibaba_OCD_IP.mrs
-    path: ./ruleset/Alibaba_IP.mrs
-    behavior: ipcidr
-    interval: 86400
-    format: mrs
-    type: http
-
   # === 游戏 ===
   Steam_Domain:
     url: https://testingcf.jsdelivr.net/gh/peiyingyao/Rule-for-OCD@master/rule/Clash/Steam/Steam_OCD_Domain.mrs
@@ -1279,11 +1285,7 @@ rules:
   - IP-CIDR,103.38.56.0/22,全球直连,no-resolve
   - IP-CIDR,103.52.76.0/22,全球直连,no-resolve
   - IP-CIDR,119.38.224.0/20,全球直连,no-resolve
-  # 阿里明确的海外业务域名 → 直接走「阿里海外」
-  - DOMAIN-SUFFIX,aliexpress.com,阿里海外
-  - DOMAIN-SUFFIX,aliexpress.ru,阿里海外
-  - DOMAIN-SUFFIX,lazada.com,阿里海外
-  - DOMAIN-SUFFIX,alibaba.com,阿里海外
+  # 阿里云海外官网域名 → 直接走「阿里海外」
   - DOMAIN-SUFFIX,alibabacloud.com,阿里海外
   - DOMAIN-SUFFIX,alibabacloud.co.in,阿里海外
   - DOMAIN-SUFFIX,alibabacloud.com.au,阿里海外
@@ -1291,21 +1293,39 @@ rules:
   - DOMAIN-SUFFIX,alibabacloud.com.my,阿里海外
   - DOMAIN-SUFFIX,alibabacloud.com.sg,阿里海外
   - DOMAIN-SUFFIX,alibabacloud.com.tw,阿里海外
-  - DOMAIN-SUFFIX,alibabagroup.com,阿里海外
   - DOMAIN-SUFFIX,alicloud.com,阿里海外
-  - DOMAIN-SUFFIX,qwen.ai,阿里海外
-  - DOMAIN-SUFFIX,tmall.hk,阿里海外
-  - DOMAIN-SUFFIX,tmall.ru,阿里海外
-  - DOMAIN-SUFFIX,alipay.hk,阿里海外
-  - DOMAIN-SUFFIX,alipayplus.com,阿里海外
-  - DOMAIN-SUFFIX,alihealth.hk,阿里海外
-  - DOMAIN-SUFFIX,fliggy.hk,阿里海外
-  # 阿里域名/IP → 国内走直连
-  - AND,((RULE-SET,Alibaba_Domain),(GEOIP,CN)),全球直连
-  - AND,((RULE-SET,Alibaba_IP),(GEOIP,CN)),全球直连
-  # 阿里域名/IP → 海外走「阿里海外」
-  - RULE-SET,Alibaba_Domain,阿里海外
-  - RULE-SET,Alibaba_IP,阿里海外
+  # 阿里云现行海外 Region endpoint（含香港；排除其他 cn-*；兼容 service.<region> / oss-<region> 两种形态）
+  - DOMAIN-REGEX,^(?:[^.]+\.)*(?:cn-hongkong|oss-cn-hongkong|ap-(?:northeast-[12]|southeast-(?:[135678]))|oss-ap-(?:northeast-[12]|southeast-(?:[135678]))|us-(?:west|east)-1|oss-us-(?:west|east)-1|eu-(?:central-1|west-[12])|oss-eu-(?:central-1|west-[12])|me-(?:east|central)-1|oss-me-(?:east|central)-1|na-south-1|oss-na-south-1|sa-east-1|oss-sa-east-1)\.aliyuncs\.com$,阿里海外
+  # 阿里云海外 IP 段（与 Shadowrocket 保持一致）
+  - IP-CIDR,8.208.0.0/12,阿里海外,no-resolve
+  - IP-CIDR,14.1.112.0/22,阿里海外,no-resolve
+  - IP-CIDR,41.222.240.0/22,阿里海外,no-resolve
+  - IP-CIDR,41.223.119.0/24,阿里海外,no-resolve
+  - IP-CIDR,47.52.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,47.56.0.0/15,阿里海外,no-resolve
+  - IP-CIDR,47.74.0.0/15,阿里海外,no-resolve
+  - IP-CIDR,47.76.0.0/14,阿里海外,no-resolve
+  - IP-CIDR,47.80.0.0/12,阿里海外,no-resolve
+  - IP-CIDR,47.235.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,47.236.0.0/14,阿里海外,no-resolve
+  - IP-CIDR,47.240.0.0/14,阿里海外,no-resolve
+  - IP-CIDR,47.244.0.0/15,阿里海外,no-resolve
+  - IP-CIDR,47.246.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,47.250.0.0/15,阿里海外,no-resolve
+  - IP-CIDR,47.252.0.0/15,阿里海外,no-resolve
+  - IP-CIDR,47.254.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,72.254.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,103.206.40.0/22,阿里海外,no-resolve
+  - IP-CIDR,116.251.64.0/18,阿里海外,no-resolve
+  - IP-CIDR,139.95.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,147.139.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,149.129.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,155.102.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,161.117.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,163.181.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,170.33.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,198.11.128.0/18,阿里海外,no-resolve
+  - IP-CIDR,205.204.96.0/19,阿里海外,no-resolve
   - RULE-SET,China_Domain,全球直连
   - RULE-SET,China_YYDS_Domain,全球直连
   - RULE-SET,China_IP,全球直连
@@ -1318,6 +1338,8 @@ rules:
   # === AI 服务 ===
   - DOMAIN,browser.events.data.microsoft.com,人工智能
   - DOMAIN-KEYWORD,antigravity,人工智能
+  # Claude 桌面端更新下载 (前置, 避免命中 Claude 会话分组)
+  - DOMAIN-SUFFIX,downloads.claude.ai,Claude更新
   - RULE-SET,OpenAI_Domain,OpenAI
   - RULE-SET,OpenAI_IP,OpenAI,no-resolve
   - RULE-SET,Claude_Domain,Claude
