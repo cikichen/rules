@@ -182,28 +182,6 @@ proxy-groups:
       - 欧洲节点
       - 手动切换
 
-  - name: Claude
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
-    type: select
-    include-all: true
-    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    proxies:
-      - 人工智能
-      - AI-负载均衡
-      - 美国-自动选择
-      - 美国-负载均衡
-      - 日本-自动选择
-      - 日本-负载均衡
-      - 狮城-自动选择
-      - 狮城-负载均衡
-      - 台湾-自动选择
-      - 台湾-负载均衡
-      - 韩国节点
-      - 东南亚-自动选择
-      - 东南亚-负载均衡
-      - 欧洲节点
-      - 手动切换
-
   # Claude 桌面端更新下载, 不限制地区节点
   - name: Claude更新
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
@@ -227,6 +205,28 @@ proxy-groups:
       - 其他地区
       - 手动切换
       - DIRECT
+
+  - name: Claude
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    type: select
+    include-all: true
+    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
+    proxies:
+      - 人工智能
+      - AI-负载均衡
+      - 美国-自动选择
+      - 美国-负载均衡
+      - 日本-自动选择
+      - 日本-负载均衡
+      - 狮城-自动选择
+      - 狮城-负载均衡
+      - 台湾-自动选择
+      - 台湾-负载均衡
+      - 韩国节点
+      - 东南亚-自动选择
+      - 东南亚-负载均衡
+      - 欧洲节点
+      - 手动切换
 
   - name: Gemini
     icon: https://testingcf.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
