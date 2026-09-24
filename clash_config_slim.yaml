@@ -58,36 +58,43 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
     type: url-test
     include-all: true
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 负载均衡-散列
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
     type: load-balance
     strategy: consistent-hashing
     include-all: true
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 负载均衡-轮询
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
     type: load-balance
     strategy: round-robin
     include-all: true
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 故障转移
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
     type: fallback
-    include-all: true
-    url: https://www.gstatic.com/generate_204
+    proxies:
+      - 香港-自动选择
+      - 日本-自动选择
+      - 狮城-自动选择
+      - 美国-自动选择
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
+    interval: 120
+    lazy: false
     timeout: 1500
 
   - name: 手动切换
@@ -282,9 +289,10 @@ proxy-groups:
     strategy: consistent-hashing
     include-all: true
     exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   # === 常用服务组 ===
   - name: 油管视频
@@ -699,10 +707,10 @@ proxy-groups:
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇭🇰)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:香港|\bHK\b|Hong\s*Kong))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 香港-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
@@ -710,19 +718,20 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇭🇰)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:香港|\bHK\b|Hong\s*Kong))
     type: load-balance
     strategy: consistent-hashing
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 台湾-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇼)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:台湾|台北|新北|彰化|\bTW\b|Taiwan))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 台湾-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
@@ -730,19 +739,20 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇼)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:台湾|台北|新北|彰化|\bTW\b|Taiwan))
     type: load-balance
     strategy: consistent-hashing
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 日本-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇯🇵)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\bJP\b|Japan))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 日本-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
@@ -750,19 +760,20 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇯🇵)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\bJP\b|Japan))
     type: load-balance
     strategy: consistent-hashing
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 美国-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇸)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 美国-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
@@ -770,19 +781,20 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇸)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States))
     type: load-balance
     strategy: consistent-hashing
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 狮城-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|\bSG\b|Singapore))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 狮城-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
@@ -790,39 +802,40 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|\bSG\b|Singapore))
     type: load-balance
     strategy: consistent-hashing
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 韩国节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇰🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:韩国|韓國|首尔|\bKR\b|\bKOR\b|Korea))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 欧洲节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|乌克兰|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bUA\b|\bEU\b|Europe|European))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 东南亚-自动选择
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|\bSG\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Singapore|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 东南亚-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png
@@ -830,49 +843,50 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|\bSG\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Singapore|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste))
     type: load-balance
     strategy: consistent-hashing
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
     interval: 300
+    lazy: false
 
   - name: 土耳其节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:土耳其|Turkey|\bTR\b))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 印度节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/India.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇮🇳)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:印度|India|Mumbai|Delhi))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 阿根廷节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇦🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:阿根廷|Argentina|Buenos Aires))
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 其他地区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     include-all: true
     exclude-filter: (?i)^(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇹🇷|🇮🇳|🇦🇷|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|台湾|台北|新北|彰化|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|新加坡|狮城|韩国|韓國|首尔|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|土耳其|印度|阿根廷|马来|马来西亚|泰国|越南|菲律宾|柬埔寨|缅甸|文莱|老挝|东帝汶|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bKOR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bEU\b|\bTR\b|\bIN\b|\bAR\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|Europe|European|Turkey|India|Argentina|Malaysia|Thailand|Vietnam|Philippines|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|网站|地址|剩余|过期|实验性|日用|重置)
     type: url-test
-    url: https://www.gstatic.com/generate_204
+    url: http://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 180
-    tolerance: 20
+    interval: 120
+    tolerance: 150
 
   - name: 奈飞节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
@@ -1285,27 +1299,12 @@ rules:
   - IP-CIDR,103.38.56.0/22,全球直连,no-resolve
   - IP-CIDR,103.52.76.0/22,全球直连,no-resolve
   - IP-CIDR,119.38.224.0/20,全球直连,no-resolve
-  # 阿里云海外官网域名 → 直接走「阿里海外」
-  - DOMAIN-SUFFIX,alibabacloud.com,阿里海外
-  - DOMAIN-SUFFIX,alibabacloud.co.in,阿里海外
-  - DOMAIN-SUFFIX,alibabacloud.com.au,阿里海外
-  - DOMAIN-SUFFIX,alibabacloud.com.hk,阿里海外
-  - DOMAIN-SUFFIX,alibabacloud.com.my,阿里海外
-  - DOMAIN-SUFFIX,alibabacloud.com.sg,阿里海外
-  - DOMAIN-SUFFIX,alibabacloud.com.tw,阿里海外
-  - DOMAIN-SUFFIX,alicloud.com,阿里海外
-  # 阿里云现行海外 Region endpoint（含香港；排除其他 cn-*；兼容 service.<region> / oss-<region> 两种形态）
-  - DOMAIN-REGEX,^(?:[^.]+\.)*(?:cn-hongkong|oss-cn-hongkong|ap-(?:northeast-[12]|southeast-(?:[135678]))|oss-ap-(?:northeast-[12]|southeast-(?:[135678]))|us-(?:west|east)-1|oss-us-(?:west|east)-1|eu-(?:central-1|west-[12])|oss-eu-(?:central-1|west-[12])|me-(?:east|central)-1|oss-me-(?:east|central)-1|na-south-1|oss-na-south-1|sa-east-1|oss-sa-east-1)\.aliyuncs\.com$,阿里海外
-  # 阿里云海外 IP 段（与 Shadowrocket 保持一致）
-  - IP-CIDR,8.208.0.0/12,阿里海外,no-resolve
-  - IP-CIDR,14.1.112.0/22,阿里海外,no-resolve
-  - IP-CIDR,41.222.240.0/22,阿里海外,no-resolve
-  - IP-CIDR,41.223.119.0/24,阿里海外,no-resolve
-  - IP-CIDR,47.52.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,47.56.0.0/15,阿里海外,no-resolve
-  - IP-CIDR,47.74.0.0/15,阿里海外,no-resolve
-  - IP-CIDR,47.76.0.0/14,阿里海外,no-resolve
-  - IP-CIDR,47.80.0.0/12,阿里海外,no-resolve
+  # 阿里云海外 IP 段（只保留核心段, 无域名/Region 规则, 与 Shadowrocket 保持一致）
+  - IP-CIDR,147.139.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,149.129.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,161.117.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,170.33.0.0/16,阿里海外,no-resolve
+
   - IP-CIDR,47.235.0.0/16,阿里海外,no-resolve
   - IP-CIDR,47.236.0.0/14,阿里海外,no-resolve
   - IP-CIDR,47.240.0.0/14,阿里海外,no-resolve
@@ -1314,18 +1313,14 @@ rules:
   - IP-CIDR,47.250.0.0/15,阿里海外,no-resolve
   - IP-CIDR,47.252.0.0/15,阿里海外,no-resolve
   - IP-CIDR,47.254.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,72.254.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,103.206.40.0/22,阿里海外,no-resolve
-  - IP-CIDR,116.251.64.0/18,阿里海外,no-resolve
-  - IP-CIDR,139.95.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,147.139.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,149.129.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,155.102.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,161.117.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,163.181.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,170.33.0.0/16,阿里海外,no-resolve
-  - IP-CIDR,198.11.128.0/18,阿里海外,no-resolve
-  - IP-CIDR,205.204.96.0/19,阿里海外,no-resolve
+
+  - IP-CIDR,47.52.0.0/16,阿里海外,no-resolve
+  - IP-CIDR,47.56.0.0/15,阿里海外,no-resolve
+  - IP-CIDR,47.74.0.0/15,阿里海外,no-resolve
+  - IP-CIDR,47.76.0.0/14,阿里海外,no-resolve
+  - IP-CIDR,47.80.0.0/12,阿里海外,no-resolve
+
+  - IP-CIDR,8.208.0.0/12,阿里海外,no-resolve
   - RULE-SET,China_Domain,全球直连
   - RULE-SET,China_YYDS_Domain,全球直连
   - RULE-SET,China_IP,全球直连
