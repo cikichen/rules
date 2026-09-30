@@ -94,7 +94,7 @@ function getCountryGroupDisplayName(country) {
 function buildCountryGroupItems(countryInfo, minCount, countryOrder) {
     const countMap = new Map(countryInfo.map(item => [item.country, item.count]));
     return countryOrder
-        .filter(country => (countMap.get(country) || 0) >= minCount)
+        .filter(country => (countMap.get(country) || 0) >= Math.max(1, minCount))
         .map(country => ({
             country,
             groupName: `${getCountryGroupDisplayName(country)}${NODE_SUFFIX}`
@@ -125,15 +125,16 @@ const AI_UNSUPPORTED_GROUPS = {
     "人工智能": ["香港节点"]
 };
 const PROXY_TEST_URL = "https://cp.cloudflare.com/generate_204";
-const PROXY_TEST_INTERVAL = 300;
+const PROXY_TEST_INTERVAL = 120;
 const PROXY_TEST_TIMEOUT = 4000;
-const PROXY_TEST_TOLERANCE = 50;
+const PROXY_TEST_TOLERANCE = 100;
 const PROXY_TEST_LAZY = true;
-const FALLBACK_TEST_INTERVAL = 120;
+const FALLBACK_TEST_INTERVAL = 60;
 const FALLBACK_TEST_LAZY = false;
 const LOAD_BALANCE_HASH_STRATEGY = "consistent-hashing";
 const LOAD_BALANCE_ROUND_ROBIN_STRATEGY = "round-robin";
-const AI_TEST_URL = "https://api.openai.com";
+// 通用连通性检查，不把 API 的 401/403 当作服务解锁证明。
+const AI_TEST_URL = PROXY_TEST_URL;
 
 const buildList = (...elements) => elements.flat().filter(Boolean);
 
@@ -146,10 +147,10 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
     );
 
     const defaultSelector = buildList(
-        PROXY_GROUPS.MANUAL,
+        PROXY_GROUPS.FALLBACK,
         PROXY_GROUPS.AUTO,
         PROXY_GROUPS.BEST,
-        PROXY_GROUPS.FALLBACK,
+        PROXY_GROUPS.MANUAL,
         PROXY_GROUPS.BALANCE_HASH,
         PROXY_GROUPS.BALANCE_ROUND_ROBIN,
         landing && PROXY_GROUPS.LANDING,
@@ -619,7 +620,7 @@ function parseCountries(config) {
     const compiledRegex = {};
 
     for (const [country, meta] of Object.entries(countriesMeta)) {
-        compiledRegex[country] = new RegExp(normalizeCountryPattern(meta.pattern));
+        compiledRegex[country] = new RegExp(normalizeCountryPattern(meta.pattern), "i");
     }
 
     for (const proxy of proxies) {
@@ -669,20 +670,21 @@ function buildCountryProxyGroups({ countryGroupItems, landing, loadBalance }) {
             name: groupName,
             icon: meta.icon || DEFAULT_GROUP_ICON,
             "include-all": true,
-            filter: normalizeCountryPattern(meta.pattern),
+            filter: `(?i)${normalizeCountryPattern(meta.pattern)}`,
             "exclude-filter": landing ? `${landingExcludeFilter}|${baseExcludeFilter}` : baseExcludeFilter,
             type: groupType
         };
 
-        if (!loadBalance) {
-            Object.assign(groupConfig, {
-                url: PROXY_TEST_URL,
-                interval: PROXY_TEST_INTERVAL,
-                timeout: PROXY_TEST_TIMEOUT,
-                tolerance: PROXY_TEST_TOLERANCE,
-                lazy: PROXY_TEST_LAZY
-            });
-        }
+        Object.assign(groupConfig, {
+            url: PROXY_TEST_URL,
+            "expected-status": 204,
+            interval: PROXY_TEST_INTERVAL,
+            timeout: PROXY_TEST_TIMEOUT,
+            lazy: PROXY_TEST_LAZY,
+            ...(loadBalance
+                ? { strategy: LOAD_BALANCE_HASH_STRATEGY }
+                : { tolerance: PROXY_TEST_TOLERANCE })
+        });
 
         groups.push(groupConfig);
     }
@@ -713,19 +715,20 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
             icon: meta.icon,
             type: groupType,
             "include-all": true,
-            filter: filters.join("|"),
+            filter: `(?i)${filters.join("|")}`,
             "exclude-filter": landing ? `${landingExcludeFilter}|${baseExcludeFilter}` : baseExcludeFilter
         };
 
-        if (!loadBalance) {
-            Object.assign(groupConfig, {
-                url: PROXY_TEST_URL,
-                interval: PROXY_TEST_INTERVAL,
-                timeout: PROXY_TEST_TIMEOUT,
-                tolerance: PROXY_TEST_TOLERANCE,
-                lazy: PROXY_TEST_LAZY
-            });
-        }
+        Object.assign(groupConfig, {
+            url: PROXY_TEST_URL,
+            "expected-status": 204,
+            interval: PROXY_TEST_INTERVAL,
+            timeout: PROXY_TEST_TIMEOUT,
+            lazy: PROXY_TEST_LAZY,
+            ...(loadBalance
+                ? { strategy: LOAD_BALANCE_HASH_STRATEGY }
+                : { tolerance: PROXY_TEST_TOLERANCE })
+        });
 
         groups.push(groupConfig);
     }
@@ -765,14 +768,16 @@ function createLatencyGroup(name, icon, type, proxies, extras = {}) {
         proxies
     };
 
-    if (type !== "load-balance") {
-        Object.assign(group, {
-            url: "https://cp.cloudflare.com/generate_204",
-            interval: 60,
-            tolerance: 20,
-            lazy: false
-        });
-    }
+    Object.assign(group, {
+        url: PROXY_TEST_URL,
+        "expected-status": 204,
+        interval: PROXY_TEST_INTERVAL,
+        timeout: PROXY_TEST_TIMEOUT,
+        lazy: PROXY_TEST_LAZY,
+        ...(type === "load-balance"
+            ? { strategy: LOAD_BALANCE_HASH_STRATEGY }
+            : { tolerance: PROXY_TEST_TOLERANCE })
+    });
 
     return Object.assign(group, extras);
 }
@@ -785,6 +790,8 @@ function createLoadBalanceGroup(name, strategy) {
         "include-all": true,
         url: PROXY_TEST_URL,
         interval: PROXY_TEST_INTERVAL,
+        timeout: PROXY_TEST_TIMEOUT,
+        "expected-status": 204,
         strategy,
         lazy: PROXY_TEST_LAZY
     };
@@ -842,8 +849,8 @@ function buildProxyGroups({
             const hasUS = allowedGroups.includes("美国节点");
             const otherGroups = allowedGroups.filter(name => name !== "美国节点");
             return buildList(
-                hasUS ? "美国节点" : null,
                 PROXY_GROUPS.AI_FALLBACK,
+                hasUS ? "美国节点" : null,
                 PROXY_GROUPS.SELECT,
                 PROXY_GROUPS.AUTO,
                 PROXY_GROUPS.BEST,
@@ -916,6 +923,7 @@ function buildProxyGroups({
             type: "url-test",
             "include-all": true,
             url: PROXY_TEST_URL,
+            "expected-status": 204,
             interval: PROXY_TEST_INTERVAL,
             timeout: PROXY_TEST_TIMEOUT,
             tolerance: PROXY_TEST_TOLERANCE,
@@ -927,6 +935,7 @@ function buildProxyGroups({
             type: "url-test",
             "include-all": true,
             url: PROXY_TEST_URL,
+            "expected-status": 204,
             interval: PROXY_TEST_INTERVAL,
             timeout: PROXY_TEST_TIMEOUT,
             tolerance: PROXY_TEST_TOLERANCE,
@@ -955,9 +964,9 @@ function buildProxyGroups({
             type: "fallback",
             "include-all": true,
             url: PROXY_TEST_URL,
+            "expected-status": 204,
             interval: FALLBACK_TEST_INTERVAL,
             timeout: PROXY_TEST_TIMEOUT,
-            tolerance: PROXY_TEST_TOLERANCE,
             lazy: FALLBACK_TEST_LAZY
         },
         {
@@ -967,9 +976,9 @@ function buildProxyGroups({
             "include-all": true,
             "exclude-filter": "(?i)香港|Hong Kong|HK|🇭🇰|中国|China|CN|🇨🇳|内地|澳门|Macao|MO|🇲🇴",
             url: AI_TEST_URL,
+            "expected-status": 204,
             interval: FALLBACK_TEST_INTERVAL,
             timeout: PROXY_TEST_TIMEOUT,
-            tolerance: PROXY_TEST_TOLERANCE,
             lazy: FALLBACK_TEST_LAZY
         },
         {
@@ -1179,6 +1188,7 @@ function buildProxyGroups({
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
             type: "url-test",
             url: PROXY_TEST_URL,
+            "expected-status": 204,
             "include-all": true,
             filter: "(?i)0\.[0-5]|低倍率|省流|大流量|实验性",
             interval: PROXY_TEST_INTERVAL,

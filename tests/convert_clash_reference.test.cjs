@@ -134,7 +134,7 @@ test('Cloudflare验证 group and rules are included in generated config', () => 
   assert.ok(result.rules.includes('DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证'));
 });
 
-test('ai groups prioritize 人工智能 group and default 人工智能 to US node', () => {
+test('ai groups prioritize 人工智能 group and default 人工智能 to fallback', () => {
   const result = runGenerator({ full: false });
   const aiFallbackGroup = result['proxy-groups'].find(group => group.name === 'AI 故障转移');
   const openAiGroup = result['proxy-groups'].find(group => group.name === 'OpenAI');
@@ -146,7 +146,7 @@ test('ai groups prioritize 人工智能 group and default 人工智能 to US nod
   assert.equal(openAiGroup.proxies[0], '人工智能');
   assert.equal(claudeGroup.proxies[0], '人工智能');
   assert.ok(aiGroup);
-  assert.equal(aiGroup.proxies[0], '美国节点');
+  assert.equal(aiGroup.proxies[0], 'AI 故障转移');
 });
 
 test('custom group uses friendly chinese name and Custom rules target it', () => {
@@ -170,27 +170,27 @@ test('hybrid health-check defaults keep selectors conservative and fallback resp
   const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
 
   assert.equal(groups.get('自动选择').url, 'https://cp.cloudflare.com/generate_204');
-  assert.equal(groups.get('自动选择').interval, 300);
+  assert.equal(groups.get('自动选择').interval, 120);
   assert.equal(groups.get('自动选择').timeout, 4000);
-  assert.equal(groups.get('自动选择').tolerance, 50);
+  assert.equal(groups.get('自动选择').tolerance, 100);
   assert.equal(groups.get('自动选择').lazy, true);
 
-  assert.equal(groups.get('全球优选').interval, 300);
+  assert.equal(groups.get('全球优选').interval, 120);
   assert.equal(groups.get('全球优选').timeout, 4000);
   assert.equal(groups.get('全球优选').lazy, true);
 
-  assert.equal(groups.get('故障转移').interval, 120);
+  assert.equal(groups.get('故障转移').interval, 60);
   assert.equal(groups.get('故障转移').timeout, 4000);
-  assert.equal(groups.get('故障转移').tolerance, 50);
+  assert.equal('tolerance' in groups.get('故障转移'), false);
   assert.equal(groups.get('故障转移').lazy, false);
 
-  assert.equal(groups.get('AI 故障转移').interval, 120);
+  assert.equal(groups.get('AI 故障转移').interval, 60);
   assert.equal(groups.get('AI 故障转移').timeout, 4000);
   assert.equal(groups.get('AI 故障转移').lazy, false);
 
-  assert.equal(groups.get('香港节点').interval, 300);
+  assert.equal(groups.get('香港节点').interval, 120);
   assert.equal(groups.get('香港节点').timeout, 4000);
-  assert.equal(groups.get('香港节点').tolerance, 50);
+  assert.equal(groups.get('香港节点').tolerance, 100);
   assert.equal(groups.get('香港节点').lazy, true);
 });
 
@@ -227,4 +227,44 @@ test('dual load-balance groups expose hashing and round-robin strategies', () =>
   assert.ok(selector.proxies.includes('负载均衡-轮询'));
   assert.ok(custom.proxies.includes('负载均衡-散列'));
   assert.ok(custom.proxies.includes('负载均衡-轮询'));
+});
+
+
+test('default proxy route uses fallback instead of the manual DIRECT default', () => {
+  const groups = new Map(runGenerator()['proxy-groups'].map(g => [g.name, g]));
+  assert.equal(groups.get('节点选择').proxies[0], '故障转移');
+});
+
+test('absent countries are not emitted and lower-case country codes work', () => {
+  const proxies = createSampleProxies().slice(0, 1);
+  proxies[0].name = 'us01';
+  const groups = new Map(runGenerator({}, proxies)['proxy-groups'].map(g => [g.name, g]));
+  assert.ok(groups.has('美国节点'));
+  assert.equal(groups.has('香港节点'), false);
+  assert.equal(groups.has('日本节点'), false);
+  assert.ok(groups.get('美国节点').filter.startsWith('(?i)'));
+});
+
+test('all automatic groups have HTTPS checks in both regional strategy modes', () => {
+  const proxies = [...createSampleProxies(),
+    { ...createSampleProxies()[0], name: '未知线路 01' },
+    { ...createSampleProxies()[0], name: '美国 低倍率 01' },
+    { ...createSampleProxies()[0], name: '德国 01' },
+    { ...createSampleProxies()[0], name: '法国 01' }];
+  for (const loadbalance of [false, true]) {
+    const result = runGenerator({ loadbalance }, proxies);
+    for (const group of result['proxy-groups']) {
+      if (!['url-test', 'fallback', 'load-balance'].includes(group.type)) continue;
+      assert.match(group.url, /^https:\/\//, group.name);
+      assert.equal(group['expected-status'], 204, group.name);
+      assert.equal(group.timeout, 4000, group.name);
+      assert.ok(group.interval > 0 && group.interval <= 120, group.name);
+      if (group.type === 'load-balance') assert.ok(group.strategy, group.name);
+    }
+    const names = new Set(['DIRECT', 'REJECT', 'REJECT-DROP', ...proxies.map(p => p.name),
+      ...result['proxy-groups'].map(g => g.name)]);
+    for (const group of result['proxy-groups']) {
+      for (const member of group.proxies || []) assert.ok(names.has(member), `${group.name}: ${member}`);
+    }
+  }
 });

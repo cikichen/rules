@@ -23,46 +23,50 @@ proxy-groups:
 
   - name: 自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     include-all: true
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 负载均衡-散列
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: load-balance
     strategy: consistent-hashing
     include-all: true
     url: https://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 300
-    lazy: false
+    timeout: 4000
+    lazy: true
+    interval: 120
 
   - name: 负载均衡-轮询
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: load-balance
     strategy: round-robin
     include-all: true
     url: https://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 300
-    lazy: false
+    timeout: 4000
+    lazy: true
+    interval: 120
 
   - name: 故障转移
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: fallback
-    proxies:
-      - 香港-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 美国-自动选择
+    include-all: true
     url: https://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 120
+    timeout: 4000
     lazy: false
-    timeout: 1500
+    interval: 60
 
   - name: 手动切换
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
@@ -201,6 +205,7 @@ proxy-groups:
     include-all: true
     exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
     proxies:
+      - AI-故障转移
       - AI-负载均衡
       - 美国-自动选择
       - 香港-自动选择
@@ -213,6 +218,17 @@ proxy-groups:
       - 节点选择
       - 手动切换
 
+  - name: AI-故障转移
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    type: fallback
+    include-all: true
+    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
+    url: https://www.gstatic.com/generate_204
+    expected-status: 204
+    timeout: 4000
+    lazy: false
+    interval: 60
+
   - name: AI-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: load-balance
@@ -221,8 +237,9 @@ proxy-groups:
     exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
     url: https://www.gstatic.com/generate_204
     expected-status: 204
-    interval: 300
-    lazy: false
+    timeout: 4000
+    lazy: true
+    interval: 120
 
   # === 常用服务组 ===
   - name: 油管视频
@@ -538,101 +555,131 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇭🇰)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:香港|\bHK\b|Hong\s*Kong))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 台湾-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇼)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:台湾|台北|新北|彰化|\bTW\b|Taiwan))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 日本-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇯🇵)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\bJP\b|Japan))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 美国-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇸)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 狮城-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|\bSG\b|Singapore))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 韩国节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇰🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:韩国|韓國|首尔|\bKR\b|\bKOR\b|Korea))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 欧洲节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|乌克兰|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bUA\b|\bEU\b|Europe|European))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 东南亚-自动选择
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|\bSG\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Singapore|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 土耳其节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:土耳其|Turkey|\bTR\b))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 阿根廷节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇦🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:阿根廷|Argentina|Buenos Aires))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 其他地区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
@@ -641,8 +688,10 @@ proxy-groups:
     type: url-test
     url: https://www.gstatic.com/generate_204
     expected-status: 204
+    timeout: 4000
+    lazy: true
     interval: 120
-    tolerance: 150
+    tolerance: 100
 
   - name: 奈飞节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png

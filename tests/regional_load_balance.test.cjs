@@ -2,103 +2,76 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const yaml = require('js-yaml');
+const root = path.join(__dirname, '..');
+const clash = yaml.load(fs.readFileSync(path.join(root, 'clash_config_slim.yaml'), 'utf8'));
+const shadow = fs.readFileSync(path.join(root, 'shadowrocket_slim.conf'), 'utf8');
+const groups = new Map(clash['proxy-groups'].map(g => [g.name, g]));
+const shadowGroups = new Map(shadow.split('[Proxy Group]')[1].split('[Rule]')[0]
+  .split('\n').filter(l => l.includes(' = ')).map(l => l.split(' = ')));
+const regions = ['香港', '台湾', '狮城', '日本', '美国', '东南亚'];
 
-const projectRoot = path.join(__dirname, '..');
-const clashSource = fs.readFileSync(path.join(projectRoot, 'clash_config_slim.yaml'), 'utf8');
-const shadowrocketSource = fs.readFileSync(path.join(projectRoot, 'shadowrocket_slim.conf'), 'utf8');
-const commonRegions = ['香港', '台湾', '狮城', '日本', '美国', '东南亚'];
-
-function getClashGroupBlock(name) {
-  const marker = `  - name: ${name}\n`;
-  const start = clashSource.indexOf(marker);
-  assert.notEqual(start, -1, `missing Clash group: ${name}`);
-
-  const next = clashSource.indexOf('\n  - name: ', start + marker.length);
-  return clashSource.slice(start, next === -1 ? clashSource.length : next);
-}
-
-function getYamlField(block, field) {
-  const match = block.match(new RegExp(`^    ${field}: (.+)$`, 'm'));
-  return match?.[1];
-}
-
-function getShadowrocketGroups() {
-  const section = shadowrocketSource.split('[Proxy Group]\n')[1].split('\n[Rule]')[0];
-  return new Map(
-    section
-      .split('\n')
-      .filter(line => line && !line.startsWith('#') && line.includes(' = '))
-      .map(line => {
-        const separator = line.indexOf(' = ');
-        return [line.slice(0, separator), line.slice(separator + 3)];
-      })
-  );
-}
-
-test('common Clash regions expose matching auto-select and consistent-hashing groups', () => {
-  const selector = getClashGroupBlock('节点选择');
-  const fallbackSelector = getClashGroupBlock('漏网之鱼');
-  const groupNames = Array.from(clashSource.matchAll(/^  - name: (.+)$/gm), match => match[1]);
-
-  for (const region of commonRegions) {
-    const autoName = `${region}-自动选择`;
-    const balanceName = `${region}-负载均衡`;
-    const autoGroup = getClashGroupBlock(autoName);
-    const balanceGroup = getClashGroupBlock(balanceName);
-
-    assert.equal(getYamlField(autoGroup, 'type'), 'url-test');
-    assert.equal(getYamlField(balanceGroup, 'type'), 'load-balance');
-    assert.equal(getYamlField(balanceGroup, 'strategy'), 'consistent-hashing');
-    assert.equal(getYamlField(autoGroup, 'filter'), getYamlField(balanceGroup, 'filter'));
-    assert.match(selector, new RegExp(`^      - ${autoName}$`, 'm'));
-    assert.match(selector, new RegExp(`^      - ${balanceName}$`, 'm'));
-    assert.match(fallbackSelector, new RegExp(`^      - ${balanceName}$`, 'm'));
-    assert.doesNotMatch(clashSource, new RegExp(`${region}节点`));
+test('slim profiles retain regional auto groups and only global/AI load balancing', () => {
+  for (const region of regions) {
+    assert.equal(groups.get(`${region}-自动选择`).type, 'url-test');
+    assert.ok(shadowGroups.get(`${region}-自动选择`).startsWith('url-test,'));
+    assert.equal(groups.has(`${region}-负载均衡`), false);
+    assert.equal(shadowGroups.has(`${region}-负载均衡`), false);
   }
-
-  for (const groupName of groupNames) {
-    const group = getClashGroupBlock(groupName);
-    for (const region of commonRegions) {
-      if (new RegExp(`^      - ${region}-自动选择$`, 'm').test(group)) {
-        assert.match(group, new RegExp(`^      - ${region}-负载均衡$`, 'm'));
-      }
-    }
+  for (const name of ['负载均衡-散列', '负载均衡-轮询', 'AI-负载均衡']) {
+    assert.equal(groups.get(name).type, 'load-balance');
+    assert.ok(shadowGroups.get(name).startsWith('load-balance,'));
   }
 });
 
-test('Shadowrocket keeps the same common regional strategy pairs', () => {
-  const groups = getShadowrocketGroups();
-  const selector = groups.get('节点选择');
-  const fallbackSelector = groups.get('漏网之鱼');
-
-  for (const region of commonRegions) {
-    const autoName = `${region}-自动选择`;
-    const balanceName = `${region}-负载均衡`;
-    const autoGroup = groups.get(autoName);
-    const balanceGroup = groups.get(balanceName);
-    const autoFilter = autoGroup?.match(/policy-regex-filter=(.*)$/)?.[1];
-    const balanceFilter = balanceGroup?.match(/policy-regex-filter=(.*),strategy=/)?.[1];
-
-    assert.ok(autoGroup?.startsWith('url-test,'));
-    assert.ok(balanceGroup?.startsWith('load-balance,'));
-    assert.match(balanceGroup, /strategy=consistent-hashing$/);
-    assert.equal(autoFilter, balanceFilter);
-    assert.ok(selector.split(',').includes(autoName));
-    assert.ok(selector.split(',').includes(balanceName));
-    assert.ok(fallbackSelector.split(',').includes(balanceName));
-    assert.doesNotMatch(shadowrocketSource, new RegExp(`${region}节点`));
+test('Clash group references and rule targets exist and have no cycles', () => {
+  assert.equal(groups.size, clash['proxy-groups'].length);
+  const builtins = new Set(['DIRECT', 'REJECT', 'REJECT-DROP', 'PASS']);
+  function visit(name, stack = []) {
+    assert.ok(!stack.includes(name), `cycle: ${[...stack, name]}`);
+    if (builtins.has(name)) return;
+    assert.ok(groups.has(name), `missing group: ${name}`);
+    const members = groups.get(name).proxies || [];
+    assert.equal(new Set(members).size, members.length, name);
+    for (const member of members) visit(member, [...stack, name]);
   }
+  for (const name of groups.keys()) visit(name);
+  for (const rule of clash.rules) {
+    const fields = rule.split(',');
+    if (fields[0] === 'RULE-SET') assert.ok(clash['rule-providers'][fields[1]], rule);
+    const target = fields.at(-1) === 'no-resolve' ? fields.at(-2) : fields.at(-1);
+    assert.ok(groups.has(target) || builtins.has(target), rule);
+  }
+});
 
-  for (const [groupName, group] of groups) {
-    if (!group.startsWith('select,')) continue;
-    const members = group.split(',');
-    for (const region of commonRegions) {
-      if (members.includes(`${region}-自动选择`)) {
-        assert.ok(
-          members.includes(`${region}-负载均衡`),
-          `${groupName} is missing ${region}-负载均衡`
-        );
-      }
+test('Clash checks are bounded and fallback checks actual nodes', () => {
+  for (const group of groups.values()) {
+    if (!['url-test', 'fallback', 'load-balance'].includes(group.type)) continue;
+    assert.match(group.url, /^https:\/\//);
+    assert.equal(group['expected-status'], 204);
+    assert.equal(group.timeout, 4000);
+    assert.equal(group.interval, group.type === 'fallback' ? 60 : 120);
+    assert.equal(group.lazy, group.type !== 'fallback');
+    if (group.type === 'fallback') {
+      assert.equal(group['include-all'], true);
+      assert.equal('proxies' in group, false);
     }
+  }
+  assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
+  assert.ok(shadowGroups.get('人工智能').startsWith('select,AI-故障转移,'));
+  assert.ok(shadowGroups.get('故障转移').startsWith('fallback,url=https://'));
+});
+
+test('Shadowrocket explicit policy members and rule targets exist', () => {
+  const names = new Set([...shadowGroups.keys(), 'DIRECT', 'REJECT', 'PROXY']);
+  for (const [name, value] of shadowGroups) {
+    const members = value.split(',').slice(1).filter(v => !v.includes('='));
+    for (const member of members) assert.ok(names.has(member), `${name}: ${member}`);
+  }
+  const rules = shadow.split('[Rule]')[1].split('[Host]')[0].split('\n');
+  for (const rule of rules.filter(l => l && !l.startsWith('#'))) {
+    const fields = rule.split(',');
+    const target = fields.at(-1) === 'no-resolve' ? fields.at(-2) : fields.at(-1);
+    assert.ok(names.has(target), rule);
   }
 });
