@@ -5,8 +5,8 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png
     type: select
     proxies:
-      - 故障转移
       - 自动选择
+      - 故障转移
       - 负载均衡-散列
       - 负载均衡-轮询
       - 香港-自动选择
@@ -26,12 +26,13 @@ proxy-groups:
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     include-all: true
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: &url_test_health
+      url: https://www.gstatic.com/generate_204
+      expected-status: 204
+      timeout: 4000
+      interval: 120
+      lazy: true
+      tolerance: 100
 
   - name: 负载均衡-散列
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
@@ -39,11 +40,12 @@ proxy-groups:
     type: load-balance
     strategy: consistent-hashing
     include-all: true
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
+    <<: &load_balance_health
+      url: https://www.gstatic.com/generate_204
+      expected-status: 204
+      timeout: 4000
+      interval: 120
+      lazy: true
 
   - name: 负载均衡-轮询
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
@@ -51,22 +53,19 @@ proxy-groups:
     type: load-balance
     strategy: round-robin
     include-all: true
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
+    <<: *load_balance_health
 
   - name: 故障转移
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: fallback
     include-all: true
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: false
-    interval: 60
+    <<: &fallback_health
+      url: https://www.gstatic.com/generate_204
+      expected-status: 204
+      timeout: 4000
+      interval: 60
+      lazy: false
 
   - name: 手动切换
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
@@ -97,12 +96,12 @@ proxy-groups:
   - name: 漏网之鱼
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
     type: select
-    proxies:
+    proxies: &service_candidates_1
       - 节点选择
       - 自动选择
+      - 故障转移
       - 负载均衡-散列
       - 负载均衡-轮询
-      - 故障转移
       - 香港-自动选择
       - 台湾-自动选择
       - 狮城-自动选择
@@ -111,6 +110,8 @@ proxy-groups:
       - 韩国节点
       - 欧洲节点
       - 东南亚-自动选择
+      - 土耳其节点
+      - 阿根廷节点
       - 其他地区
       - 手动切换
       - DIRECT
@@ -118,13 +119,24 @@ proxy-groups:
   - name: 中转站
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
     type: select
-    proxies:
+    proxies: &service_candidates_2
       - DIRECT
       - 节点选择
+      - 自动选择
+      - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港-自动选择
-      - 日本-自动选择
+      - 台湾-自动选择
       - 狮城-自动选择
+      - 日本-自动选择
       - 美国-自动选择
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚-自动选择
+      - 土耳其节点
+      - 阿根廷节点
+      - 其他地区
       - 手动切换
 
   # === AI 服务组 ===
@@ -150,19 +162,7 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
     type: select
     include-all: true
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 香港-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 美国-自动选择
-      - 台湾-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 其他地区
-      - 手动切换
-      - DIRECT
+    proxies: *service_candidates_1
 
   - name: Claude
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
@@ -223,11 +223,7 @@ proxy-groups:
     type: fallback
     include-all: true
     exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: false
-    interval: 60
+    <<: *fallback_health
 
   - name: AI-负载均衡
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
@@ -235,47 +231,37 @@ proxy-groups:
     strategy: consistent-hashing
     include-all: true
     exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
+    <<: *load_balance_health
 
   # === 常用服务组 ===
   - name: 油管视频
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   - name: 奈飞视频
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
     type: select
-    proxies:
+    proxies: &service_candidates_3
       - 节点选择
-      - 自动选择
       - 奈飞节点
+      - 自动选择
+      - 故障转移
+      - 负载均衡-散列
+      - 负载均衡-轮询
       - 香港-自动选择
       - 台湾-自动选择
+      - 狮城-自动选择
       - 日本-自动选择
       - 美国-自动选择
-      - 狮城-自动选择
       - 韩国节点
       - 欧洲节点
       - 东南亚-自动选择
+      - 土耳其节点
+      - 阿根廷节点
       - 其他地区
       - 手动切换
+      - DIRECT
 
   - name: 国内媒体
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/DomesticMedia.png
@@ -288,36 +274,12 @@ proxy-groups:
   - name: 国外媒体
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   - name: 电报消息
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 狮城-自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   - name: TG-亚洲 (DC5)
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
@@ -348,93 +310,43 @@ proxy-groups:
   - name: 谷歌服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 美国-自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   - name: 微软服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
     type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-      - 美国-自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_2
 
   - name: 苹果服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
     type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-      - 美国-自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_2
 
   - name: GitHub
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 负载均衡-散列
-      - 负载均衡-轮询
-      - 故障转移
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
-      - DIRECT
+    proxies: *service_candidates_1
 
   - name: Cloudflare验证
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png
     type: select
-    proxies:
+    proxies: &service_candidates_4
       - 节点选择
       - 全球直连
       - 自动选择
+      - 故障转移
       - 负载均衡-散列
       - 负载均衡-轮询
-      - 故障转移
       - 香港-自动选择
       - 台湾-自动选择
+      - 狮城-自动选择
       - 日本-自动选择
       - 美国-自动选择
-      - 狮城-自动选择
       - 韩国节点
       - 欧洲节点
       - 东南亚-自动选择
+      - 土耳其节点
+      - 阿根廷节点
       - 其他地区
       - 手动切换
       - DIRECT
@@ -443,92 +355,28 @@ proxy-groups:
   - name: 推特X
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   - name: Discord
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 狮城-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   - name: TikTok
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png
     type: select
-    proxies:
-      - 节点选择
-      - 自动选择
-      - 香港-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 台湾-自动选择
-      - 韩国节点
-      - 狮城-自动选择
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   # === 游戏组 ===
   - name: Epic游戏
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Epic_Games.png
     type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 阿根廷节点
-      - 香港-自动选择
-      - 韩国节点
-      - 狮城-自动选择
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_2
 
   - name: 游戏平台
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
     type: select
-    proxies:
-      - 节点选择
-      - DIRECT
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 阿根廷节点
-      - 香港-自动选择
-      - 韩国节点
-      - 狮城-自动选择
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 其他地区
-      - 手动切换
+    proxies: *service_candidates_1
 
   - name: PT站点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
@@ -541,14 +389,7 @@ proxy-groups:
   - name: 阿里海外
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
     type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-      - 香港-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 美国-自动选择
-      - 手动切换
+    proxies: *service_candidates_2
 
   # === 地区策略组 ===
   - name: 香港-自动选择
@@ -557,12 +398,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇭🇰)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:香港|\bHK\b|Hong\s*Kong))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 台湾-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png
@@ -570,12 +406,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇼)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:台湾|台北|新北|彰化|\bTW\b|Taiwan))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 日本-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
@@ -583,12 +414,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇯🇵)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\bJP\b|Japan))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 美国-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
@@ -596,12 +422,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇸)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 狮城-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
@@ -609,12 +430,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|\bSG\b|Singapore))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 韩国节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
@@ -622,12 +438,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇰🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:韩国|韓國|首尔|\bKR\b|\bKOR\b|Korea))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 欧洲节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png
@@ -635,12 +446,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|乌克兰|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bUA\b|\bEU\b|Europe|European))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 东南亚-自动选择
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png
@@ -648,12 +454,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|\bSG\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Singapore|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 土耳其节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
@@ -661,12 +462,7 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:土耳其|Turkey|\bTR\b))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 阿根廷节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png
@@ -674,24 +470,14 @@ proxy-groups:
     filter: (?i)(?:^(?:(?!\|).)*(?:🇦🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:阿根廷|Argentina|Buenos Aires))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 其他地区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     include-all: true
     exclude-filter: (?i)^(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇹🇷|🇦🇷|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|台湾|台北|新北|彰化|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|新加坡|狮城|韩国|韓國|首尔|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|土耳其|阿根廷|印尼|印度尼西亚|马来|马来西亚|泰国|越南|菲律宾|柬埔寨|缅甸|文莱|老挝|东帝汶|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bKOR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bEU\b|\bTR\b|\bAR\b|\bID\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|Europe|European|Turkey|Argentina|Indonesia|Malaysia|Thailand|Vietnam|Philippines|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|网站|地址|剩余|过期|实验性|日用|重置)
     type: url-test
-    url: https://www.gstatic.com/generate_204
-    expected-status: 204
-    timeout: 4000
-    lazy: true
-    interval: 120
-    tolerance: 100
+    <<: *url_test_health
 
   - name: 奈飞节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
@@ -1204,3 +990,101 @@ rules:
 
   # === MATCH (兜底) ===
   - MATCH,漏网之鱼
+
+# ==================== DNS ====================
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  listen: 0.0.0.0:1053
+  respect-rules: true
+  dns-hijack:
+    - any:53
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver-policy:
+    "geosite:cn,private":
+      - 223.5.5.5
+      - 119.29.29.29
+    "geosite:geolocation-!cn":
+      - proxy
+  proxy-server-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  fake-ip-filter:
+    - geosite:private
+    - geosite:connectivity-check
+    - geosite:cn
+    - Mijia Cloud
+    - dlg.io.mi.com
+    - localhost.ptlogin2.qq.com
+    - "*.icloud.com"
+    - "*.stun.*.*"
+    - "*.stun.*.*.*"
+    - "*.lan"
+    - "*.local"
+    - "*.home.arpa"
+    - router.asus.com
+    - www.asusrouter.com
+    - instant.arubanetworks.com
+    - setmeup.arubanetworks.com
+    - my.router
+    - router.ctc
+    - routerlogin.com
+    - "*.routerlogin.com"
+    - "*.tplogin.cn"
+    - wifi.cmcc
+    - "*.miwifi.com"
+    - captive.apple.com
+    - e.crashlytics.com
+    - time.apple.com
+    - "*.push.apple.com"
+    - "*.msftconnecttest.com"
+    - "*.msftncsi.com"
+    - "*.srv.nintendo.net"
+    - "*.stun.playstation.net"
+    - xbox.*.microsoft.com
+    - "*.xboxlive.com"
+    - "*.logon.battlenet.com.cn"
+    - "*.logon.battle.net"
+    - stun.l.google.com
+    - challenges.cloudflare.com
+    - dns.msftncsi.com
+    - time-ios.apple.com
+    - time1.apple.com
+    - time2.apple.com
+    - time3.apple.com
+    - time4.apple.com
+    - time5.apple.com
+    - time6.apple.com
+    - time7.apple.com
+    - "+.netflix.com"
+    - "+.nflxvideo.net"
+    - "+.ntp.org.cn"
+    - "+.pool.ntp.org"
+    - localhost
+    - localhost.localdomain
+    - time.*.com
+    - time.*.gov
+    - time.*.edu.cn
+    - "*.time.edu.cn"
+    - NTP.*.com
+    - "+.dkyp.io"
+
+# ==================== 流量嗅探 ====================
+sniffer:
+  enable: true
+  sniff:
+    TLS:
+      ports: [443, 8443]
+    HTTP:
+      ports: [80, 8080, 8880]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - Mijia Cloud
+    - dlg.io.mi.com
+    - "+.push.apple.com"
+  force-dns-mapping: true
+  override-destination: false

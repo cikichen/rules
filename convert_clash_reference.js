@@ -107,9 +107,9 @@ const PROXY_GROUPS = {
     BEST: "全球优选",
     BALANCE_HASH: "负载均衡-散列",
     BALANCE_ROUND_ROBIN: "负载均衡-轮询",
-    MANUAL: "全球手动",
+    MANUAL: "手动切换",
     FALLBACK: "故障转移",
-    AI_FALLBACK: "AI 故障转移",
+    AI_FALLBACK: "AI-故障转移",
     CUSTOM: "自定义规则",
     DIRECT: "全球直连",
     LANDING: "落地节点",
@@ -124,17 +124,84 @@ const AI_UNSUPPORTED_GROUPS = {
     "Gemini": ["香港节点"],
     "人工智能": ["香港节点"]
 };
-const PROXY_TEST_URL = "https://cp.cloudflare.com/generate_204";
-const PROXY_TEST_INTERVAL = 120;
-const PROXY_TEST_TIMEOUT = 4000;
-const PROXY_TEST_TOLERANCE = 100;
-const PROXY_TEST_LAZY = true;
-const FALLBACK_TEST_INTERVAL = 60;
-const FALLBACK_TEST_LAZY = false;
+// BEGIN SHARED POLICY (由 npm run sync:policy 生成)
+const SHARED_POLICY = {
+    "health": {
+        "url": "https://www.gstatic.com/generate_204",
+        "expected-status": 204,
+        "timeout": 4000,
+        "interval": 120,
+        "tolerance": 100,
+        "fallbackInterval": 60
+    },
+    "candidates": [
+        "节点选择",
+        "自动选择",
+        "故障转移",
+        "负载均衡-散列",
+        "负载均衡-轮询",
+        "香港-自动选择",
+        "台湾-自动选择",
+        "狮城-自动选择",
+        "日本-自动选择",
+        "美国-自动选择",
+        "韩国节点",
+        "欧洲节点",
+        "东南亚-自动选择",
+        "土耳其节点",
+        "阿根廷节点",
+        "其他地区",
+        "手动切换",
+        "DIRECT"
+    ],
+    "services": [
+        "漏网之鱼",
+        "中转站",
+        "Claude更新",
+        "油管视频",
+        "YouTube",
+        "YouTube Music",
+        "奈飞视频",
+        "Netflix",
+        "Disney+",
+        "Max",
+        "Spotify",
+        "国外媒体",
+        "电报消息",
+        "Telegram",
+        "谷歌服务",
+        "微软服务",
+        "苹果服务",
+        "GitHub",
+        "Cloudflare验证",
+        "推特X",
+        "Twitter",
+        "Facebook",
+        "Discord",
+        "TikTok",
+        "Epic游戏",
+        "游戏平台",
+        "阿里服务",
+        "阿里海外",
+        "OneDrive",
+        "PikPak",
+        "Linux.do"
+    ]
+};
+// END SHARED POLICY
+
 const LOAD_BALANCE_HASH_STRATEGY = "consistent-hashing";
 const LOAD_BALANCE_ROUND_ROBIN_STRATEGY = "round-robin";
-// 通用连通性检查，不把 API 的 401/403 当作服务解锁证明。
-const AI_TEST_URL = PROXY_TEST_URL;
+
+function buildHealthCheck(type) {
+    const { tolerance, fallbackInterval, ...common } = SHARED_POLICY.health;
+    return {
+        ...common,
+        interval: type === "fallback" ? fallbackInterval : common.interval,
+        lazy: type !== "fallback",
+        ...(type === "url-test" ? { tolerance } : {})
+    };
+}
 
 const buildList = (...elements) => elements.flat().filter(Boolean);
 
@@ -147,8 +214,8 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
     );
 
     const defaultSelector = buildList(
-        PROXY_GROUPS.FALLBACK,
         PROXY_GROUPS.AUTO,
+        PROXY_GROUPS.FALLBACK,
         PROXY_GROUPS.BEST,
         PROXY_GROUPS.MANUAL,
         PROXY_GROUPS.BALANCE_HASH,
@@ -158,17 +225,22 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
         "DIRECT"
     );
 
-    const defaultProxies = buildList(
-        PROXY_GROUPS.SELECT,
-        PROXY_GROUPS.AUTO,
+    const aliases = {
+        "香港-自动选择": "香港节点", "台湾-自动选择": "台湾节点",
+        "狮城-自动选择": "狮城节点", "日本-自动选择": "日本节点",
+        "美国-自动选择": "美国节点", "东南亚-自动选择": "东南亚节点"
+    };
+    const available = new Set([
+        PROXY_GROUPS.SELECT, PROXY_GROUPS.AUTO, PROXY_GROUPS.FALLBACK,
+        PROXY_GROUPS.BALANCE_HASH, PROXY_GROUPS.BALANCE_ROUND_ROBIN,
+        PROXY_GROUPS.MANUAL, "DIRECT", ...dynamicGroups
+    ]);
+    const defaultProxies = Array.from(new Set(buildList(
+        SHARED_POLICY.candidates.map(name => aliases[name] || name).filter(name => available.has(name)),
         PROXY_GROUPS.BEST,
-        PROXY_GROUPS.FALLBACK,
-        PROXY_GROUPS.BALANCE_HASH,
-        PROXY_GROUPS.BALANCE_ROUND_ROBIN,
         dynamicGroups,
-        PROXY_GROUPS.MANUAL,
         PROXY_GROUPS.DIRECT
-    );
+    )));
 
     const defaultProxiesDirect = buildList(
         PROXY_GROUPS.DIRECT,
@@ -410,7 +482,7 @@ function buildRuntimeProfileConfig({ profile }) {
 
     if (profile === "client") {
         return Object.assign({}, sharedRuntime, {
-            "mixed-port": 7890,
+            "mixed-port": 7897,
             "allow-lan": false,
             "external-controller": "127.0.0.1:9999"
         });
@@ -427,7 +499,7 @@ function buildRuntimeProfileConfig({ profile }) {
     }
 
     return Object.assign({}, sharedRuntime, {
-        "mixed-port": 7890,
+        "mixed-port": 7897,
         "redir-port": 7892,
         "tproxy-port": 7893,
         "routing-mark": 7894,
@@ -468,20 +540,23 @@ function buildDnsConfig({ mode, fakeIpFilter }) {
     const config = {
         enable: true,
         ipv6: ipv6Enabled,
-        "prefer-h3": true,
         "enhanced-mode": mode,
+        listen: "0.0.0.0:1053",
+        "respect-rules": true,
+        "dns-hijack": ["any:53"],
         "default-nameserver": ["119.29.29.29", "223.5.5.5"],
-        nameserver: ["system", "223.5.5.5", "119.29.29.29", "180.184.1.1"],
-        fallback: [
-            "quic://dns0.eu",
-            "https://dns.cloudflare.com/dns-query",
-            "https://dns.sb/dns-query",
-            "tcp://208.67.222.222",
-            "tcp://8.26.56.2"
-        ],
+        "nameserver-policy": {
+            "geosite:cn,private": [
+                "223.5.5.5",
+                "119.29.29.29"
+            ],
+            "geosite:geolocation-!cn": [
+                "proxy"
+            ]
+        },
         "proxy-server-nameserver": [
-            "https://dns.alidns.com/dns-query",
-            "tls://dot.pub"
+            "223.5.5.5",
+            "119.29.29.29"
         ]
     };
 
@@ -675,16 +750,8 @@ function buildCountryProxyGroups({ countryGroupItems, landing, loadBalance }) {
             type: groupType
         };
 
-        Object.assign(groupConfig, {
-            url: PROXY_TEST_URL,
-            "expected-status": 204,
-            interval: PROXY_TEST_INTERVAL,
-            timeout: PROXY_TEST_TIMEOUT,
-            lazy: PROXY_TEST_LAZY,
-            ...(loadBalance
-                ? { strategy: LOAD_BALANCE_HASH_STRATEGY }
-                : { tolerance: PROXY_TEST_TOLERANCE })
-        });
+        Object.assign(groupConfig, buildHealthCheck(groupType),
+            loadBalance ? { strategy: LOAD_BALANCE_HASH_STRATEGY } : {});
 
         groups.push(groupConfig);
     }
@@ -719,16 +786,8 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
             "exclude-filter": landing ? `${landingExcludeFilter}|${baseExcludeFilter}` : baseExcludeFilter
         };
 
-        Object.assign(groupConfig, {
-            url: PROXY_TEST_URL,
-            "expected-status": 204,
-            interval: PROXY_TEST_INTERVAL,
-            timeout: PROXY_TEST_TIMEOUT,
-            lazy: PROXY_TEST_LAZY,
-            ...(loadBalance
-                ? { strategy: LOAD_BALANCE_HASH_STRATEGY }
-                : { tolerance: PROXY_TEST_TOLERANCE })
-        });
+        Object.assign(groupConfig, buildHealthCheck(groupType),
+            loadBalance ? { strategy: LOAD_BALANCE_HASH_STRATEGY } : {});
 
         groups.push(groupConfig);
     }
@@ -768,16 +827,8 @@ function createLatencyGroup(name, icon, type, proxies, extras = {}) {
         proxies
     };
 
-    Object.assign(group, {
-        url: PROXY_TEST_URL,
-        "expected-status": 204,
-        interval: PROXY_TEST_INTERVAL,
-        timeout: PROXY_TEST_TIMEOUT,
-        lazy: PROXY_TEST_LAZY,
-        ...(type === "load-balance"
-            ? { strategy: LOAD_BALANCE_HASH_STRATEGY }
-            : { tolerance: PROXY_TEST_TOLERANCE })
-    });
+    Object.assign(group, buildHealthCheck(type),
+        type === "load-balance" ? { strategy: LOAD_BALANCE_HASH_STRATEGY } : {});
 
     return Object.assign(group, extras);
 }
@@ -788,12 +839,8 @@ function createLoadBalanceGroup(name, strategy) {
         icon: "https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png",
         type: "load-balance",
         "include-all": true,
-        url: PROXY_TEST_URL,
-        interval: PROXY_TEST_INTERVAL,
-        timeout: PROXY_TEST_TIMEOUT,
-        "expected-status": 204,
-        strategy,
-        lazy: PROXY_TEST_LAZY
+        ...buildHealthCheck("load-balance"),
+        strategy
     };
 }
 
@@ -875,31 +922,6 @@ function buildProxyGroups({
         countryGroupNames,
         hasOtherNodes && PROXY_GROUPS.OTHER
     );
-    const linuxDoProxies = buildList(
-        PROXY_GROUPS.SELECT,
-        PROXY_GROUPS.AUTO,
-        PROXY_GROUPS.BEST,
-        PROXY_GROUPS.FALLBACK,
-        PROXY_GROUPS.BALANCE_HASH,
-        PROXY_GROUPS.BALANCE_ROUND_ROBIN,
-        countryGroupNames,
-        regionProxyGroups.map(group => group.name),
-        hasOtherNodes && PROXY_GROUPS.OTHER,
-        PROXY_GROUPS.MANUAL
-    );
-    const cloudflareProxies = buildList(
-        PROXY_GROUPS.SELECT,
-        PROXY_GROUPS.DIRECT,
-        PROXY_GROUPS.AUTO,
-        PROXY_GROUPS.BEST,
-        PROXY_GROUPS.FALLBACK,
-        PROXY_GROUPS.BALANCE_HASH,
-        PROXY_GROUPS.BALANCE_ROUND_ROBIN,
-        countryGroupNames,
-        regionProxyGroups.map(group => group.name),
-        hasOtherNodes && PROXY_GROUPS.OTHER,
-        PROXY_GROUPS.MANUAL
-    );
     const fullProxies = defaultProxies;
     const otherGroupType = loadBalance ? "load-balance" : "url-test";
 
@@ -922,24 +944,14 @@ function buildProxyGroups({
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
             type: "url-test",
             "include-all": true,
-            url: PROXY_TEST_URL,
-            "expected-status": 204,
-            interval: PROXY_TEST_INTERVAL,
-            timeout: PROXY_TEST_TIMEOUT,
-            tolerance: PROXY_TEST_TOLERANCE,
-            lazy: PROXY_TEST_LAZY
+            ...buildHealthCheck("url-test")
         },
         {
             name: PROXY_GROUPS.BEST,
             icon: "https://raw.githubusercontent.com/Orz-3/mini/master/Color/Roundrobin.png",
             type: "url-test",
             "include-all": true,
-            url: PROXY_TEST_URL,
-            "expected-status": 204,
-            interval: PROXY_TEST_INTERVAL,
-            timeout: PROXY_TEST_TIMEOUT,
-            tolerance: PROXY_TEST_TOLERANCE,
-            lazy: PROXY_TEST_LAZY
+            ...buildHealthCheck("url-test")
         },
         createLoadBalanceGroup(PROXY_GROUPS.BALANCE_HASH, LOAD_BALANCE_HASH_STRATEGY),
         createLoadBalanceGroup(PROXY_GROUPS.BALANCE_ROUND_ROBIN, LOAD_BALANCE_ROUND_ROBIN_STRATEGY),
@@ -963,11 +975,7 @@ function buildProxyGroups({
             icon: "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png",
             type: "fallback",
             "include-all": true,
-            url: PROXY_TEST_URL,
-            "expected-status": 204,
-            interval: FALLBACK_TEST_INTERVAL,
-            timeout: PROXY_TEST_TIMEOUT,
-            lazy: FALLBACK_TEST_LAZY
+            ...buildHealthCheck("fallback")
         },
         {
             name: PROXY_GROUPS.AI_FALLBACK,
@@ -975,11 +983,7 @@ function buildProxyGroups({
             type: "fallback",
             "include-all": true,
             "exclude-filter": "(?i)香港|Hong Kong|HK|🇭🇰|中国|China|CN|🇨🇳|内地|澳门|Macao|MO|🇲🇴",
-            url: AI_TEST_URL,
-            "expected-status": 204,
-            interval: FALLBACK_TEST_INTERVAL,
-            timeout: PROXY_TEST_TIMEOUT,
-            lazy: FALLBACK_TEST_LAZY
+            ...buildHealthCheck("fallback")
         },
         {
             name: PROXY_GROUPS.DIRECT,
@@ -1000,12 +1004,6 @@ function buildProxyGroups({
             proxies: ["REJECT", "DIRECT"]
         },
         {
-            name: "全球拦截",
-            icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png",
-            type: "select",
-            proxies: ["REJECT", "DIRECT"]
-        },
-        {
             name: "TikTok",
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png",
             type: "select",
@@ -1021,13 +1019,13 @@ function buildProxyGroups({
             name: "Cloudflare验证",
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png",
             type: "select",
-            proxies: cloudflareProxies
+            proxies: buildList(PROXY_GROUPS.SELECT, PROXY_GROUPS.DIRECT, defaultProxies)
         },
         {
             name: "Linux.do",
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
             type: "select",
-            proxies: linuxDoProxies
+            proxies: defaultProxies
         },
         {
             name: "OpenAI",
@@ -1187,14 +1185,9 @@ function buildProxyGroups({
             name: PROXY_GROUPS.LOW_COST,
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
             type: "url-test",
-            url: PROXY_TEST_URL,
-            "expected-status": 204,
+            ...buildHealthCheck("url-test"),
             "include-all": true,
             filter: "(?i)0\.[0-5]|低倍率|省流|大流量|实验性",
-            interval: PROXY_TEST_INTERVAL,
-            timeout: PROXY_TEST_TIMEOUT,
-            tolerance: PROXY_TEST_TOLERANCE,
-            lazy: PROXY_TEST_LAZY
         } : null,
         ...regionProxyGroups,
         ...countryProxyGroups,
@@ -1256,6 +1249,18 @@ function main(config) {
         defaultSelector,
         defaultFallback
     });
+
+    // Common service menus share one candidate list; AI and fallback stay independent.
+    const commonCandidates = Array.from(new Set([...defaultProxies, "DIRECT"]));
+    for (const group of proxyGroups) {
+        if (!SHARED_POLICY.services.includes(group.name)) continue;
+        const original = group.proxies;
+        group.proxies = Array.from(new Set([
+            original[0],
+            ...original.filter(name => !commonCandidates.includes(name)),
+            ...commonCandidates
+        ]));
+    }
 
     const finalRules = buildRules({ quicEnabled });
 

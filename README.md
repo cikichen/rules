@@ -40,3 +40,13 @@
 204 测试只证明测速地址可达，不代表 AI 解锁、带宽或持续丢包质量；切换也不会迁移已有 TCP/SSE 连接。全部线路都差时仍需要更换节点或线路。以上间隔是配置基线，并非根据现场丢包测量得到的最优值。使用 proxy-providers 的客户端还需检查 provider 自身的 health-check；组级测速不能替代其检查。
 
 参数语义参考 [Mihomo 策略组文档](https://wiki.metacubex.one/config/proxy-groups/)、[故障转移](https://wiki.metacubex.one/config/proxy-groups/fallback/) 和 [自动选择](https://wiki.metacubex.one/config/proxy-groups/url-test/)。
+
+## 共享策略维护
+
+`policy.json` 集中维护普通服务候选列表、适用服务名称和健康检查参数。修改后运行 `npm run sync:policy`，同步到 Clash 精简配置、Shadowrocket 配置和主转换脚本。`npm run check:policy` 只检查同步状态，`npm test` 会先执行此检查。
+
+Clash 配置用 YAML 锚点复用相同的候选列表和健康检查，加载后仍是完整策略组；Shadowrocket 输出其原生的展开格式。主转换脚本内嵌生成的数据，可以继续直接粘贴到客户端使用，无需读取本地 JSON。`npm run gen` 仍输出主转换脚本的完整配置，不代替精简配置的同步命令。
+
+普通服务统一列出现有的自动选择、故障转移、两种负载均衡、地区、手动选择和直连。各服务原默认出口和奈飞等专用候选保留；Shadowrocket 的 `select` 索引随列表重排，维持原默认选择。阿里海外补齐候选，但继续默认直连。
+
+AI、TG 地区组、国内媒体、PT 等专用列表及故障转移的直接节点检查保持独立。地区识别表达式仍保留各客户端现有实现，本轮不改变地区匹配或域名/IP 规则。健康检查统一使用精简配置原有的 HTTPS Google 204 地址，间隔和超时不变。

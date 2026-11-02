@@ -60,8 +60,8 @@ function buildFeatureFlags(args) {
         landing: false,
         ipv6Enabled: false,
         fullConfig: false,
-        keepAliveEnabled: true,
-        fakeIPEnabled: true,
+        keepAliveEnabled: false,
+        fakeIPEnabled: false,
         quicEnabled: false
     };
 
@@ -129,12 +129,12 @@ const AI_PREFERRED_GROUPS = {
     "Gemini": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"],
     "人工智能": ["美国节点", "新加坡节点", "日本节点", "台湾节点", "韩国节点", "东南亚节点", "欧洲节点", "香港节点", "北美节点", "大洋洲节点", "中东节点"]
 };
-const PROXY_TEST_URL = "https://cp.cloudflare.com/generate_204";
-const PROXY_TEST_INTERVAL = 300;
+const PROXY_TEST_URL = "https://www.gstatic.com/generate_204";
+const PROXY_TEST_INTERVAL = 120;
 const PROXY_TEST_TIMEOUT = 4000;
-const PROXY_TEST_TOLERANCE = 50;
+const PROXY_TEST_TOLERANCE = 100;
 const PROXY_TEST_LAZY = true;
-const FALLBACK_TEST_INTERVAL = 120;
+const FALLBACK_TEST_INTERVAL = 60;
 const FALLBACK_TEST_LAZY = false;
 const LOAD_BALANCE_HASH_STRATEGY = "consistent-hashing";
 const LOAD_BALANCE_ROUND_ROBIN_STRATEGY = "round-robin";
@@ -199,6 +199,7 @@ function createLoadBalanceGroup(name, strategy) {
         "type": "load-balance",
         "include-all": true,
         "url": PROXY_TEST_URL,
+        "expected-status": 204,
         "interval": PROXY_TEST_INTERVAL,
         "strategy": strategy,
         "lazy": PROXY_TEST_LAZY
@@ -303,17 +304,17 @@ const baseRules = [
     `GEOIP,PRIVATE,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,Custom,${PROXY_GROUPS.CUSTOM}`,
     `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
-    `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
-    `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
+    `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
+    `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     "RULE-SET,OpenAI,OpenAI",
     "RULE-SET,Claude,Claude",
     "RULE-SET,Gemini,Gemini",
     "GEOSITE,CATEGORY-AI-!CN,人工智能",
     `RULE-SET,TikTok,TikTok`,
     `RULE-SET,SteamFix,${PROXY_GROUPS.DIRECT}`,
-    `RULE-SET,GoogleFCM,${PROXY_GROUPS.SELECT}`,
+    `RULE-SET,GoogleFCM,${PROXY_GROUPS.DIRECT}`,
     `DOMAIN,services.googleapis.cn,${PROXY_GROUPS.SELECT}`,
     `GEOSITE,GOOGLE-PLAY@CN,${PROXY_GROUPS.DIRECT}`,
     `GEOSITE,MICROSOFT@CN,${PROXY_GROUPS.DIRECT}`,
@@ -366,38 +367,30 @@ const snifferConfig = {
     ]
 };
 
-function buildDnsConfig({ mode, fakeIpFilter, enableQuicDns }) {
-    const fallbackServers = buildList(
-        enableQuicDns && "quic://dns0.eu",
-        "https://hk.pms.loc.cc/dohgo",
-        "https://runtime.webn.cc:2083/dnsgo",
-        "https://us.pms.loc.cc/dohgo",
-        "https://dns.cloudflare.com/dns-query",
-        "https://dns.sb/dns-query",
-        "tcp://208.67.222.222",
-        "tcp://8.26.56.2"
-    );
+function buildDnsConfig({ mode, fakeIpFilter }) {
     const config = {
         "enable": true,
         "ipv6": ipv6Enabled,
-        "prefer-h3": true,
         "enhanced-mode": mode,
+        "listen": "0.0.0.0:1053",
+        "respect-rules": true,
+        "dns-hijack": ["any:53"],
         "default-nameserver": [
-            "8.8.8.8",
             "119.29.29.29",
             "223.5.5.5"
         ],
-        "nameserver": [
-            "system",
-            "8.8.8.8",
-            "223.5.5.5",
-            "119.29.29.29",
-            "180.184.1.1"
-        ],
-        "fallback": fallbackServers,
+        "nameserver-policy": {
+            "geosite:cn,private": [
+                "223.5.5.5",
+                "119.29.29.29"
+            ],
+            "geosite:geolocation-!cn": [
+                "proxy"
+            ]
+        },
         "proxy-server-nameserver": [
-            "https://dns.alidns.com/dns-query",
-            "tls://dot.pub"
+            "223.5.5.5",
+            "119.29.29.29"
         ]
     };
 
@@ -409,12 +402,10 @@ function buildDnsConfig({ mode, fakeIpFilter, enableQuicDns }) {
 }
 
 const dnsConfig = buildDnsConfig({
-    mode: "redir-host",
-    enableQuicDns: quicEnabled
+    mode: "redir-host"
 });
 const dnsConfigFakeIp = buildDnsConfig({
     mode: "fake-ip",
-    enableQuicDns: quicEnabled,
     fakeIpFilter: [
         "geosite:private",
         "geosite:connectivity-check",
@@ -811,6 +802,7 @@ function buildCountryProxyGroups({ countryGroupItems, landing, loadBalance }) {
         if (!loadBalance) {
             Object.assign(groupConfig, {
                 "url": PROXY_TEST_URL,
+                "expected-status": 204,
                 "interval": PROXY_TEST_INTERVAL,
                 "timeout": PROXY_TEST_TIMEOUT,
                 "tolerance": PROXY_TEST_TOLERANCE,
@@ -850,6 +842,7 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
         if (!loadBalance) {
             Object.assign(groupConfig, {
                 "url": PROXY_TEST_URL,
+                "expected-status": 204,
                 "interval": PROXY_TEST_INTERVAL,
                 "timeout": PROXY_TEST_TIMEOUT,
                 "tolerance": PROXY_TEST_TOLERANCE,
@@ -957,6 +950,7 @@ function buildProxyGroups({
             "type": "url-test",
             "include-all": true,
             "url": PROXY_TEST_URL,
+            "expected-status": 204,
             "interval": PROXY_TEST_INTERVAL,
             "timeout": PROXY_TEST_TIMEOUT,
             "tolerance": PROXY_TEST_TOLERANCE,
@@ -985,6 +979,7 @@ function buildProxyGroups({
             "type": "fallback",
             "include-all": true,
             "url": PROXY_TEST_URL,
+            "expected-status": 204,
             "interval": FALLBACK_TEST_INTERVAL,
             "timeout": PROXY_TEST_TIMEOUT,
             "tolerance": PROXY_TEST_TOLERANCE,
@@ -1009,15 +1004,6 @@ function buildProxyGroups({
         {
             "name": "应用净化",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png",
-            "type": "select",
-            "proxies": [
-                "REJECT",
-                "DIRECT"
-            ]
-        },
-        {
-            "name": "全球拦截",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png",
             "type": "select",
             "proxies": [
                 "REJECT",
@@ -1205,6 +1191,7 @@ function buildProxyGroups({
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
             "type": "url-test",
             "url": PROXY_TEST_URL,
+            "expected-status": 204,
             "interval": PROXY_TEST_INTERVAL,
             "timeout": PROXY_TEST_TIMEOUT,
             "tolerance": PROXY_TEST_TOLERANCE,
@@ -1278,7 +1265,7 @@ function main(config) {
     const finalRules = buildRules({ quicEnabled });
 
     if (fullConfig) Object.assign(resultConfig, {
-        "mixed-port": 7890,
+        "mixed-port": 7897,
         "redir-port": 7892,
         "tproxy-port": 7893,
         "routing-mark": 7894,

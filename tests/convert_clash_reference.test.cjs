@@ -30,7 +30,7 @@ function runGenerator(args = {}, proxies = createSampleProxies()) {
 test('legacy full config remains backward compatible', () => {
   const result = runGenerator({ full: true });
 
-  assert.equal(result['mixed-port'], 7890);
+  assert.equal(result['mixed-port'], 7897);
   assert.equal(result['redir-port'], 7892);
   assert.equal(result['tproxy-port'], 7893);
   assert.equal(result['routing-mark'], 7894);
@@ -75,7 +75,7 @@ test('profile does not leak runtime fields into base output when full is false',
 test('client profile uses localhost controller and mixed-port only', () => {
   const result = runGenerator({ full: true, profile: 'client' });
 
-  assert.equal(result['mixed-port'], 7890);
+  assert.equal(result['mixed-port'], 7897);
   assert.equal(result['allow-lan'], false);
   assert.equal(result['external-controller'], '127.0.0.1:9999');
   assert.equal('redir-port' in result, false);
@@ -115,7 +115,7 @@ test('linux.do group and rules are included in generated config', () => {
   assert.equal(linuxDoGroup.type, 'select');
   assert.deepEqual(
     linuxDoGroup.proxies.slice(0, 4),
-    ['节点选择', '自动选择', '全球优选', '故障转移']
+    ['节点选择', '自动选择', '故障转移', '负载均衡-散列']
   );
   assert.ok(result.rules.includes('DOMAIN-SUFFIX,linux.do,Linux.do'));
   assert.ok(result.rules.includes('DOMAIN,linux.do,Linux.do'));
@@ -129,14 +129,14 @@ test('Cloudflare验证 group and rules are included in generated config', () => 
   assert.equal(cfGroup.type, 'select');
   assert.deepEqual(
     cfGroup.proxies.slice(0, 4),
-    ['节点选择', '全球直连', '自动选择', '全球优选']
+    ['节点选择', '自动选择', '故障转移', '负载均衡-散列']
   );
   assert.ok(result.rules.includes('DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证'));
 });
 
 test('ai groups prioritize 人工智能 group and default 人工智能 to fallback', () => {
   const result = runGenerator({ full: false });
-  const aiFallbackGroup = result['proxy-groups'].find(group => group.name === 'AI 故障转移');
+  const aiFallbackGroup = result['proxy-groups'].find(group => group.name === 'AI-故障转移');
   const openAiGroup = result['proxy-groups'].find(group => group.name === 'OpenAI');
   const claudeGroup = result['proxy-groups'].find(group => group.name === 'Claude');
   const aiGroup = result['proxy-groups'].find(group => group.name === '人工智能');
@@ -146,7 +146,7 @@ test('ai groups prioritize 人工智能 group and default 人工智能 to fallba
   assert.equal(openAiGroup.proxies[0], '人工智能');
   assert.equal(claudeGroup.proxies[0], '人工智能');
   assert.ok(aiGroup);
-  assert.equal(aiGroup.proxies[0], 'AI 故障转移');
+  assert.equal(aiGroup.proxies[0], 'AI-故障转移');
 });
 
 test('custom group uses friendly chinese name and Custom rules target it', () => {
@@ -169,7 +169,7 @@ test('hybrid health-check defaults keep selectors conservative and fallback resp
   const result = runGenerator({ full: false });
   const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
 
-  assert.equal(groups.get('自动选择').url, 'https://cp.cloudflare.com/generate_204');
+  assert.equal(groups.get('自动选择').url, 'https://www.gstatic.com/generate_204');
   assert.equal(groups.get('自动选择').interval, 120);
   assert.equal(groups.get('自动选择').timeout, 4000);
   assert.equal(groups.get('自动选择').tolerance, 100);
@@ -184,9 +184,9 @@ test('hybrid health-check defaults keep selectors conservative and fallback resp
   assert.equal('tolerance' in groups.get('故障转移'), false);
   assert.equal(groups.get('故障转移').lazy, false);
 
-  assert.equal(groups.get('AI 故障转移').interval, 60);
-  assert.equal(groups.get('AI 故障转移').timeout, 4000);
-  assert.equal(groups.get('AI 故障转移').lazy, false);
+  assert.equal(groups.get('AI-故障转移').interval, 60);
+  assert.equal(groups.get('AI-故障转移').timeout, 4000);
+  assert.equal(groups.get('AI-故障转移').lazy, false);
 
   assert.equal(groups.get('香港节点').interval, 120);
   assert.equal(groups.get('香港节点').timeout, 4000);
@@ -198,7 +198,7 @@ test('fallback groups use direct-node include-all semantics instead of nested re
   const result = runGenerator({ full: false });
   const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
   const fallback = groups.get('故障转移');
-  const aiFallback = groups.get('AI 故障转移');
+  const aiFallback = groups.get('AI-故障转移');
 
   assert.equal(fallback.type, 'fallback');
   assert.equal(fallback['include-all'], true);
@@ -230,9 +230,9 @@ test('dual load-balance groups expose hashing and round-robin strategies', () =>
 });
 
 
-test('default proxy route uses fallback instead of the manual DIRECT default', () => {
+test('default proxy route uses auto-select instead of the manual DIRECT default', () => {
   const groups = new Map(runGenerator()['proxy-groups'].map(g => [g.name, g]));
-  assert.equal(groups.get('节点选择').proxies[0], '故障转移');
+  assert.equal(groups.get('节点选择').proxies[0], '自动选择');
 });
 
 test('absent countries are not emitted and lower-case country codes work', () => {

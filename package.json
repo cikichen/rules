@@ -5,7 +5,9 @@
   "description": "Clash/Mihomo subscription conversion scripts",
   "scripts": {
     "gen": "node gen_config.mjs",
-    "test": "node --test tests/*.test.cjs"
+    "sync:policy": "node scripts/sync-policy.mjs",
+    "check:policy": "node scripts/sync-policy.mjs --check",
+    "test": "npm run check:policy && node --test tests/*.test.cjs"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"

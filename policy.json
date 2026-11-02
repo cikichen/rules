@@ -1,0 +1,23 @@
+{
+  "health": {
+    "url": "https://www.gstatic.com/generate_204",
+    "expected-status": 204,
+    "timeout": 4000,
+    "interval": 120,
+    "tolerance": 100,
+    "fallbackInterval": 60
+  },
+  "candidates": [
+    "节点选择", "自动选择", "故障转移", "负载均衡-散列", "负载均衡-轮询",
+    "香港-自动选择", "台湾-自动选择", "狮城-自动选择", "日本-自动选择", "美国-自动选择",
+    "韩国节点", "欧洲节点", "东南亚-自动选择", "土耳其节点", "阿根廷节点", "其他地区",
+    "手动切换", "DIRECT"
+  ],
+  "services": [
+    "漏网之鱼", "中转站", "Claude更新", "油管视频", "YouTube", "YouTube Music",
+    "奈飞视频", "Netflix", "Disney+", "Max", "Spotify", "国外媒体",
+    "电报消息", "Telegram", "谷歌服务", "微软服务", "苹果服务", "GitHub",
+    "Cloudflare验证", "推特X", "Twitter", "Facebook", "Discord", "TikTok",
+    "Epic游戏", "游戏平台", "阿里服务", "阿里海外", "OneDrive", "PikPak", "Linux.do"
+  ]
+}
