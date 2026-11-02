@@ -543,7 +543,6 @@ function buildDnsConfig({ mode, fakeIpFilter }) {
         "enhanced-mode": mode,
         listen: "0.0.0.0:1053",
         "respect-rules": true,
-        "dns-hijack": ["any:53"],
         "default-nameserver": ["119.29.29.29", "223.5.5.5"],
         "nameserver-policy": {
             "geosite:cn,private": [
