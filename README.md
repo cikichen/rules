@@ -11,6 +11,14 @@
 
 **`convert_auto.js`**：来自 [powerfullz/override-rules](https://github.com/powerfullz/override-rules) 的外部脚本，保留作为参考。如需新功能（`profile` 分层、更全规则集），请使用 `convert_clash_reference.js`。
 
+### 下载地址
+
+GitHub 直连下载和失效的 `github.ithome.me` 入口改用 `https://gh-proxy.org/` 前缀，现有可用的 jsDelivr 和其他 CDN 地址保留。主脚本的 GitHub 原始规则地址由 `wrapRaw` 统一拼接前缀，修改时避免重复添加。
+
+精简配置也显式设置 `geox-url`，沿用主脚本的 jsDelivr Geo 数据源。`IP-ASN` 规则即使带有 `no-resolve` 也依赖 ASN 数据库；遗漏 `geox-url.asn` 时，内核仍可能从默认 GitHub 地址下载并超时。更新时应重新加载整个精简配置，确保顶层 `geox-url` 生效。
+
+2026-11-09 已对配置和脚本生成结果中的下载地址执行完整 GET 与内容格式检查，310 个下载 URL 全部通过；81 个新镜像 URL 与 GitHub 原始文件的 SHA-256 一致。详见[校验记录](docs/reports/download-audit-2026-11-09.md)。这是本机当前网络的一次校验，后续镜像或上游变更仍可能影响下载；修改后需在客户端重新加载配置。
+
 ---
 个人用
 

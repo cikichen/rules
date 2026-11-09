@@ -195,7 +195,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
 function createLoadBalanceGroup(name, strategy) {
     return {
         "name": name,
-        "icon": "https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png",
+        "icon": "https://gh-proxy.org/https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png",
         "type": "load-balance",
         "include-all": true,
         "url": PROXY_TEST_URL,
@@ -252,7 +252,7 @@ const ruleProviders = {
         "behavior": "classical",
         "format": "text",
         "interval": 86400,
-        "url": "https://github.ithome.me/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/direct.list",
+        "url": "https://gh-proxy.org/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/direct.list",
         "path": "./ruleset/DirectList.list"
     },
     "Custom": {
@@ -260,7 +260,7 @@ const ruleProviders = {
         "behavior": "classical",
         "format": "text",
         "interval": 86400,
-        "url": "https://github.ithome.me/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/custom.list",
+        "url": "https://gh-proxy.org/https://raw.githubusercontent.com/cikichen/rules/refs/heads/main/clash/custom.list",
         "path": "./ruleset/Custom.list"
     },
     
@@ -269,7 +269,7 @@ const ruleProviders = {
         "behavior": "classical",
         "format": "yaml",
         "interval": 86400,
-        "url": "https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml",
+        "url": "https://gh-proxy.org/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml",
         "path": "./ruleset/OpenAI.yaml"
     },
     "Claude": {
@@ -277,7 +277,7 @@ const ruleProviders = {
         "behavior": "classical",
         "format": "yaml",
         "interval": 86400,
-        "url": "https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.yaml",
+        "url": "https://gh-proxy.org/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.yaml",
         "path": "./ruleset/Claude.yaml"
     },
     "Gemini": {
@@ -285,7 +285,7 @@ const ruleProviders = {
         "behavior": "classical",
         "format": "yaml",
         "interval": 86400,
-        "url": "https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.yaml",
+        "url": "https://gh-proxy.org/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.yaml",
         "path": "./ruleset/Gemini.yaml"
     },
     "YouTubeMusic": {
@@ -293,7 +293,7 @@ const ruleProviders = {
         "behavior": "classical",
         "format": "yaml",
         "interval": 86400,
-        "url": "https://github.ithome.me/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTubeMusic/YouTubeMusic.yaml",
+        "url": "https://gh-proxy.org/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTubeMusic/YouTubeMusic.yaml",
         "path": "./ruleset/YouTubeMusic.yaml"
     },
     

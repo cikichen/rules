@@ -1,3 +1,11 @@
+# 显式配置 Geo 数据下载源，避免 GEOIP / IP-ASN 回退到内核默认 GitHub 直连。
+# 与主转换脚本保持一致；IP-ASN 的 no-resolve 不会免除 ASN 数据库依赖。
+geox-url:
+  geoip: https://gcore.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat
+  geosite: https://gcore.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat
+  mmdb: https://gcore.jsdelivr.net/gh/Loyalsoldier/geoip@release/Country.mmdb
+  asn: https://gcore.jsdelivr.net/gh/Loyalsoldier/geoip@release/GeoLite2-ASN.mmdb
+
 # ==================== 代理组 ====================
 proxy-groups:
   # === 核心策略组 ===
@@ -489,7 +497,7 @@ proxy-groups:
 rule-providers:
   # ==================== 私有/局域网 ====================
   Private_Domain:
-    url: https://github.com/666OS/rules/raw/release/mihomo/domain/Private.mrs
+    url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/domain/Private.mrs
     path: ./ruleset/Private_Domain.mrs
     behavior: domain
     interval: 86400
@@ -497,7 +505,7 @@ rule-providers:
     type: http
 
   Private_IP:
-    url: https://github.com/666OS/rules/raw/release/mihomo/ip/Private.mrs
+    url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/ip/Private.mrs
     path: ./ruleset/Private_IP.mrs
     behavior: ipcidr
     interval: 86400
@@ -737,7 +745,7 @@ rule-providers:
     type: http
 
   China_YYDS_Domain:
-    url: https://github.com/666OS/rules/raw/release/mihomo/domain/China.mrs
+    url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/domain/China.mrs
     path: ./ruleset/China_YYDS_Domain.mrs
     behavior: domain
     interval: 86400
@@ -745,7 +753,7 @@ rule-providers:
     type: http
 
   China_YYDS_IP:
-    url: https://github.com/666OS/rules/raw/release/mihomo/ip/China.mrs
+    url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/ip/China.mrs
     path: ./ruleset/China_YYDS_IP.mrs
     behavior: ipcidr
     interval: 86400
@@ -794,7 +802,7 @@ rule-providers:
     type: http
 
   AI:
-    url: https://github.com/666OS/rules/raw/release/mihomo/domain/AI.mrs
+    url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/domain/AI.mrs
     path: ./ruleset/AI.mrs
     behavior: domain
     interval: 86400

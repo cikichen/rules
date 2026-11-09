@@ -265,7 +265,7 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
 }
 
 function wrapRaw(url) {
-    return `https://github.ithome.me/${url}`;
+    return `https://gh-proxy.org/${url}`;
 }
 
 function createProvider(url, path, format = "yaml") {
@@ -835,7 +835,7 @@ function createLatencyGroup(name, icon, type, proxies, extras = {}) {
 function createLoadBalanceGroup(name, strategy) {
     return {
         name,
-        icon: "https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png",
+        icon: "https://gh-proxy.org/https://github.com/shindgewongxj/WHATSINStash/raw/main/icon/loadbalance.png",
         type: "load-balance",
         "include-all": true,
         ...buildHealthCheck("load-balance"),
@@ -947,7 +947,7 @@ function buildProxyGroups({
         },
         {
             name: PROXY_GROUPS.BEST,
-            icon: "https://raw.githubusercontent.com/Orz-3/mini/master/Color/Roundrobin.png",
+            icon: "https://gh-proxy.org/https://raw.githubusercontent.com/Orz-3/mini/master/Color/Roundrobin.png",
             type: "url-test",
             "include-all": true,
             ...buildHealthCheck("url-test")

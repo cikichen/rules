@@ -8,7 +8,7 @@ function main(config) {
     interval: 86400,
     behavior: "domain",
     format: "text",
-    url: "https://raw.githubusercontent.com/xishang0128/rules/main/clash%20or%20stash/prevent_dns_leak/prevent_dns_leak_domain.list"
+    url: "https://gh-proxy.org/https://raw.githubusercontent.com/xishang0128/rules/main/clash%20or%20stash/prevent_dns_leak/prevent_dns_leak_domain.list"
   };
   config['rule-providers']['prevent_dns_leak'] = newProvider;
 

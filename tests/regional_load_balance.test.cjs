@@ -11,6 +11,21 @@ const shadowGroups = new Map(shadow.split('[Proxy Group]')[1].split('[Rule]')[0]
   .split('\n').filter(l => l.includes(' = ')).map(l => l.split(' = ')));
 const regions = ['香港', '台湾', '狮城', '日本', '美国', '东南亚'];
 
+test('slim Geo rules explicitly configure their database download sources', () => {
+  for (const rule of clash.rules) {
+    const type = rule.split(',')[0];
+    const database = type === 'IP-ASN' ? 'asn'
+      : type === 'GEOIP' ? (clash['geodata-mode'] ? 'geoip' : 'mmdb')
+      : type === 'GEOSITE' ? 'geosite' : null;
+    if (!database) continue;
+    const source = clash['geox-url']?.[database];
+    assert.ok(source, `${rule} depends on an explicit geox-url.${database}`);
+    const host = new URL(source).hostname;
+    assert.equal(new URL(source).protocol, 'https:');
+    assert.ok(!['github.com', 'raw.githubusercontent.com'].includes(host), `${database}: needs a download mirror`);
+  }
+});
+
 test('slim profiles retain regional auto groups and only global/AI load balancing', () => {
   for (const region of regions) {
     assert.equal(groups.get(`${region}-自动选择`).type, 'url-test');
