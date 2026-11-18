@@ -10,6 +10,7 @@ const groups = new Map(clash['proxy-groups'].map(g => [g.name, g]));
 const shadowGroups = new Map(shadow.split('[Proxy Group]')[1].split('[Rule]')[0]
   .split('\n').filter(l => l.includes(' = ')).map(l => l.split(' = ')));
 const regions = ['香港', '台湾', '狮城', '日本', '美国', '东南亚'];
+const policy = JSON.parse(fs.readFileSync(path.join(root, 'policy.json'), 'utf8'));
 
 test('slim Geo rules explicitly configure their database download sources', () => {
   for (const rule of clash.rules) {
@@ -49,6 +50,7 @@ test('Clash group references and rule targets exist and have no cycles', () => {
     const members = groups.get(name).proxies || [];
     assert.equal(new Set(members).size, members.length, name);
     for (const member of members) visit(member, [...stack, name]);
+    if (groups.get(name)['empty-fallback']) visit(groups.get(name)['empty-fallback'], [...stack, name]);
   }
   for (const name of groups.keys()) visit(name);
   for (const rule of clash.rules) {
@@ -63,7 +65,7 @@ test('Clash checks are bounded and fallback checks actual nodes', () => {
   for (const group of groups.values()) {
     if (!['url-test', 'fallback', 'load-balance'].includes(group.type)) continue;
     assert.match(group.url, /^https:\/\//);
-    assert.equal(group['expected-status'], 204);
+    assert.equal(group['expected-status'], policy.telegramHealth[group.name]?.['expected-status'] || 204);
     assert.equal(group.timeout, 4000);
     assert.equal(group.interval, group.type === 'fallback' ? 60 : 120);
     assert.equal(group.lazy, group.type !== 'fallback');

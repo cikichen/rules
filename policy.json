@@ -7,6 +7,20 @@
     "tolerance": 100,
     "fallbackInterval": 60
   },
+  "telegramHealth": {
+    "TG-亚洲 (DC5)": {
+      "url": "https://flora.web.telegram.org/apiw1",
+      "expected-status": 501
+    },
+    "TG-美洲 (DC1/3)": {
+      "url": "https://pluto.web.telegram.org/apiw1",
+      "expected-status": 501
+    },
+    "TG-欧洲 (DC2/4)": {
+      "url": "https://venus.web.telegram.org/apiw1",
+      "expected-status": 501
+    }
+  },
   "candidates": [
     "节点选择", "自动选择", "故障转移", "负载均衡-散列", "负载均衡-轮询",
     "香港-自动选择", "台湾-自动选择", "狮城-自动选择", "日本-自动选择", "美国-自动选择",

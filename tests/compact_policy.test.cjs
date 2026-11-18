@@ -31,6 +31,7 @@ function verify(config, proxies = []) {
     const members = groups.get(name).proxies || [];
     assert.equal(new Set(members).size, members.length, name);
     for (const member of members) visit(member, [...stack, name]);
+    if (groups.get(name)['empty-fallback']) visit(groups.get(name)['empty-fallback'], [...stack, name]);
   }
   for (const name of groups.keys()) visit(name);
   for (const rule of config.rules) {
@@ -132,19 +133,31 @@ test('Shadowrocket 合并后选中索引有效，保留微软代理及奈飞默�
   }
 });
 
-test('Clash 的 Telegram 三个 DC 地区组保留独立偏好，规则先于通用 Telegram 规则', () => {
+test('Clash 的 Telegram 三个 DC 组直接按目标前端测速，规则先于通用 Telegram 规则', () => {
   const config = yaml.load(read('clash_config_slim.yaml'));
   const groups = verify(config);
-  for (const [name, first] of [
-    ['TG-亚洲 (DC5)', '狮城-自动选择'],
-    ['TG-美洲 (DC1/3)', '美国-自动选择'],
-    ['TG-欧洲 (DC2/4)', '欧洲节点']
+  for (const [name, url] of [
+    ['TG-亚洲 (DC5)', 'https://flora.web.telegram.org/apiw1'],
+    ['TG-美洲 (DC1/3)', 'https://pluto.web.telegram.org/apiw1'],
+    ['TG-欧洲 (DC2/4)', 'https://venus.web.telegram.org/apiw1']
   ]) {
-    assert.equal(groups.get(name).type, 'select');
-    assert.equal(groups.get(name).proxies[0], first);
-    assert.equal(groups.get(name).proxies.at(-1), '电报消息');
-    assert.ok(!groups.get(name).proxies.includes('自动选择'), `${name} 保留地区候选列表`);
+    const group = groups.get(name);
+    assert.equal(group.type, 'url-test');
+    assert.equal(group.url, url);
+    assert.equal(group['expected-status'], 501);
+    assert.equal(group['include-all'], true);
+    assert.equal(group.proxies, undefined, `${name} 直接测节点，不测嵌套地区组`);
+    assert.equal(group['exclude-filter'], groups.get('自动选择')['exclude-filter']);
+    assert.equal(group['empty-fallback'], '电报消息');
+    assert.equal(group.interval, 120);
+    assert.equal(group.lazy, true);
+    assert.equal(group.tolerance, 100);
+    assert.equal(group.timeout, 4000);
   }
+  assert.equal(groups.get('自动选择').url, 'https://www.gstatic.com/generate_204');
+  assert.equal(groups.get('自动选择')['expected-status'], 204);
+  assert.equal(groups.get('故障转移')['expected-status'], 204);
+  assert.equal(groups.get('AI-故障转移')['expected-status'], 204);
   const general = config.rules.indexOf('RULE-SET,Telegram_Domain,电报消息');
   for (const [domain, target] of [
     ['flora', 'TG-亚洲 (DC5)'], ['pluto', 'TG-美洲 (DC1/3)'],

@@ -136,6 +136,20 @@ const SHARED_POLICY = {
         "tolerance": 100,
         "fallbackInterval": 60
     },
+    "telegramHealth": {
+        "TG-亚洲 (DC5)": {
+            "url": "https://flora.web.telegram.org/apiw1",
+            "expected-status": 501
+        },
+        "TG-美洲 (DC1/3)": {
+            "url": "https://pluto.web.telegram.org/apiw1",
+            "expected-status": 501
+        },
+        "TG-欧洲 (DC2/4)": {
+            "url": "https://venus.web.telegram.org/apiw1",
+            "expected-status": 501
+        }
+    },
     "candidates": [
         "节点选择",
         "自动选择",

@@ -30,10 +30,12 @@ function members(name, original, available) {
     ...policy.candidates.filter(p => available.has(p))]);
 }
 
-function health(type) {
+function health(type, name) {
   const { tolerance, fallbackInterval, ...common } = policy.health;
   return {
     ...common,
+    // Telegram 前端的 HEAD 返回 501，不能复用 Google 的 204 或 GET 的 404。
+    ...policy.telegramHealth[name],
     interval: type === 'fallback' ? fallbackInterval : common.interval,
     lazy: type !== 'fallback',
     ...(type === 'url-test' ? { tolerance } : {})
@@ -45,10 +47,19 @@ const clashSource = fs.readFileSync(path.join(root, clashFile), 'utf8');
 const clash = yaml.load(clashSource);
 const originalRules = clash.rules;
 compactPolicy(clash, policy.groupMerges);
+// DC 组直接测实际节点，避免借用普通地区组对 Google 的测速结果。
+for (const group of clash['proxy-groups']) {
+  if (!policy.telegramHealth[group.name]) continue;
+  group.type = 'url-test';
+  group['include-all'] = true;
+  group['exclude-filter'] = clash['proxy-groups'].find(g => g.name === '自动选择')['exclude-filter'];
+  group['empty-fallback'] = '电报消息';
+  delete group.proxies;
+}
 const ruleChanges = new Map(originalRules.map((rule, index) => [rule, clash.rules[index]]));
 const available = new Set(['DIRECT', ...clash['proxy-groups'].map(g => g.name)]);
 const anchors = new Map();
-const healthAnchors = new Set();
+const healthAnchors = new Map();
 const clashOutput = clashSource.replace(/^  - name: (.+)\n[\s\S]*?(?=^  - name: |^rule-providers:|^# ={5,}|$(?![\s\S]))/gm, block => {
   // Preserve section headings and spacing after the group.
   const end = block.search(/\n(?:  #|\s*$)/m);
@@ -62,11 +73,14 @@ const clashOutput = clashSource.replace(/^  - name: (.+)\n[\s\S]*?(?=^  - name: 
   }
   let output = `  - name: ${name}\n` + dump(fields).split('\n').map(l => `    ${l}`).join('\n') + '\n';
   if (automatic) {
-    const anchor = `${group.type.replace('-', '_')}_health`;
-    if (healthAnchors.has(anchor)) output += `    <<: *${anchor}\n`;
+    const settings = health(group.type, name);
+    const key = JSON.stringify(settings);
+    const existing = healthAnchors.get(key);
+    if (existing) output += `    <<: *${existing}\n`;
     else {
-      healthAnchors.add(anchor);
-      output += `    <<: &${anchor}\n` + dump(health(group.type)).split('\n').map(l => `      ${l}`).join('\n') + '\n';
+      const anchor = `${group.type.replace('-', '_')}_health${policy.telegramHealth[name] ? `_${healthAnchors.size + 1}` : ''}`;
+      healthAnchors.set(key, anchor);
+      output += `    <<: &${anchor}\n` + dump(settings).split('\n').map(l => `      ${l}`).join('\n') + '\n';
     }
   }
   if (proxies) {

@@ -170,29 +170,45 @@ proxy-groups:
 
   - name: TG-亚洲 (DC5)
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
-    type: select
-    proxies:
-      - 狮城-自动选择
-      - 香港-自动选择
-      - 日本-自动选择
-      - 台湾-自动选择
-      - 韩国节点
-      - 东南亚-自动选择
-      - 电报消息
+    type: url-test
+    include-all: true
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
+    empty-fallback: 电报消息
+    <<: &url_test_health_3
+      url: https://flora.web.telegram.org/apiw1
+      expected-status: 501
+      timeout: 4000
+      interval: 120
+      lazy: true
+      tolerance: 100
 
   - name: TG-美洲 (DC1/3)
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
-    type: select
-    proxies:
-      - 美国-自动选择
-      - 电报消息
+    type: url-test
+    include-all: true
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
+    empty-fallback: 电报消息
+    <<: &url_test_health_4
+      url: https://pluto.web.telegram.org/apiw1
+      expected-status: 501
+      timeout: 4000
+      interval: 120
+      lazy: true
+      tolerance: 100
 
   - name: TG-欧洲 (DC2/4)
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
-    type: select
-    proxies:
-      - 欧洲节点
-      - 电报消息
+    type: url-test
+    include-all: true
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
+    empty-fallback: 电报消息
+    <<: &url_test_health_5
+      url: https://venus.web.telegram.org/apiw1
+      expected-status: 501
+      timeout: 4000
+      interval: 120
+      lazy: true
+      tolerance: 100
 
   - name: 推特X
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png
