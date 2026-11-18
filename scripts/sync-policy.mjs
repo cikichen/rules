@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
+import { compactPolicy } from './compact-policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const policy = JSON.parse(fs.readFileSync(path.join(root, 'policy.json'), 'utf8'));
@@ -42,6 +43,9 @@ function health(type) {
 const clashFile = 'clash_config_slim.yaml';
 const clashSource = fs.readFileSync(path.join(root, clashFile), 'utf8');
 const clash = yaml.load(clashSource);
+const originalRules = clash.rules;
+compactPolicy(clash, policy.groupMerges);
+const ruleChanges = new Map(originalRules.map((rule, index) => [rule, clash.rules[index]]));
 const available = new Set(['DIRECT', ...clash['proxy-groups'].map(g => g.name)]);
 const anchors = new Map();
 const healthAnchors = new Set();
@@ -50,6 +54,7 @@ const clashOutput = clashSource.replace(/^  - name: (.+)\n[\s\S]*?(?=^  - name: 
   const end = block.search(/\n(?:  #|\s*$)/m);
   const suffix = end < 0 ? '' : block.slice(end + 1);
   const group = clash['proxy-groups'].find(g => g.name === block.split('\n')[0].slice(10));
+  if (!group) return suffix;
   const { name, proxies, ...fields } = group;
   const automatic = ['url-test', 'fallback', 'load-balance'].includes(group.type);
   if (automatic) {
@@ -76,10 +81,36 @@ const clashOutput = clashSource.replace(/^  - name: (.+)\n[\s\S]*?(?=^  - name: 
   }
   return output + suffix;
 });
-save(clashFile, clashOutput);
+save(clashFile, clashOutput.replace(/^  - (.+)$/gm, (line, rule) =>
+  ruleChanges.has(rule) ? `  - ${ruleChanges.get(rule)}` : line));
 
 const shadowFile = 'shadowrocket_slim.conf';
-const shadowSource = fs.readFileSync(path.join(root, shadowFile), 'utf8');
+const originalShadow = fs.readFileSync(path.join(root, shadowFile), 'utf8');
+const shadowGroupSource = originalShadow.split('[Proxy Group]')[1].split('[Rule]')[0];
+const shadowConfig = {
+  'proxy-groups': shadowGroupSource.split('\n').filter(line => line.includes(' = ')).map(line => {
+    const [name, definition] = line.split(' = ');
+    const [type, ...parts] = definition.split(',');
+    return { name, type, ...(type === 'select' ? { proxies: parts.filter(p => !p.includes('=')) } : {}) };
+  }),
+  rules: originalShadow.split('[Rule]')[1].split('[Host]')[0].split('\n').filter(line => line && !line.startsWith('#'))
+};
+const shadowRules = shadowConfig.rules;
+compactPolicy(shadowConfig, policy.groupMerges);
+const shadowKept = new Map(shadowConfig['proxy-groups'].map(group => [group.name, group]));
+const shadowRedirect = name => policy.groupMerges[name]?.find(candidate => shadowKept.has(candidate)) || name;
+const shadowRuleChanges = new Map(shadowRules.map((rule, index) => [rule, shadowConfig.rules[index]]));
+const shadowSource = originalShadow.replace(/^(.*?) = (select|url-test|fallback|load-balance),(.+)\n/gm, (line, name, type, rest) => {
+  if (!shadowKept.has(name)) return '';
+  if (type !== 'select') return line;
+  const parts = rest.split(',');
+  const original = parts.filter(p => !p.includes('='));
+  const selected = shadowKept.get(name).proxies;
+  const oldIndex = Number(parts.find(p => p.startsWith('select='))?.slice(7) || 0);
+  const options = parts.filter(p => p.includes('=') && !p.startsWith('select='));
+  if (parts.some(p => p.startsWith('select='))) options.push(`select=${selected.indexOf(shadowRedirect(original[oldIndex]))}`);
+  return `${name} = select,${[...selected, ...options].join(',')}\n`;
+}).split('\n').map(line => shadowRuleChanges.get(line) || line).join('\n');
 const shadowAvailable = new Set(['DIRECT', 'PROXY', ...shadowSource.split('[Proxy Group]')[1].split('[Rule]')[0]
   .split('\n').filter(l => l.includes(' = ')).map(l => l.split(' = ')[0])]);
 save(shadowFile, shadowSource.replace(/^(.*?) = (select|url-test|fallback|load-balance),(.+)$/gm, (line, name, type, rest) => {
@@ -101,10 +132,42 @@ save(shadowFile, shadowSource.replace(/^(.*?) = (select|url-test|fallback|load-b
   return line;
 }));
 
-const converterFile = 'convert_clash_reference.js';
-const converter = fs.readFileSync(path.join(root, converterFile), 'utf8');
+const aclFile = 'ACL4SSR_WithChinaIp_WithGFW.ini';
+const aclSource = fs.readFileSync(path.join(root, aclFile), 'utf8');
+const aclNames = new Map(aclSource.split('\n').filter(line => line.startsWith('custom_proxy_group='))
+  .map(line => {
+    const name = line.split('`')[0].slice('custom_proxy_group='.length);
+    return [name.slice(name.indexOf(' ') + 1), name];
+  }));
+const aclRedirects = new Map();
+for (const [name, candidates] of Object.entries(policy.groupMerges)) {
+  if (!aclNames.has(name)) continue;
+  const target = candidates.find(candidate => aclNames.has(candidate) && !policy.groupMerges[candidate]);
+  if (!target) throw new Error(`无法合并 ACL 策略组 ${name}`);
+  aclRedirects.set(aclNames.get(name), aclNames.get(target));
+}
+save(aclFile, aclSource.split('\n').filter(line => !line.startsWith('custom_proxy_group=')
+  || !aclRedirects.has(line.split('`')[0].slice('custom_proxy_group='.length)))
+  .map(line => {
+    if (line.startsWith('ruleset=')) {
+      const comma = line.indexOf(',');
+      const name = line.slice('ruleset='.length, comma);
+      return `ruleset=${aclRedirects.get(name) || name}${line.slice(comma)}`;
+    }
+    if (line.startsWith('custom_proxy_group=')) {
+      const parts = line.split('`');
+      return [parts[0], ...new Set(parts.slice(1).map(part => part.startsWith('[]')
+        ? `[]${aclRedirects.get(part.slice(2)) || part.slice(2)}` : part))].join('`');
+    }
+    return line;
+  }).join('\n'));
+
 const marker = /\/\/ BEGIN SHARED POLICY[\s\S]*?\/\/ END SHARED POLICY/;
-if (!marker.test(converter)) throw new Error('转换脚本缺少共享策略标记');
-const embedded = `// BEGIN SHARED POLICY (由 npm run sync:policy 生成)\nconst SHARED_POLICY = ${JSON.stringify(policy, null, 4)};\n// END SHARED POLICY`;
-save(converterFile, converter.replace(marker, embedded));
+const embedded = `// BEGIN SHARED POLICY (由 npm run sync:policy 生成)\nconst SHARED_POLICY = ${JSON.stringify(policy, null, 4)};\n\n${compactPolicy.toString()}\n// END SHARED POLICY`;
+for (const converterFile of ['convert_clash_reference.js', 'convert_auto.js']) {
+  const converter = fs.readFileSync(path.join(root, converterFile), 'utf8');
+  const output = marker.test(converter) ? converter.replace(marker, embedded)
+    : converter.replace('const DEFAULT_GROUP_ICON', embedded + '\n\nconst DEFAULT_GROUP_ICON');
+  save(converterFile, output);
+}
 if (stale) process.exitCode = 1;

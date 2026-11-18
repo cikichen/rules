@@ -36,13 +36,14 @@ test('service defaults and dedicated media/AI entries survive menu normalization
   assert.equal(groups.get('中转站').proxies[0], 'DIRECT');
   assert.equal(groups.get('奈飞视频').proxies[0], '节点选择');
   assert.ok(groups.get('奈飞视频').proxies.includes('奈飞节点'));
-  assert.equal(groups.get('OpenAI').proxies[0], '人工智能');
+  assert.equal(groups.has('OpenAI'), false);
   assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
   assert.equal(groups.get('故障转移').proxies, undefined);
   const netflix = shadowGroups.get('Netflix').split(',');
   assert.equal(netflix[1], '奈飞节点');
   assert.ok(netflix.includes('流媒体解锁'));
-  for (const name of ['Spotify', '微软服务']) {
+  assert.equal(shadowGroups.has('Spotify'), false);
+  for (const name of ['微软服务']) {
     const parts = shadowGroups.get(name).split(',').slice(1);
     const index = Number(parts.find(p => p.startsWith('select=')).slice(7));
     assert.equal(parts.filter(p => !p.includes('='))[index], '节点选择');
@@ -58,7 +59,7 @@ test('converter resolves shared candidates to existing dynamic regional groups',
   const result = JSON.parse(JSON.stringify(context.main({ proxies })));
   const dynamic = new Map(result['proxy-groups'].map(g => [g.name, g]));
   const common = dynamic.get('国外媒体').proxies;
-  for (const name of ['GitHub', '苹果服务', '电报消息', 'Linux.do']) {
+  for (const name of ['GitHub', '苹果服务', '电报消息']) {
     const group = dynamic.get(name);
     for (const member of common) assert.ok(group.proxies.includes(member), `${name}: ${member}`);
   }

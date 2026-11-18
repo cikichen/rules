@@ -8,15 +8,13 @@ geox-url:
 
 # ==================== 代理组 ====================
 proxy-groups:
-  # === 核心策略组 ===
+  # === 节点控制 ===
   - name: 节点选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png
     type: select
     proxies:
       - 自动选择
       - 故障转移
-      - 负载均衡-散列
-      - 负载均衡-轮询
       - 香港-自动选择
       - 台湾-自动选择
       - 狮城-自动选择
@@ -42,27 +40,6 @@ proxy-groups:
       lazy: true
       tolerance: 100
 
-  - name: 负载均衡-散列
-    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    type: load-balance
-    strategy: consistent-hashing
-    include-all: true
-    <<: &load_balance_health
-      url: https://www.gstatic.com/generate_204
-      expected-status: 204
-      timeout: 4000
-      interval: 120
-      lazy: true
-
-  - name: 负载均衡-轮询
-    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/loadbalance.png
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    type: load-balance
-    strategy: round-robin
-    include-all: true
-    <<: *load_balance_health
-
   - name: 故障转移
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
@@ -75,41 +52,76 @@ proxy-groups:
       interval: 60
       lazy: false
 
+
+
   - name: 手动切换
     icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png
     include-all: true
     type: select
 
-  - name: 全球直连
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png
+  # === AI 服务 ===
+  - name: 人工智能
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
     type: select
+    include-all: true
+    exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
     proxies:
-      - DIRECT
+      - AI-故障转移
+      - 美国-自动选择
+      - 香港-自动选择
+      - 日本-自动选择
+      - 狮城-自动选择
+      - 台湾-自动选择
+      - 韩国节点
+      - 东南亚-自动选择
+      - 欧洲节点
       - 节点选择
+      - 手动切换
 
-  - name: 全球拦截
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
 
-  - name: 应用净化
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
 
-  - name: 漏网之鱼
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
+  # Claude 桌面端更新下载，不限制地区节点
+
+
+  - name: AI-故障转移
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
+    type: fallback
+    include-all: true
+    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
+    <<: *fallback_health
+
+
+  # === 常用服务 ===
+  - name: GitHub
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
     type: select
     proxies: &service_candidates_1
       - 节点选择
       - 自动选择
       - 故障转移
-      - 负载均衡-散列
-      - 负载均衡-轮询
+      - 香港-自动选择
+      - 台湾-自动选择
+      - 狮城-自动选择
+      - 日本-自动选择
+      - 美国-自动选择
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚-自动选择
+      - 土耳其节点
+      - 阿根廷节点
+      - 其他地区
+      - 手动切换
+      - DIRECT
+
+
+  - name: Cloudflare验证
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png
+    type: select
+    proxies: &service_candidates_2
+      - 节点选择
+      - 全球直连
+      - 自动选择
+      - 故障转移
       - 香港-自动选择
       - 台湾-自动选择
       - 狮城-自动选择
@@ -127,136 +139,11 @@ proxy-groups:
   - name: 中转站
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
     type: select
-    proxies: &service_candidates_2
-      - DIRECT
-      - 节点选择
-      - 自动选择
-      - 故障转移
-      - 负载均衡-散列
-      - 负载均衡-轮询
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 狮城-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 阿根廷节点
-      - 其他地区
-      - 手动切换
-
-  # === AI 服务组 ===
-  - name: OpenAI
-    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/openai.png
-    type: select
-    include-all: true
-    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    proxies:
-      - 人工智能
-      - AI-负载均衡
-      - 狮城-自动选择
-      - 台湾-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 韩国节点
-      - 东南亚-自动选择
-      - 欧洲节点
-      - 手动切换
-
-  # Claude 桌面端更新下载, 不限制地区节点
-  - name: Claude更新
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
-    type: select
-    include-all: true
-    proxies: *service_candidates_1
-
-  - name: Claude
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
-    type: select
-    include-all: true
-    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    proxies:
-      - 人工智能
-      - AI-负载均衡
-      - 美国-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 台湾-自动选择
-      - 韩国节点
-      - 东南亚-自动选择
-      - 欧洲节点
-      - 手动切换
-
-  - name: Gemini
-    icon: https://testingcf.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png
-    type: select
-    include-all: true
-    exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
-    proxies:
-      - 人工智能
-      - AI-负载均衡
-      - 美国-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 台湾-自动选择
-      - 韩国节点
-      - 东南亚-自动选择
-      - 欧洲节点
-      - 香港-自动选择
-      - 手动切换
-
-  - name: 人工智能
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
-    type: select
-    include-all: true
-    exclude-filter: (?i)中国|China|CN|🇨🇳|内地|官网|网站|地址|剩余|过期|套餐|流量|重置
-    proxies:
-      - AI-故障转移
-      - AI-负载均衡
-      - 美国-自动选择
-      - 香港-自动选择
-      - 日本-自动选择
-      - 狮城-自动选择
-      - 台湾-自动选择
-      - 韩国节点
-      - 东南亚-自动选择
-      - 欧洲节点
-      - 节点选择
-      - 手动切换
-
-  - name: AI-故障转移
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
-    type: fallback
-    include-all: true
-    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    <<: *fallback_health
-
-  - name: AI-负载均衡
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png
-    type: load-balance
-    strategy: consistent-hashing
-    include-all: true
-    exclude-filter: (?i)🇭🇰|中国|China|CN|🇨🇳|内地|香港|Hong\s*Kong|\bHK\b|官网|网站|地址|剩余|过期|套餐|流量|重置
-    <<: *load_balance_health
-
-  # === 常用服务组 ===
-  - name: 油管视频
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
-    type: select
-    proxies: *service_candidates_1
-
-  - name: 奈飞视频
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
-    type: select
     proxies: &service_candidates_3
+      - DIRECT
       - 节点选择
-      - 奈飞节点
       - 自动选择
       - 故障转移
-      - 负载均衡-散列
-      - 负载均衡-轮询
       - 香港-自动选择
       - 台湾-自动选择
       - 狮城-自动选择
@@ -269,25 +156,17 @@ proxy-groups:
       - 阿根廷节点
       - 其他地区
       - 手动切换
-      - DIRECT
-
-  - name: 国内媒体
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/DomesticMedia.png
-    type: select
-    proxies:
-      - DIRECT
-      - 香港-自动选择
-      - 台湾-自动选择
-
-  - name: 国外媒体
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
-    type: select
-    proxies: *service_candidates_1
 
   - name: 电报消息
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
     type: select
     proxies: *service_candidates_1
+
+
+
+
+
+
 
   - name: TG-亚洲 (DC5)
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
@@ -308,58 +187,13 @@ proxy-groups:
       - 美国-自动选择
       - 电报消息
 
-  - name: TG-欧洲 (DC2)
+  - name: TG-欧洲 (DC2/4)
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
     type: select
     proxies:
       - 欧洲节点
       - 电报消息
 
-  - name: 谷歌服务
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
-    type: select
-    proxies: *service_candidates_1
-
-  - name: 微软服务
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
-    type: select
-    proxies: *service_candidates_2
-
-  - name: 苹果服务
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
-    type: select
-    proxies: *service_candidates_2
-
-  - name: GitHub
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
-    type: select
-    proxies: *service_candidates_1
-
-  - name: Cloudflare验证
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png
-    type: select
-    proxies: &service_candidates_4
-      - 节点选择
-      - 全球直连
-      - 自动选择
-      - 故障转移
-      - 负载均衡-散列
-      - 负载均衡-轮询
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 狮城-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 韩国节点
-      - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 阿根廷节点
-      - 其他地区
-      - 手动切换
-      - DIRECT
-
-  # === 社交媒体组 ===
   - name: 推特X
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png
     type: select
@@ -375,11 +209,67 @@ proxy-groups:
     type: select
     proxies: *service_candidates_1
 
-  # === 游戏组 ===
-  - name: Epic游戏
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Epic_Games.png
+  - name: 谷歌服务
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
     type: select
-    proxies: *service_candidates_2
+    proxies: *service_candidates_1
+
+  - name: 微软服务
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
+    type: select
+    proxies: *service_candidates_3
+
+  - name: 苹果服务
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
+    type: select
+    proxies: *service_candidates_3
+
+  - name: 阿里海外
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
+    type: select
+    proxies: *service_candidates_3
+
+  # === 媒体与游戏 ===
+  - name: 油管视频
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
+    type: select
+    proxies: *service_candidates_1
+
+  - name: 奈飞视频
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
+    type: select
+    proxies: &service_candidates_4
+      - 节点选择
+      - 奈飞节点
+      - 自动选择
+      - 故障转移
+      - 香港-自动选择
+      - 台湾-自动选择
+      - 狮城-自动选择
+      - 日本-自动选择
+      - 美国-自动选择
+      - 韩国节点
+      - 欧洲节点
+      - 东南亚-自动选择
+      - 土耳其节点
+      - 阿根廷节点
+      - 其他地区
+      - 手动切换
+      - DIRECT
+
+  - name: 国外媒体
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
+    type: select
+    proxies: *service_candidates_1
+
+  - name: 国内媒体
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/DomesticMedia.png
+    type: select
+    proxies:
+      - DIRECT
+      - 香港-自动选择
+      - 台湾-自动选择
+
 
   - name: 游戏平台
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png
@@ -394,12 +284,7 @@ proxy-groups:
       - 节点选择
       - 手动切换
 
-  - name: 阿里海外
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
-    type: select
-    proxies: *service_candidates_2
-
-  # === 地区策略组 ===
+  # === 地区与专线 ===
   - name: 香港-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
     include-all: true
@@ -416,6 +301,14 @@ proxy-groups:
     type: url-test
     <<: *url_test_health
 
+  - name: 狮城-自动选择
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
+    include-all: true
+    filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|\bSG\b|Singapore))
+    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
+    type: url-test
+    <<: *url_test_health
+
   - name: 日本-自动选择
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
     include-all: true
@@ -428,14 +321,6 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
     include-all: true
     filter: (?i)(?:^(?:(?!\|).)*(?:🇺🇸)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|\bUSA\b|United\s*States))
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    type: url-test
-    <<: *url_test_health
-
-  - name: 狮城-自动选择
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|\bSG\b|Singapore))
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
     type: url-test
     <<: *url_test_health
@@ -492,6 +377,28 @@ proxy-groups:
     include-all: true
     filter: (?i)\bNF\b|奈飞|解锁|Netflix
     type: select
+
+  # === 直连与拦截 ===
+  - name: 全球直连
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  - name: 全球拦截
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+
+  # === 兜底 ===
+  - name: 漏网之鱼
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
+    type: select
+    proxies: *service_candidates_1
 
 # ==================== 规则提供者 ====================
 rule-providers:
@@ -880,13 +787,12 @@ rules:
 
   # === 拦截规则 (需早于国内白名单规则，避免广告被国内直连放行) ===
   - RULE-SET,BanAD,全球拦截
-  - RULE-SET,BanProgramAD,应用净化
+  - RULE-SET,BanProgramAD,全球拦截
 
-  # === 直连规则 ===
+  # === 特定直连例外与国内媒体 ===
   - RULE-SET,UnBan,全球直连
   - RULE-SET,GoogleCN,全球直连
   - RULE-SET,SteamCN,全球直连
-  - RULE-SET,Direct_Domain,全球直连
   - RULE-SET,ChinaMedia,国内媒体
   # -- 阿里: 国内段直连, 海外段/海外域名走「阿里海外」 --
   # GEOIP,CN 库缺 8 个国内段, 先白名单兜底 (no-resolve)
@@ -920,11 +826,6 @@ rules:
   - IP-CIDR,47.80.0.0/12,阿里海外,no-resolve
 
   - IP-CIDR,8.208.0.0/12,阿里海外,no-resolve
-  - RULE-SET,China_Domain,全球直连
-  - RULE-SET,China_YYDS_Domain,全球直连
-  - RULE-SET,China_IP,全球直连
-  - RULE-SET,China_YYDS_IP,全球直连
-  - RULE-SET,Download,全球直连
 
   # === Cloudflare 验证 ===
   - DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证
@@ -933,17 +834,17 @@ rules:
   - DOMAIN,browser.events.data.microsoft.com,人工智能
   - DOMAIN-KEYWORD,antigravity,人工智能
   # Claude 桌面端更新下载 (前置, 避免命中 Claude 会话分组)
-  - DOMAIN-SUFFIX,downloads.claude.ai,Claude更新
-  - RULE-SET,OpenAI_Domain,OpenAI
-  - RULE-SET,OpenAI_IP,OpenAI,no-resolve
-  - RULE-SET,Claude_Domain,Claude
-  - RULE-SET,Gemini_Domain,Gemini
+  - DOMAIN-SUFFIX,downloads.claude.ai,节点选择
+  - RULE-SET,OpenAI_Domain,人工智能
+  - RULE-SET,OpenAI_IP,人工智能,no-resolve
+  - RULE-SET,Claude_Domain,人工智能
+  - RULE-SET,Gemini_Domain,人工智能
   - RULE-SET,AI,人工智能
-  - PROCESS-NAME,Codex,OpenAI
-  - PROCESS-NAME,codex,OpenAI
-  - PROCESS-NAME,Codex Helper,OpenAI
-  - PROCESS-NAME,Codex Helper (Renderer),OpenAI
-  - PROCESS-NAME,gemini,Gemini
+  - PROCESS-NAME,Codex,人工智能
+  - PROCESS-NAME,codex,人工智能
+  - PROCESS-NAME,Codex Helper,人工智能
+  - PROCESS-NAME,Codex Helper (Renderer),人工智能
+  - PROCESS-NAME,gemini,人工智能
   - PROCESS-NAME,language_server_macos_arm,人工智能
 
   # === 社交媒体 ===
@@ -968,12 +869,12 @@ rules:
   - IP-ASN,59930,TG-美洲 (DC1/3),no-resolve
   - DOMAIN-SUFFIX,pluto.web.telegram.org,TG-美洲 (DC1/3)
   - DOMAIN-SUFFIX,aurora.web.telegram.org,TG-美洲 (DC1/3)
-  - IP-ASN,62041,TG-欧洲 (DC2),no-resolve
-  - IP-ASN,211157,TG-欧洲 (DC2),no-resolve
-  - IP-CIDR,5.28.192.0/18,TG-欧洲 (DC2),no-resolve
-  - IP-CIDR,109.239.140.0/24,TG-欧洲 (DC2),no-resolve
-  - DOMAIN-SUFFIX,venus.web.telegram.org,TG-欧洲 (DC2)
-  - DOMAIN-SUFFIX,vesta.web.telegram.org,TG-欧洲 (DC2)
+  - IP-ASN,62041,TG-欧洲 (DC2/4),no-resolve
+  - IP-ASN,211157,TG-欧洲 (DC2/4),no-resolve
+  - IP-CIDR,5.28.192.0/18,TG-欧洲 (DC2/4),no-resolve
+  - IP-CIDR,109.239.140.0/24,TG-欧洲 (DC2/4),no-resolve
+  - DOMAIN-SUFFIX,venus.web.telegram.org,TG-欧洲 (DC2/4)
+  - DOMAIN-SUFFIX,vesta.web.telegram.org,TG-欧洲 (DC2/4)
   - RULE-SET,Telegram_Domain,电报消息
   - RULE-SET,Telegram_IP,电报消息,no-resolve
   - RULE-SET,Microsoft_Domain,微软服务
@@ -985,10 +886,18 @@ rules:
 
   # === 游戏 ===
   - RULE-SET,Steam_Domain,游戏平台
-  - RULE-SET,Epic_Domain,Epic游戏
+  - RULE-SET,Epic_Domain,游戏平台
 
   # === PT站点 ===
   - RULE-SET,PT,PT站点
+
+  # === 通用直连与国内规则 (服务分流优先，避免微软登录被直连抢先命中) ===
+  - RULE-SET,Direct_Domain,全球直连
+  - RULE-SET,China_Domain,全球直连
+  - RULE-SET,China_YYDS_Domain,全球直连
+  - RULE-SET,China_IP,全球直连
+  - RULE-SET,China_YYDS_IP,全球直连
+  - RULE-SET,Download,全球直连
 
   # === GEOIP ===
   - GEOIP,CN,全球直连

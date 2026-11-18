@@ -26,7 +26,7 @@ test('slim Geo rules explicitly configure their database download sources', () =
   }
 });
 
-test('slim profiles retain regional auto groups and only global/AI load balancing', () => {
+test('slim profiles retain regional auto groups and remove redundant load balancing', () => {
   for (const region of regions) {
     assert.equal(groups.get(`${region}-自动选择`).type, 'url-test');
     assert.ok(shadowGroups.get(`${region}-自动选择`).startsWith('url-test,'));
@@ -34,8 +34,8 @@ test('slim profiles retain regional auto groups and only global/AI load balancin
     assert.equal(shadowGroups.has(`${region}-负载均衡`), false);
   }
   for (const name of ['负载均衡-散列', '负载均衡-轮询', 'AI-负载均衡']) {
-    assert.equal(groups.get(name).type, 'load-balance');
-    assert.ok(shadowGroups.get(name).startsWith('load-balance,'));
+    assert.equal(groups.has(name), false);
+    assert.equal(shadowGroups.has(name), false);
   }
 });
 

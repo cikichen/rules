@@ -11,6 +11,7 @@ https://github.com/powerfullz/override-rules
 - fakeip: DNS 使用 FakeIP 模式（默认 true，false 为 RedirHost）
 - quic: 允许 QUIC 流量（UDP 443，默认 false）
 - threshold: 国家节点数量小于该值时不显示分组 (默认 0)
+- compact: 精简重复分组（默认 true；false 恢复完整分组）
 */
 
 const NODE_SUFFIX = "节点";
@@ -78,6 +79,7 @@ function buildFeatureFlags(args) {
 }
 
 const rawArgs = typeof $arguments !== 'undefined' ? $arguments : {};
+const compactGroups = rawArgs.compact === undefined ? true : parseBool(rawArgs.compact);
 const {
     loadBalance,
     landing,
@@ -116,6 +118,174 @@ const PROXY_GROUPS = {
     LOW_COST: "低倍率节点",
     OTHER: "其他地区",
 };
+// BEGIN SHARED POLICY (由 npm run sync:policy 生成)
+const SHARED_POLICY = {
+    "health": {
+        "url": "https://www.gstatic.com/generate_204",
+        "expected-status": 204,
+        "timeout": 4000,
+        "interval": 120,
+        "tolerance": 100,
+        "fallbackInterval": 60
+    },
+    "candidates": [
+        "节点选择",
+        "自动选择",
+        "故障转移",
+        "负载均衡-散列",
+        "负载均衡-轮询",
+        "香港-自动选择",
+        "台湾-自动选择",
+        "狮城-自动选择",
+        "日本-自动选择",
+        "美国-自动选择",
+        "韩国节点",
+        "欧洲节点",
+        "东南亚-自动选择",
+        "土耳其节点",
+        "阿根廷节点",
+        "其他地区",
+        "手动切换",
+        "DIRECT"
+    ],
+    "groupMerges": {
+        "全球优选": [
+            "自动选择"
+        ],
+        "负载均衡-散列": [
+            "自动选择"
+        ],
+        "负载均衡-轮询": [
+            "自动选择"
+        ],
+        "AI-负载均衡": [
+            "AI-故障转移"
+        ],
+        "OpenAI": [
+            "人工智能"
+        ],
+        "Claude": [
+            "人工智能"
+        ],
+        "Gemini": [
+            "人工智能"
+        ],
+        "OpenAI专线": [
+            "AI-故障转移"
+        ],
+        "Claude专线": [
+            "AI-故障转移"
+        ],
+        "Gemini专线": [
+            "AI-故障转移"
+        ],
+        "Claude更新": [
+            "节点选择"
+        ],
+        "Linux.do": [
+            "节点选择"
+        ],
+        "YouTube Music": [
+            "油管视频",
+            "YouTube"
+        ],
+        "Disney+": [
+            "国外媒体"
+        ],
+        "Max": [
+            "国外媒体"
+        ],
+        "Spotify": [
+            "国外媒体"
+        ],
+        "PikPak": [
+            "国外媒体"
+        ],
+        "OneDrive": [
+            "节点选择"
+        ],
+        "Epic游戏": [
+            "游戏平台"
+        ],
+        "PayPal": [
+            "节点选择"
+        ],
+        "Amazon": [
+            "节点选择"
+        ],
+        "阿里服务": [
+            "阿里海外"
+        ],
+        "哔哩哔哩": [
+            "国内媒体"
+        ],
+        "应用净化": [
+            "全球拦截",
+            "广告拦截"
+        ]
+    },
+    "services": [
+        "漏网之鱼",
+        "中转站",
+        "Claude更新",
+        "油管视频",
+        "YouTube",
+        "YouTube Music",
+        "奈飞视频",
+        "Netflix",
+        "Disney+",
+        "Max",
+        "Spotify",
+        "国外媒体",
+        "电报消息",
+        "Telegram",
+        "谷歌服务",
+        "微软服务",
+        "苹果服务",
+        "GitHub",
+        "Cloudflare验证",
+        "推特X",
+        "Twitter",
+        "Facebook",
+        "Discord",
+        "TikTok",
+        "Epic游戏",
+        "游戏平台",
+        "阿里服务",
+        "阿里海外",
+        "OneDrive",
+        "PikPak",
+        "Linux.do"
+    ]
+};
+
+function compactPolicy(config, merges) {
+  const groups = config['proxy-groups'];
+  const names = new Set(groups.map(group => group.name));
+  const remaining = new Set(['DIRECT', 'REJECT', ...groups
+    .filter(group => !merges[group.name]).map(group => group.name)]);
+  const redirects = new Map();
+  for (const [name, candidates] of Object.entries(merges)) {
+    if (!names.has(name)) continue;
+    const target = candidates.find(candidate => remaining.has(candidate));
+    if (!target) throw new Error(`无法合并策略组 ${name}：目标组不存在`);
+    redirects.set(name, target);
+  }
+  config['proxy-groups'] = groups.filter(group => !redirects.has(group.name));
+  for (const group of config['proxy-groups']) {
+    if (group.proxies) group.proxies = [...new Set(group.proxies
+      .map(name => redirects.get(name) || name))];
+  }
+  config.rules = config.rules.map(rule => {
+    const fields = rule.split(',');
+    const index = fields.length - (fields.at(-1) === 'no-resolve' ? 2 : 1);
+    fields[index] = redirects.get(fields[index]) || fields[index];
+    return fields.join(',');
+  });
+  return config;
+}
+// END SHARED POLICY
+
 const DEFAULT_GROUP_ICON = "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png";
 const AI_UNSUPPORTED_GROUPS = {
     "OpenAI": [],
@@ -306,8 +476,6 @@ const baseRules = [
     `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
-    `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
-    `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     "RULE-SET,OpenAI,OpenAI",
     "RULE-SET,Claude,Claude",
     "RULE-SET,Gemini,Gemini",
@@ -317,7 +485,6 @@ const baseRules = [
     `RULE-SET,GoogleFCM,${PROXY_GROUPS.DIRECT}`,
     `DOMAIN,services.googleapis.cn,${PROXY_GROUPS.SELECT}`,
     `GEOSITE,GOOGLE-PLAY@CN,${PROXY_GROUPS.DIRECT}`,
-    `GEOSITE,MICROSOFT@CN,${PROXY_GROUPS.DIRECT}`,
     "GEOSITE,GITHUB,GitHub",
     "GEOSITE,ONEDRIVE,OneDrive",
     "GEOSITE,MICROSOFT,微软服务",
@@ -330,6 +497,10 @@ const baseRules = [
     "GEOSITE,BAHAMUT,Bahamut",
     "GEOSITE,BILIBILI,哔哩哔哩",
     "GEOSITE,PIKPAK,PikPak",
+    // 国内分类仅作兜底，不能覆盖 AI、OneDrive 和微软服务分组。
+    `GEOSITE,MICROSOFT@CN,${PROXY_GROUPS.DIRECT}`,
+    `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
+    `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
     "GEOSITE,GFW,漏网之鱼",
     "GEOIP,NETFLIX,奈飞视频,no-resolve",
     "GEOIP,TELEGRAM,电报消息,no-resolve",
@@ -937,13 +1108,6 @@ function buildProxyGroups({
             "proxies": defaultSelector
         },
         {
-            "name": PROXY_GROUPS.MANUAL,
-            "icon": "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png",
-            "include-all": true,
-            "type": "select",
-            "proxies": manualGroupProxies
-        },
-        {
             "name": PROXY_GROUPS.AUTO,
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
             "type": "url-test",
@@ -955,8 +1119,27 @@ function buildProxyGroups({
             "tolerance": PROXY_TEST_TOLERANCE,
             "lazy": PROXY_TEST_LAZY
         },
+        {
+            "name": PROXY_GROUPS.FALLBACK,
+            "icon": "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png",
+            "type": "fallback",
+            "include-all": true,
+            "url": PROXY_TEST_URL,
+            "expected-status": 204,
+            "interval": FALLBACK_TEST_INTERVAL,
+            "timeout": PROXY_TEST_TIMEOUT,
+            "tolerance": PROXY_TEST_TOLERANCE,
+            "lazy": FALLBACK_TEST_LAZY
+        },
         createLoadBalanceGroup(PROXY_GROUPS.BALANCE_HASH, LOAD_BALANCE_HASH_STRATEGY),
         createLoadBalanceGroup(PROXY_GROUPS.BALANCE_ROUND_ROBIN, LOAD_BALANCE_ROUND_ROBIN_STRATEGY),
+        {
+            "name": PROXY_GROUPS.MANUAL,
+            "icon": "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/select.png",
+            "include-all": true,
+            "type": "select",
+            "proxies": manualGroupProxies
+        },
         (landing) ? {
             "name": "前置代理",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Area.png",
@@ -972,54 +1155,24 @@ function buildProxyGroups({
             "include-all": true,
             "filter": "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
         } : null,
-        {
-            "name": PROXY_GROUPS.FALLBACK,
-            "icon": "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/fallback.png",
-            "type": "fallback",
-            "include-all": true,
+        (lowCost) ? {
+            "name": PROXY_GROUPS.LOW_COST,
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
+            "type": "url-test",
             "url": PROXY_TEST_URL,
             "expected-status": 204,
-            "interval": FALLBACK_TEST_INTERVAL,
+            "interval": PROXY_TEST_INTERVAL,
             "timeout": PROXY_TEST_TIMEOUT,
             "tolerance": PROXY_TEST_TOLERANCE,
-            "lazy": FALLBACK_TEST_LAZY
-        },
+            "lazy": PROXY_TEST_LAZY,
+            "include-all": true,
+            "filter": "(?i)0\.[0-5]|低倍率|省流|大流量|实验性"
+        } : null,
         {
-            "name": PROXY_GROUPS.DIRECT,
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png",
+            "name": "人工智能",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png",
             "type": "select",
-            "proxies": [
-                "DIRECT", PROXY_GROUPS.SELECT
-            ]
-        },
-        {
-            "name": "广告拦截",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png",
-            "type": "select",
-            "proxies": [
-                "REJECT", "REJECT-DROP",  PROXY_GROUPS.DIRECT
-            ]
-        },
-        {
-            "name": "应用净化",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png",
-            "type": "select",
-            "proxies": [
-                "REJECT",
-                "DIRECT"
-            ]
-        },
-        {
-            "name": "TikTok",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
-        {
-            "name": PROXY_GROUPS.CUSTOM,
-            "icon": DEFAULT_GROUP_ICON,
-            "type": "select",
-            "proxies": defaultProxiesDirect
+            "proxies": buildAiGroupProxies("人工智能")
         },
         {
             "name": "OpenAI",
@@ -1040,22 +1193,46 @@ function buildProxyGroups({
             "proxies": buildAiGroupProxies("Gemini")
         },
         {
-            "name": "人工智能",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png",
-            "type": "select",
-            "proxies": buildAiGroupProxies("人工智能")
-        },
-        {
             "name": "GitHub",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png",
             "type": "select",
             "proxies": buildList(fullProxies, "DIRECT")
         },
         {
-            "name": "OneDrive",
-            "icon": "https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/icons/Onedrive.png",
+            "name": PROXY_GROUPS.CUSTOM,
+            "icon": DEFAULT_GROUP_ICON,
+            "type": "select",
+            "proxies": defaultProxiesDirect
+        },
+        {
+            "name": "电报消息",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png",
+            "type": "select",
+            "proxies": fullProxies
+        },
+        {
+            "name": "推特X",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png",
+            "type": "select",
+            "proxies": fullProxies
+        },
+        {
+            "name": "Discord",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png",
+            "type": "select",
+            "proxies": fullProxies
+        },
+        {
+            "name": "TikTok",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png",
             "type": "select",
             "proxies": defaultProxies
+        },
+        {
+            "name": "谷歌服务",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png",
+            "type": "select",
+            "proxies": fullProxies
         },
         {
             "name": "微软服务",
@@ -1067,16 +1244,10 @@ function buildProxyGroups({
             )
         },
         {
-            "name": "电报消息",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png",
+            "name": "OneDrive",
+            "icon": "https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/icons/Onedrive.png",
             "type": "select",
-            "proxies": fullProxies
-        },
-        {
-            "name": "YouTube Music",
-            "icon": "https://fastly.jsdelivr.net/gh/Koolson/Qure@refs/heads/master/IconSet/Color/YouTube_Music.png",
-            "type": "select",
-            "proxies": fullProxies
+            "proxies": defaultProxies
         },
         {
             "name": "油管视频",
@@ -1085,8 +1256,8 @@ function buildProxyGroups({
             "proxies": fullProxies
         },
         {
-            "name": "谷歌服务",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png",
+            "name": "YouTube Music",
+            "icon": "https://fastly.jsdelivr.net/gh/Koolson/Qure@refs/heads/master/IconSet/Color/YouTube_Music.png",
             "type": "select",
             "proxies": fullProxies
         },
@@ -1140,18 +1311,6 @@ function buildProxyGroups({
             )
         },
         {
-            "name": "推特X",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png",
-            "type": "select",
-            "proxies": fullProxies
-        },
-        {
-            "name": "Discord",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png",
-            "type": "select",
-            "proxies": fullProxies
-        },
-        {
             "name": "Epic游戏",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Epic_Games.png",
             "type": "select",
@@ -1179,33 +1338,45 @@ function buildProxyGroups({
                 PROXY_GROUPS.MANUAL
             )
         },
-        {
-            "name": "漏网之鱼",
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
-        (lowCost) ? {
-            "name": PROXY_GROUPS.LOW_COST,
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
-            "type": "url-test",
-            "url": PROXY_TEST_URL,
-            "expected-status": 204,
-            "interval": PROXY_TEST_INTERVAL,
-            "timeout": PROXY_TEST_TIMEOUT,
-            "tolerance": PROXY_TEST_TOLERANCE,
-            "lazy": PROXY_TEST_LAZY,
-            "include-all": true,
-            "filter": "(?i)0\.[0-5]|低倍率|省流|大流量|实验性"
-        } : null,
-        ...regionProxyGroups,
         ...countryProxyGroups,
+        ...regionProxyGroups,
         (unrecognizedProxies && unrecognizedProxies.length > 0) ? {
             "name": PROXY_GROUPS.OTHER,
             "icon": DEFAULT_GROUP_ICON,
             "type": "select",
             "proxies": unrecognizedProxies
-        } : null
+        } : null,
+        {
+            "name": PROXY_GROUPS.DIRECT,
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png",
+            "type": "select",
+            "proxies": [
+                "DIRECT", PROXY_GROUPS.SELECT
+            ]
+        },
+        {
+            "name": "广告拦截",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png",
+            "type": "select",
+            "proxies": [
+                "REJECT", "REJECT-DROP",  PROXY_GROUPS.DIRECT
+            ]
+        },
+        {
+            "name": "应用净化",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hijacking.png",
+            "type": "select",
+            "proxies": [
+                "REJECT",
+                "DIRECT"
+            ]
+        },
+        {
+            "name": "漏网之鱼",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png",
+            "type": "select",
+            "proxies": defaultProxies
+        }
     ].filter(Boolean); // 过滤掉 null 值
 }
 
@@ -1293,5 +1464,5 @@ function main(config) {
         "geox-url": geoxURL,
     });
 
-    return resultConfig;
+    return compactGroups ? compactPolicy(resultConfig, SHARED_POLICY.groupMerges) : resultConfig;
 }

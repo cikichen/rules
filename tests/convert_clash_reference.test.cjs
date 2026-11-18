@@ -17,7 +17,8 @@ function createSampleProxies() {
 
 function runGenerator(args = {}, proxies = createSampleProxies()) {
   const context = {
-    $arguments: args,
+    // 本文件继续验证完整分组兼容行为；默认精简输出由 compact_policy.test.cjs 验证。
+    $arguments: { compact: false, ...args },
     console,
     structuredClone,
   };
