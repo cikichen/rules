@@ -173,7 +173,6 @@ proxy-groups:
     type: url-test
     include-all: true
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    empty-fallback: 电报消息
     <<: &url_test_health_3
       url: https://flora.web.telegram.org/apiw1
       expected-status: 501
@@ -187,7 +186,6 @@ proxy-groups:
     type: url-test
     include-all: true
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    empty-fallback: 电报消息
     <<: &url_test_health_4
       url: https://pluto.web.telegram.org/apiw1
       expected-status: 501
@@ -201,7 +199,6 @@ proxy-groups:
     type: url-test
     include-all: true
     exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    empty-fallback: 电报消息
     <<: &url_test_health_5
       url: https://venus.web.telegram.org/apiw1
       expected-status: 501

@@ -53,7 +53,6 @@ for (const group of clash['proxy-groups']) {
   group.type = 'url-test';
   group['include-all'] = true;
   group['exclude-filter'] = clash['proxy-groups'].find(g => g.name === '自动选择')['exclude-filter'];
-  group['empty-fallback'] = '电报消息';
   delete group.proxies;
 }
 const ruleChanges = new Map(originalRules.map((rule, index) => [rule, clash.rules[index]]));

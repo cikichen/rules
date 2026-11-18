@@ -5,7 +5,7 @@ const path = require('node:path');
 const yaml = require('js-yaml');
 const root = path.join(__dirname, '..');
 const clash = yaml.load(fs.readFileSync(path.join(root, 'clash_config_slim.yaml'), 'utf8'));
-const shadow = fs.readFileSync(path.join(root, 'shadowrocket_slim.conf'), 'utf8');
+const shadow = fs.readFileSync(path.join(root, 'shadowrocket_slim.conf'), 'utf8').replace(/\r\n/g, '\n');
 const groups = new Map(clash['proxy-groups'].map(g => [g.name, g]));
 const shadowGroups = new Map(shadow.split('[Proxy Group]')[1].split('[Rule]')[0]
   .split('\n').filter(l => l.includes(' = ')).map(l => l.split(' = ')));
@@ -50,7 +50,8 @@ test('Clash group references and rule targets exist and have no cycles', () => {
     const members = groups.get(name).proxies || [];
     assert.equal(new Set(members).size, members.length, name);
     for (const member of members) visit(member, [...stack, name]);
-    if (groups.get(name)['empty-fallback']) visit(groups.get(name)['empty-fallback'], [...stack, name]);
+    const fallback = groups.get(name)['empty-fallback'];
+    assert.ok(!fallback || !groups.has(fallback), `${name}: empty-fallback must reference a proxy, not a group`);
   }
   for (const name of groups.keys()) visit(name);
   for (const rule of clash.rules) {

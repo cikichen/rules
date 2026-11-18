@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const yaml = require('js-yaml');
 
-const read = name => fs.readFileSync(path.join(__dirname, '..', name), 'utf8');
+const read = name => fs.readFileSync(path.join(__dirname, '..', name), 'utf8').replace(/\r\n/g, '\n');
 const policy = JSON.parse(read('policy.json'));
 const sample = ['香港 01', '台湾 01', '美国 01', '日本 01', '新加坡 01', '韩国 01',
   '德国 01', '法国 01', '泰国 01', '土耳其 01', '未知 01', '美国 低倍率 02', '美国 家宽 03']
@@ -31,7 +31,11 @@ function verify(config, proxies = []) {
     const members = groups.get(name).proxies || [];
     assert.equal(new Set(members).size, members.length, name);
     for (const member of members) visit(member, [...stack, name]);
-    if (groups.get(name)['empty-fallback']) visit(groups.get(name)['empty-fallback'], [...stack, name]);
+    const fallback = groups.get(name)['empty-fallback'];
+    if (fallback) {
+      assert.ok(!groups.has(fallback), `empty-fallback 不能引用策略组：${fallback}`);
+      visit(fallback, [...stack, name]);
+    }
   }
   for (const name of groups.keys()) visit(name);
   for (const rule of config.rules) {
@@ -148,7 +152,7 @@ test('Clash 的 Telegram 三个 DC 组直接按目标前端测速，规则先于
     assert.equal(group['include-all'], true);
     assert.equal(group.proxies, undefined, `${name} 直接测节点，不测嵌套地区组`);
     assert.equal(group['exclude-filter'], groups.get('自动选择')['exclude-filter']);
-    assert.equal(group['empty-fallback'], '电报消息');
+    assert.equal(group['empty-fallback'], undefined, 'empty-fallback 只能是节点名，DC 组不设置');
     assert.equal(group.interval, 120);
     assert.equal(group.lazy, true);
     assert.equal(group.tolerance, 100);
