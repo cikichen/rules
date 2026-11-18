@@ -15,7 +15,7 @@ https://github.com/powerfullz/override-rules
 */
 
 const NODE_SUFFIX = "节点";
-const PRIMARY_COUNTRIES = ["香港", "日本", "新加坡", "美国", "台湾", "韩国"];
+const PRIMARY_COUNTRIES = ["香港", "日本", "新加坡", "美国", "台湾"];
 const COUNTRY_GROUP_DISPLAY_NAMES = {
     "新加坡": "狮城"
 };
@@ -128,20 +128,6 @@ const SHARED_POLICY = {
         "tolerance": 100,
         "fallbackInterval": 60
     },
-    "telegramHealth": {
-        "TG-亚洲 (DC5)": {
-            "url": "https://flora.web.telegram.org/apiw1",
-            "expected-status": 501
-        },
-        "TG-美洲 (DC1/3)": {
-            "url": "https://pluto.web.telegram.org/apiw1",
-            "expected-status": 501
-        },
-        "TG-欧洲 (DC2/4)": {
-            "url": "https://venus.web.telegram.org/apiw1",
-            "expected-status": 501
-        }
-    },
     "candidates": [
         "节点选择",
         "自动选择",
@@ -153,11 +139,7 @@ const SHARED_POLICY = {
         "狮城-自动选择",
         "日本-自动选择",
         "美国-自动选择",
-        "韩国节点",
         "欧洲节点",
-        "东南亚-自动选择",
-        "土耳其节点",
-        "阿根廷节点",
         "其他地区",
         "手动切换",
         "DIRECT"
@@ -200,8 +182,7 @@ const SHARED_POLICY = {
             "节点选择"
         ],
         "YouTube Music": [
-            "油管视频",
-            "YouTube"
+            "国外媒体"
         ],
         "Disney+": [
             "国外媒体"
@@ -236,6 +217,45 @@ const SHARED_POLICY = {
         "应用净化": [
             "全球拦截",
             "广告拦截"
+        ],
+        "推特X": [
+            "社交平台"
+        ],
+        "Twitter": [
+            "社交平台"
+        ],
+        "Facebook": [
+            "社交平台"
+        ],
+        "Discord": [
+            "社交平台"
+        ],
+        "TikTok": [
+            "社交平台"
+        ],
+        "油管视频": [
+            "国外媒体"
+        ],
+        "YouTube": [
+            "国外媒体"
+        ],
+        "奈飞视频": [
+            "国外媒体"
+        ],
+        "Netflix": [
+            "国外媒体"
+        ],
+        "PT站点": [
+            "全球直连"
+        ],
+        "TG-亚洲 (DC5)": [
+            "电报消息"
+        ],
+        "TG-美洲 (DC1/3)": [
+            "电报消息"
+        ],
+        "TG-欧洲 (DC2/4)": [
+            "电报消息"
         ]
     },
     "services": [
@@ -253,6 +273,7 @@ const SHARED_POLICY = {
         "国外媒体",
         "电报消息",
         "Telegram",
+        "社交平台",
         "谷歌服务",
         "微软服务",
         "苹果服务",
@@ -640,9 +661,6 @@ const geoxURL = {
 };
 
 const REGION_GROUP_DEFAULT_MIN = 2;
-const REGION_GROUP_MIN_OVERRIDES = {
-    "东南亚节点": 1
-};
 
 const REGION_META = {
     "北美节点": {
@@ -681,19 +699,7 @@ const REGION_META = {
             "波兰",
             "捷克",
             "乌克兰",
-            "俄罗斯",
-            "土耳其"
-        ]
-    },
-    "东南亚节点": {
-        icon: "https://gcore.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png",
-        countries: [
-            "新加坡",
-            "马来西亚",
-            "泰国",
-            "越南",
-            "菲律宾",
-            "印度尼西亚"
+            "俄罗斯"
         ]
     },
     "中东节点": {
@@ -1006,10 +1012,9 @@ function buildRegionProxyGroups({ detectedCountries, loadBalance, landing }) {
     const landingExcludeFilter = "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地";
     const groupType = loadBalance ? "load-balance" : "url-test";
     for (const [name, meta] of Object.entries(REGION_META)) {
-        const groupMin = REGION_GROUP_MIN_OVERRIDES[name] || REGION_GROUP_DEFAULT_MIN;
         const regionCountries = meta.countries
             .filter(country => detectedCountries.includes(country));
-        if (regionCountries.length < groupMin) continue;
+        if (regionCountries.length < REGION_GROUP_DEFAULT_MIN) continue;
         const filters = regionCountries
             .map(country => countriesMeta[country])
             .filter(Boolean)
@@ -1221,6 +1226,12 @@ function buildProxyGroups({
         {
             "name": "电报消息",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png",
+            "type": "select",
+            "proxies": fullProxies
+        },
+        {
+            "name": "社交平台",
+            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png",
             "type": "select",
             "proxies": fullProxies
         },

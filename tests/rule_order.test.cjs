@@ -43,7 +43,7 @@ test('精简配置：微软与专用服务先于通用直连，保留白名单�
     'China_IP', 'China_YYDS_IP', 'Download']) {
     const direct = `RULE-SET,${provider},全球直连`;
     before(rules, microsoft, direct);
-    before(rules, 'RULE-SET,PT,PT站点', direct);
+    before(rules, 'RULE-SET,PT,全球直连', direct);
     before(rules, direct, 'GEOIP,CN,全球直连');
   }
   before(rules, 'GEOIP,CN,全球直连', 'RULE-SET,ProxyGFWlist,漏网之鱼');

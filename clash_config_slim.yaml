@@ -20,9 +20,7 @@ proxy-groups:
       - 狮城-自动选择
       - 日本-自动选择
       - 美国-自动选择
-      - 韩国节点
       - 欧洲节点
-      - 东南亚-自动选择
       - 其他地区
       - 手动切换
       - DIRECT
@@ -72,8 +70,6 @@ proxy-groups:
       - 日本-自动选择
       - 狮城-自动选择
       - 台湾-自动选择
-      - 韩国节点
-      - 东南亚-自动选择
       - 欧洲节点
       - 节点选择
       - 手动切换
@@ -104,11 +100,7 @@ proxy-groups:
       - 狮城-自动选择
       - 日本-自动选择
       - 美国-自动选择
-      - 韩国节点
       - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 阿根廷节点
       - 其他地区
       - 手动切换
       - DIRECT
@@ -127,11 +119,7 @@ proxy-groups:
       - 狮城-自动选择
       - 日本-自动选择
       - 美国-自动选择
-      - 韩国节点
       - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 阿根廷节点
       - 其他地区
       - 手动切换
       - DIRECT
@@ -149,11 +137,7 @@ proxy-groups:
       - 狮城-自动选择
       - 日本-自动选择
       - 美国-自动选择
-      - 韩国节点
       - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 阿根廷节点
       - 其他地区
       - 手动切换
 
@@ -162,65 +146,22 @@ proxy-groups:
     type: select
     proxies: *service_candidates_1
 
-
-
-
-
-
-
-  - name: TG-亚洲 (DC5)
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
-    type: url-test
-    include-all: true
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    <<: &url_test_health_3
-      url: https://flora.web.telegram.org/apiw1
-      expected-status: 501
-      timeout: 4000
-      interval: 120
-      lazy: true
-      tolerance: 100
-
-  - name: TG-美洲 (DC1/3)
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
-    type: url-test
-    include-all: true
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    <<: &url_test_health_4
-      url: https://pluto.web.telegram.org/apiw1
-      expected-status: 501
-      timeout: 4000
-      interval: 120
-      lazy: true
-      tolerance: 100
-
-  - name: TG-欧洲 (DC2/4)
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
-    type: url-test
-    include-all: true
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    <<: &url_test_health_5
-      url: https://venus.web.telegram.org/apiw1
-      expected-status: 501
-      timeout: 4000
-      interval: 120
-      lazy: true
-      tolerance: 100
-
-  - name: 推特X
+  - name: 社交平台
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png
     type: select
     proxies: *service_candidates_1
 
-  - name: Discord
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Discord.png
-    type: select
-    proxies: *service_candidates_1
 
-  - name: TikTok
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png
-    type: select
-    proxies: *service_candidates_1
+
+
+
+
+
+
+
+
+
+
 
   - name: 谷歌服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png
@@ -243,13 +184,10 @@ proxy-groups:
     proxies: *service_candidates_3
 
   # === 媒体与游戏 ===
-  - name: 油管视频
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png
-    type: select
-    proxies: *service_candidates_1
 
-  - name: 奈飞视频
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
+
+  - name: 国外媒体
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
     type: select
     proxies: &service_candidates_4
       - 节点选择
@@ -261,19 +199,10 @@ proxy-groups:
       - 狮城-自动选择
       - 日本-自动选择
       - 美国-自动选择
-      - 韩国节点
       - 欧洲节点
-      - 东南亚-自动选择
-      - 土耳其节点
-      - 阿根廷节点
       - 其他地区
       - 手动切换
       - DIRECT
-
-  - name: 国外媒体
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
-    type: select
-    proxies: *service_candidates_1
 
   - name: 国内媒体
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/DomesticMedia.png
@@ -289,13 +218,6 @@ proxy-groups:
     type: select
     proxies: *service_candidates_1
 
-  - name: PT站点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Download.png
-    type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-      - 手动切换
 
   # === 地区与专线 ===
   - name: 香港-自动选择
@@ -338,14 +260,6 @@ proxy-groups:
     type: url-test
     <<: *url_test_health
 
-  - name: 韩国节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇰🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:韩国|韓國|首尔|\bKR\b|\bKOR\b|Korea))
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    type: url-test
-    <<: *url_test_health
-
   - name: 欧洲节点
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png
     include-all: true
@@ -354,34 +268,10 @@ proxy-groups:
     type: url-test
     <<: *url_test_health
 
-  - name: 东南亚-自动选择
-    icon: https://testingcf.jsdelivr.net/gh/shindgewongxj/WHATSINStash@master/icon/categorytravel.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇸🇬|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇮🇩|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:新加坡|狮城|马来|马来西亚|泰国|越南|菲律宾|印尼|印度尼西亚|柬埔寨|缅甸|文莱|老挝|东帝汶|\bSG\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bID\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Singapore|Malaysia|Thailand|Vietnam|Philippines|Indonesia|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste))
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    type: url-test
-    <<: *url_test_health
-
-  - name: 土耳其节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Turkey.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇹🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:土耳其|Turkey|\bTR\b))
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    type: url-test
-    <<: *url_test_health
-
-  - name: 阿根廷节点
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png
-    include-all: true
-    filter: (?i)(?:^(?:(?!\|).)*(?:🇦🇷)|^(?!(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇺🇸|🇸🇬|🇰🇷|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇺🇦|🇹🇷|🇮🇳|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|🇨🇱|🇦🇷|🇧🇷|🇳🇬))(?:(?!\|).)*(?:阿根廷|Argentina|Buenos Aires))
-    exclude-filter: (?i)官网|网站|地址|剩余|过期|套餐|流量|重置
-    type: url-test
-    <<: *url_test_health
-
   - name: 其他地区
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png
     include-all: true
-    exclude-filter: (?i)^(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇰🇷|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|🇹🇷|🇦🇷|🇮🇩|🇲🇾|🇹🇭|🇻🇳|🇵🇭|🇰🇭|🇲🇲|🇧🇳|🇱🇦|🇹🇱|香港|台湾|台北|新北|彰化|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|新加坡|狮城|韩国|韓國|首尔|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|土耳其|阿根廷|印尼|印度尼西亚|马来|马来西亚|泰国|越南|菲律宾|柬埔寨|缅甸|文莱|老挝|东帝汶|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bKR\b|\bKOR\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bEU\b|\bTR\b|\bAR\b|\bID\b|\bMY\b|\bTH\b|\bVN\b|\bPH\b|\bKH\b|\bMM\b|\bBN\b|\bLA\b|\bTL\b|Hong\s*Kong|Taiwan|Japan|Singapore|Korea|United\s*States|Europe|European|Turkey|Argentina|Indonesia|Malaysia|Thailand|Vietnam|Philippines|Cambodia|Myanmar|Brunei|Laos|Timor|Timor-Leste|网站|地址|剩余|过期|实验性|日用|重置)
+    exclude-filter: (?i)^(?:(?!\|).)*(?:🇭🇰|🇹🇼|🇯🇵|🇸🇬|🇺🇸|🇬🇧|🇩🇪|🇫🇷|🇳🇱|🇮🇹|🇷🇺|🇪🇸|🇵🇹|🇨🇭|🇸🇪|🇳🇴|🇫🇮|🇩🇰|🇮🇪|🇦🇹|🇨🇿|🇬🇷|🇧🇪|🇭🇺|🇵🇱|香港|台湾|台北|新北|彰化|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|新加坡|狮城|美国|美西|美东|美中|美南|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|英国|德国|法国|荷兰|意大利|俄罗斯|西班牙|葡萄牙|瑞士|瑞典|挪威|芬兰|丹麦|爱尔兰|奥地利|捷克|希腊|比利时|匈牙利|波兰|\bHK\b|\bTW\b|\bJP\b|\bSG\b|\bUS\b|\bUSA\b|\bUK\b|\bDE\b|\bFR\b|\bNL\b|\bIT\b|\bRU\b|\bES\b|\bPT\b|\bCH\b|\bSE\b|\bNO\b|\bFI\b|\bDK\b|\bIE\b|\bAT\b|\bCZ\b|\bGR\b|\bBE\b|\bHU\b|\bPL\b|\bEU\b|Hong\s*Kong|Taiwan|Japan|Singapore|United\s*States|Europe|European|网站|地址|剩余|过期|实验性|日用|重置)
     type: url-test
     <<: *url_test_health
 
@@ -861,33 +751,33 @@ rules:
   - PROCESS-NAME,language_server_macos_arm,人工智能
 
   # === 社交媒体 ===
-  - RULE-SET,Twitter_Domain,推特X
-  - RULE-SET,Twitter_IP,推特X,no-resolve
-  - RULE-SET,Discord_Domain,Discord
-  - RULE-SET,TikTok_Domain,TikTok
+  - RULE-SET,Twitter_Domain,社交平台
+  - RULE-SET,Twitter_IP,社交平台,no-resolve
+  - RULE-SET,Discord_Domain,社交平台
+  - RULE-SET,TikTok_Domain,社交平台
 
   # === 流媒体 ===
-  - RULE-SET,YouTube_Domain,油管视频
-  - RULE-SET,YouTube_IP,油管视频,no-resolve
-  - RULE-SET,Netflix_Domain,奈飞视频
-  - RULE-SET,Netflix_IP,奈飞视频,no-resolve
+  - RULE-SET,YouTube_Domain,国外媒体
+  - RULE-SET,YouTube_IP,国外媒体,no-resolve
+  - RULE-SET,Netflix_Domain,国外媒体
+  - RULE-SET,Netflix_IP,国外媒体,no-resolve
   - RULE-SET,Bilibili,国内媒体
   - RULE-SET,ProxyMedia,国外媒体
 
   # === 常用服务 ===
   # -- Telegram DC 优选 --
-  - IP-ASN,44907,TG-亚洲 (DC5),no-resolve
-  - IP-ASN,62014,TG-亚洲 (DC5),no-resolve
-  - DOMAIN-SUFFIX,flora.web.telegram.org,TG-亚洲 (DC5)
-  - IP-ASN,59930,TG-美洲 (DC1/3),no-resolve
-  - DOMAIN-SUFFIX,pluto.web.telegram.org,TG-美洲 (DC1/3)
-  - DOMAIN-SUFFIX,aurora.web.telegram.org,TG-美洲 (DC1/3)
-  - IP-ASN,62041,TG-欧洲 (DC2/4),no-resolve
-  - IP-ASN,211157,TG-欧洲 (DC2/4),no-resolve
-  - IP-CIDR,5.28.192.0/18,TG-欧洲 (DC2/4),no-resolve
-  - IP-CIDR,109.239.140.0/24,TG-欧洲 (DC2/4),no-resolve
-  - DOMAIN-SUFFIX,venus.web.telegram.org,TG-欧洲 (DC2/4)
-  - DOMAIN-SUFFIX,vesta.web.telegram.org,TG-欧洲 (DC2/4)
+  - IP-ASN,44907,电报消息,no-resolve
+  - IP-ASN,62014,电报消息,no-resolve
+  - DOMAIN-SUFFIX,flora.web.telegram.org,电报消息
+  - IP-ASN,59930,电报消息,no-resolve
+  - DOMAIN-SUFFIX,pluto.web.telegram.org,电报消息
+  - DOMAIN-SUFFIX,aurora.web.telegram.org,电报消息
+  - IP-ASN,62041,电报消息,no-resolve
+  - IP-ASN,211157,电报消息,no-resolve
+  - IP-CIDR,5.28.192.0/18,电报消息,no-resolve
+  - IP-CIDR,109.239.140.0/24,电报消息,no-resolve
+  - DOMAIN-SUFFIX,venus.web.telegram.org,电报消息
+  - DOMAIN-SUFFIX,vesta.web.telegram.org,电报消息
   - RULE-SET,Telegram_Domain,电报消息
   - RULE-SET,Telegram_IP,电报消息,no-resolve
   - RULE-SET,Microsoft_Domain,微软服务
@@ -902,7 +792,7 @@ rules:
   - RULE-SET,Epic_Domain,游戏平台
 
   # === PT站点 ===
-  - RULE-SET,PT,PT站点
+  - RULE-SET,PT,全球直连
 
   # === 通用直连与国内规则 (服务分流优先，避免微软登录被直连抢先命中) ===
   - RULE-SET,Direct_Domain,全球直连

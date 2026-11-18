@@ -77,21 +77,24 @@ for (const file of ['convert_clash_reference.js', 'convert_auto.js']) {
   });
 }
 
-test('主脚本精简 AI 与子服务，保留社交和 Cloudflare 独立出口', () => {
+test('主脚本精简 AI、社交与媒体出口，PT 并入直连', () => {
   const config = generate('convert_clash_reference.js', {});
   const groups = verify(config, sample);
   assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
   assert.equal(groups.get('AI-故障转移').type, 'fallback');
   assert.match(groups.get('AI-故障转移')['exclude-filter'], /香港/);
-  assert.equal(groups.get('PT站点').proxies[0], 'DIRECT');
+  assert.equal(groups.has('PT站点'), false);
+  assert.equal(groups.get('社交平台').proxies[0], '节点选择');
   assert.equal(groups.get('微软服务').proxies[0], 'DIRECT');
   assert.equal(groups.get('节点选择').proxies[0], '自动选择');
   for (const rule of ['RULE-SET,OpenAI,人工智能', 'RULE-SET,Claude,人工智能',
     'RULE-SET,Gemini,人工智能', 'DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证',
-    'RULE-SET,Twitter,推特X', 'RULE-SET,Discord,Discord', 'RULE-SET,TikTok,TikTok',
+    'RULE-SET,Twitter,社交平台', 'RULE-SET,Discord,社交平台', 'RULE-SET,TikTok,社交平台',
     'RULE-SET,OneDrive,节点选择',
-    'RULE-SET,YouTubeMusic,油管视频', 'RULE-SET,Spotify,国外媒体',
-    'RULE-SET,Epic,游戏平台', 'RULE-SET,BanProgramAD,广告拦截']) {
+    'RULE-SET,YouTubeMusic,国外媒体', 'RULE-SET,YouTube,国外媒体',
+    'RULE-SET,Netflix,国外媒体', 'RULE-SET,Spotify,国外媒体',
+    'RULE-SET,Epic,游戏平台', 'RULE-SET,PrivateTracker,全球直连',
+    'RULE-SET,BanProgramAD,广告拦截']) {
     assert.ok(config.rules.includes(rule), rule);
   }
 });
@@ -99,21 +102,21 @@ test('主脚本精简 AI 与子服务，保留社交和 Cloudflare 独立出口'
 test('Clash 精简配置保留 AI 故障转移、独立更新下载与奈飞候选', () => {
   const config = yaml.load(read('clash_config_slim.yaml'));
   const groups = verify(config);
-  assert.equal(groups.size, 41);
+  assert.equal(groups.size, 29);
   assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
-  assert.ok(groups.get('奈飞视频').proxies.includes('奈飞节点'));
+  assert.ok(groups.get('国外媒体').proxies.includes('奈飞节点'));
   assert.equal(groups.get('中转站').proxies[0], 'DIRECT');
   assert.equal(groups.get('国内媒体').proxies[0], 'DIRECT');
   assert.ok(config.rules.includes('DOMAIN-SUFFIX,downloads.claude.ai,节点选择'));
   assert.ok(config.rules.includes('PROCESS-NAME,Codex,人工智能'));
-  assert.ok(config.rules.includes('IP-ASN,44907,TG-亚洲 (DC5),no-resolve'));
+  assert.ok(config.rules.includes('IP-ASN,44907,电报消息,no-resolve'));
 });
 
-test('Shadowrocket 合并后选中索引有效，保留微软代理及奈飞默认专线', () => {
+test('Shadowrocket 合并后选中索引有效，保留微软代理与奈飞候选', () => {
   const lines = read('shadowrocket_slim.conf').split('[Proxy Group]')[1].split('[Rule]')[0]
     .split('\n').filter(line => line.includes(' = '));
   const groups = new Map(lines.map(line => line.split(' = ')));
-  assert.equal(groups.size, 37);
+  assert.equal(groups.size, 30);
   for (const name of Object.keys(policy.groupMerges)) assert.equal(groups.has(name), false, name);
   for (const [name, definition] of groups) {
     const [type, ...parts] = definition.split(',');
@@ -124,57 +127,46 @@ test('Shadowrocket 合并后选中索引有效，保留微软代理及奈飞默�
   }
   const microsoft = groups.get('微软服务').split(',').slice(1);
   assert.equal(microsoft.filter(p => !p.includes('='))[Number(microsoft.find(p => p.startsWith('select=')).slice(7))], '节点选择');
-  assert.ok(groups.get('Netflix').startsWith('select,奈飞节点,'));
+  assert.ok(groups.get('国外媒体').startsWith('select,节点选择,奈飞节点,流媒体解锁,'));
   assert.ok(read('shadowrocket_slim.conf').includes('DOMAIN-SUFFIX,downloads.claude.ai,节点选择'));
-  for (const name of ['Cloudflare验证', 'Twitter', 'Facebook', 'Discord', 'TikTok']) {
+  for (const name of ['Cloudflare验证', '社交平台']) {
     assert.ok(groups.has(name), name);
     assert.ok(groups.get(name).startsWith('select,节点选择,'), name);
   }
   const rules = read('shadowrocket_slim.conf').split('[Rule]')[1].split('[Host]')[0];
   assert.ok(rules.includes('DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证'));
-  for (const name of ['Twitter', 'Discord', 'TikTok']) {
-    assert.ok(rules.includes(`/${name}/${name}.list,${name}`), name);
+  for (const name of ['Twitter', 'Facebook', 'Discord', 'TikTok']) {
+    assert.ok(rules.includes(`/${name}/${name}.list,社交平台`), name);
+  }
+  for (const name of ['YouTube', 'Netflix']) {
+    assert.ok(rules.includes(`/${name}/${name}.list,国外媒体`), name);
   }
 });
 
-test('Clash 的 Telegram 三个 DC 组直接按目标前端测速，规则先于通用 Telegram 规则', () => {
+test('Telegram 分组统一为电报消息，DC 专用规则保留在最前', () => {
   const config = yaml.load(read('clash_config_slim.yaml'));
   const groups = verify(config);
-  for (const [name, url] of [
-    ['TG-亚洲 (DC5)', 'https://flora.web.telegram.org/apiw1'],
-    ['TG-美洲 (DC1/3)', 'https://pluto.web.telegram.org/apiw1'],
-    ['TG-欧洲 (DC2/4)', 'https://venus.web.telegram.org/apiw1']
-  ]) {
-    const group = groups.get(name);
-    assert.equal(group.type, 'url-test');
-    assert.equal(group.url, url);
-    assert.equal(group['expected-status'], 501);
-    assert.equal(group['include-all'], true);
-    assert.equal(group.proxies, undefined, `${name} 直接测节点，不测嵌套地区组`);
-    assert.equal(group['exclude-filter'], groups.get('自动选择')['exclude-filter']);
-    assert.equal(group['empty-fallback'], undefined, 'empty-fallback 只能是节点名，DC 组不设置');
-    assert.equal(group.interval, 120);
-    assert.equal(group.lazy, true);
-    assert.equal(group.tolerance, 100);
-    assert.equal(group.timeout, 4000);
+  for (const name of ['TG-亚洲 (DC5)', 'TG-美洲 (DC1/3)', 'TG-欧洲 (DC2/4)']) {
+    assert.equal(groups.has(name), false, name);
   }
+  const general = config.rules.indexOf('RULE-SET,Telegram_Domain,电报消息');
+  for (const rule of [
+    'IP-ASN,44907,电报消息,no-resolve',
+    'IP-ASN,59930,电报消息,no-resolve',
+    'IP-ASN,62041,电报消息,no-resolve',
+    'IP-CIDR,5.28.192.0/18,电报消息,no-resolve',
+    'DOMAIN-SUFFIX,flora.web.telegram.org,电报消息',
+    'DOMAIN-SUFFIX,pluto.web.telegram.org,电报消息',
+    'DOMAIN-SUFFIX,venus.web.telegram.org,电报消息'
+  ]) {
+    const index = config.rules.indexOf(rule);
+    assert.ok(index >= 0 && index < general, rule);
+  }
+  assert.ok(config.rules.includes('RULE-SET,Telegram_IP,电报消息,no-resolve'));
   assert.equal(groups.get('自动选择').url, 'https://www.gstatic.com/generate_204');
   assert.equal(groups.get('自动选择')['expected-status'], 204);
   assert.equal(groups.get('故障转移')['expected-status'], 204);
   assert.equal(groups.get('AI-故障转移')['expected-status'], 204);
-  const general = config.rules.indexOf('RULE-SET,Telegram_Domain,电报消息');
-  for (const [domain, target] of [
-    ['flora', 'TG-亚洲 (DC5)'], ['pluto', 'TG-美洲 (DC1/3)'],
-    ['aurora', 'TG-美洲 (DC1/3)'], ['venus', 'TG-欧洲 (DC2/4)'],
-    ['vesta', 'TG-欧洲 (DC2/4)']
-  ]) {
-    const index = config.rules.indexOf(`DOMAIN-SUFFIX,${domain}.web.telegram.org,${target}`);
-    assert.ok(index >= 0 && index < general, domain);
-  }
-  for (const rule of config.rules.filter(rule => /,TG-/.test(rule))) {
-    assert.ok(config.rules.indexOf(rule) < general, rule);
-  }
-  for (const name of ['Cloudflare验证', '推特X', 'Discord', 'TikTok']) assert.ok(groups.has(name), name);
 });
 
 test('ACL 模板合并净化到拦截，并保持完整目标引用', () => {

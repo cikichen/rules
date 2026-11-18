@@ -30,12 +30,10 @@ function members(name, original, available) {
     ...policy.candidates.filter(p => available.has(p))]);
 }
 
-function health(type, name) {
+function health(type) {
   const { tolerance, fallbackInterval, ...common } = policy.health;
   return {
     ...common,
-    // Telegram 前端的 HEAD 返回 501，不能复用 Google 的 204 或 GET 的 404。
-    ...policy.telegramHealth[name],
     interval: type === 'fallback' ? fallbackInterval : common.interval,
     lazy: type !== 'fallback',
     ...(type === 'url-test' ? { tolerance } : {})
@@ -47,14 +45,6 @@ const clashSource = fs.readFileSync(path.join(root, clashFile), 'utf8');
 const clash = yaml.load(clashSource);
 const originalRules = clash.rules;
 compactPolicy(clash, policy.groupMerges);
-// DC 组直接测实际节点，避免借用普通地区组对 Google 的测速结果。
-for (const group of clash['proxy-groups']) {
-  if (!policy.telegramHealth[group.name]) continue;
-  group.type = 'url-test';
-  group['include-all'] = true;
-  group['exclude-filter'] = clash['proxy-groups'].find(g => g.name === '自动选择')['exclude-filter'];
-  delete group.proxies;
-}
 const ruleChanges = new Map(originalRules.map((rule, index) => [rule, clash.rules[index]]));
 const available = new Set(['DIRECT', ...clash['proxy-groups'].map(g => g.name)]);
 const anchors = new Map();
@@ -72,12 +62,12 @@ const clashOutput = clashSource.replace(/^  - name: (.+)\n[\s\S]*?(?=^  - name: 
   }
   let output = `  - name: ${name}\n` + dump(fields).split('\n').map(l => `    ${l}`).join('\n') + '\n';
   if (automatic) {
-    const settings = health(group.type, name);
+    const settings = health(group.type);
     const key = JSON.stringify(settings);
     const existing = healthAnchors.get(key);
     if (existing) output += `    <<: *${existing}\n`;
     else {
-      const anchor = `${group.type.replace('-', '_')}_health${policy.telegramHealth[name] ? `_${healthAnchors.size + 1}` : ''}`;
+      const anchor = `${group.type.replace('-', '_')}_health`;
       healthAnchors.set(key, anchor);
       output += `    <<: &${anchor}\n` + dump(settings).split('\n').map(l => `      ${l}`).join('\n') + '\n';
     }

@@ -9,8 +9,7 @@ const shadow = fs.readFileSync(path.join(root, 'shadowrocket_slim.conf'), 'utf8'
 const groups = new Map(clash['proxy-groups'].map(g => [g.name, g]));
 const shadowGroups = new Map(shadow.split('[Proxy Group]')[1].split('[Rule]')[0]
   .split('\n').filter(l => l.includes(' = ')).map(l => l.split(' = ')));
-const regions = ['香港', '台湾', '狮城', '日本', '美国', '东南亚'];
-const policy = JSON.parse(fs.readFileSync(path.join(root, 'policy.json'), 'utf8'));
+const regions = ['香港', '台湾', '狮城', '日本', '美国'];
 
 test('slim Geo rules explicitly configure their database download sources', () => {
   for (const rule of clash.rules) {
@@ -37,6 +36,27 @@ test('slim profiles retain regional auto groups and remove redundant load balanc
   for (const name of ['负载均衡-散列', '负载均衡-轮询', 'AI-负载均衡']) {
     assert.equal(groups.has(name), false);
     assert.equal(shadowGroups.has(name), false);
+  }
+  for (const name of ['韩国节点', '东南亚-自动选择', '土耳其节点', '阿根廷节点']) {
+    assert.equal(groups.has(name), false, name);
+    assert.equal(shadowGroups.has(name), false, name);
+  }
+});
+
+test('removed region nodes are collected by Other Regions', () => {
+  const clashFilter = groups.get('其他地区')['exclude-filter'].replace(/^\(\?i\)/, '');
+  const shadowFilter = shadowGroups.get('其他地区').match(/policy-regex-filter=(.*)$/)[1]
+    .replace(/^\(\?i\)/, '');
+  const clashExclude = new RegExp(clashFilter, 'i');
+  const shadowInclude = new RegExp(shadowFilter, 'i');
+  for (const name of ['韩国 01', '首尔 01', '🇰🇷 01', '泰国 01', '马来西亚 01', '印尼 01',
+    '土耳其 01', '阿根廷 01']) {
+    assert.equal(clashExclude.test(name), false, `Clash 应收入其他地区：${name}`);
+    assert.equal(shadowInclude.test(name), true, `Shadowrocket 应收入其他地区：${name}`);
+  }
+  for (const name of ['香港 01', '日本 01', '新加坡 01', '美国 01', '德国 01', '网站导航']) {
+    assert.equal(clashExclude.test(name), true, `Clash 不应收入其他地区：${name}`);
+    assert.equal(shadowInclude.test(name), false, `Shadowrocket 不应收入其他地区：${name}`);
   }
 });
 
@@ -66,7 +86,7 @@ test('Clash checks are bounded and fallback checks actual nodes', () => {
   for (const group of groups.values()) {
     if (!['url-test', 'fallback', 'load-balance'].includes(group.type)) continue;
     assert.match(group.url, /^https:\/\//);
-    assert.equal(group['expected-status'], policy.telegramHealth[group.name]?.['expected-status'] || 204);
+    assert.equal(group['expected-status'], 204);
     assert.equal(group.timeout, 4000);
     assert.equal(group.interval, group.type === 'fallback' ? 60 : 120);
     assert.equal(group.lazy, group.type !== 'fallback');
