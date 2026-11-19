@@ -135,19 +135,18 @@ test('Cloudflare验证 group and rules are included in generated config', () => 
   assert.ok(result.rules.includes('DOMAIN-SUFFIX,challenges.cloudflare.com,Cloudflare验证'));
 });
 
-test('ai groups prioritize 人工智能 group and default 人工智能 to fallback', () => {
+test('AI groups prioritize 人工智能 and use automatic selection without a dedicated fallback', () => {
   const result = runGenerator({ full: false });
-  const aiFallbackGroup = result['proxy-groups'].find(group => group.name === 'AI-故障转移');
+  const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
   const openAiGroup = result['proxy-groups'].find(group => group.name === 'OpenAI');
   const claudeGroup = result['proxy-groups'].find(group => group.name === 'Claude');
   const aiGroup = result['proxy-groups'].find(group => group.name === '人工智能');
 
-  assert.ok(aiFallbackGroup);
-  assert.equal(aiFallbackGroup.type, 'fallback');
+  assert.equal(groups.has('AI-故障转移'), false);
   assert.equal(openAiGroup.proxies[0], '人工智能');
   assert.equal(claudeGroup.proxies[0], '人工智能');
   assert.ok(aiGroup);
-  assert.equal(aiGroup.proxies[0], 'AI-故障转移');
+  assert.equal(aiGroup.proxies[0], '自动选择');
 });
 
 test('custom group uses friendly chinese name and Custom rules target it', () => {
@@ -185,9 +184,7 @@ test('hybrid health-check defaults keep selectors conservative and fallback resp
   assert.equal('tolerance' in groups.get('故障转移'), false);
   assert.equal(groups.get('故障转移').lazy, false);
 
-  assert.equal(groups.get('AI-故障转移').interval, 60);
-  assert.equal(groups.get('AI-故障转移').timeout, 4000);
-  assert.equal(groups.get('AI-故障转移').lazy, false);
+  assert.equal(groups.has('AI-故障转移'), false);
 
   assert.equal(groups.get('香港节点').interval, 120);
   assert.equal(groups.get('香港节点').timeout, 4000);
@@ -199,16 +196,12 @@ test('fallback groups use direct-node include-all semantics instead of nested re
   const result = runGenerator({ full: false });
   const groups = new Map(result['proxy-groups'].map(group => [group.name, group]));
   const fallback = groups.get('故障转移');
-  const aiFallback = groups.get('AI-故障转移');
 
   assert.equal(fallback.type, 'fallback');
   assert.equal(fallback['include-all'], true);
   assert.equal('proxies' in fallback, false);
 
-  assert.equal(aiFallback.type, 'fallback');
-  assert.equal(aiFallback['include-all'], true);
-  assert.equal('proxies' in aiFallback, false);
-  assert.ok(typeof aiFallback['exclude-filter'] === 'string');
+  assert.equal(groups.has('AI-故障转移'), false);
 });
 
 test('dual load-balance groups expose hashing and round-robin strategies', () => {

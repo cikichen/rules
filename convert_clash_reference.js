@@ -111,7 +111,6 @@ const PROXY_GROUPS = {
     BALANCE_ROUND_ROBIN: "负载均衡-轮询",
     MANUAL: "手动切换",
     FALLBACK: "故障转移",
-    AI_FALLBACK: "AI-故障转移",
     CUSTOM: "自定义规则",
     LANDING: "落地节点",
     LOW_COST: "低倍率节点",
@@ -162,7 +161,7 @@ const SHARED_POLICY = {
             "自动选择"
         ],
         "AI-负载均衡": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "OpenAI": [
             "人工智能"
@@ -174,13 +173,13 @@ const SHARED_POLICY = {
             "人工智能"
         ],
         "OpenAI专线": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "Claude专线": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "Gemini专线": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "Claude更新": [
             "节点选择"
@@ -1018,7 +1017,6 @@ function buildProxyGroups({
         if (groupName === "OpenAI" || groupName === "Claude" || groupName === "Gemini") {
             return buildList(
                 "人工智能",
-                PROXY_GROUPS.AI_FALLBACK,
                 PROXY_GROUPS.SELECT,
                 PROXY_GROUPS.AUTO,
                 PROXY_GROUPS.BEST,
@@ -1031,7 +1029,7 @@ function buildProxyGroups({
             const hasUS = allowedGroups.includes("美国节点");
             const otherGroups = allowedGroups.filter(name => name !== "美国节点");
             return buildList(
-                PROXY_GROUPS.AI_FALLBACK,
+                PROXY_GROUPS.AUTO,
                 hasUS ? "美国节点" : null,
                 PROXY_GROUPS.SELECT,
                 PROXY_GROUPS.AUTO,
@@ -1042,7 +1040,7 @@ function buildProxyGroups({
         }
 
         return buildList(
-            PROXY_GROUPS.AI_FALLBACK,
+            PROXY_GROUPS.AUTO,
             PROXY_GROUPS.SELECT,
             PROXY_GROUPS.AUTO,
             PROXY_GROUPS.BEST,
@@ -1144,14 +1142,6 @@ function buildProxyGroups({
             icon: "https://gcore.jsdelivr.net/gh/lobehub/lobe-icons@refs/heads/master/packages/static-png/light/gemini-color.png",
             type: "select",
             proxies: buildAiGroupProxies("Gemini")
-        },
-        {
-            name: PROXY_GROUPS.AI_FALLBACK,
-            icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png",
-            type: "fallback",
-            "include-all": true,
-            "exclude-filter": "(?i)香港|Hong Kong|HK|🇭🇰|中国|China|CN|🇨🇳|内地|澳门|Macao|MO|🇲🇴",
-            ...buildHealthCheck("fallback")
         },
         {
             name: "GitHub",

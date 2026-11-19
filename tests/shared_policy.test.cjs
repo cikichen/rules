@@ -37,7 +37,8 @@ test('service defaults and dedicated media/AI entries survive menu normalization
   assert.equal(groups.get('国外媒体').proxies[0], '节点选择');
   assert.ok(groups.get('国外媒体').proxies.includes('奈飞节点'));
   assert.equal(groups.has('OpenAI'), false);
-  assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
+  assert.equal(groups.get('人工智能').proxies[0], '自动选择');
+  assert.equal(groups.has('AI-故障转移'), false);
   assert.equal(groups.get('故障转移').proxies, undefined);
   const media = shadowGroups.get('国外媒体').split(',');
   assert.equal(media[1], '节点选择');
@@ -80,7 +81,8 @@ test('converter resolves shared candidates to existing dynamic regional groups',
   assert.ok(common.includes('美国节点'));
   assert.ok(common.includes('狮城节点'));
   assert.ok(!common.includes('美国-自动选择'));
-  assert.equal(dynamic.get('人工智能').proxies[0], 'AI-故障转移');
+  assert.equal(dynamic.get('人工智能').proxies[0], '自动选择');
+  assert.equal(dynamic.has('AI-故障转移'), false);
 });
 
 test('converter collects removed regions into Other Regions', () => {

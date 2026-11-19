@@ -95,8 +95,10 @@ test('Clash checks are bounded and fallback checks actual nodes', () => {
       assert.equal('proxies' in group, false);
     }
   }
-  assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
-  assert.ok(shadowGroups.get('人工智能').startsWith('select,AI-故障转移,'));
+  assert.equal(groups.get('人工智能').proxies[0], '自动选择');
+  assert.ok(shadowGroups.get('人工智能').startsWith('select,自动选择,'));
+  assert.equal(groups.has('AI-故障转移'), false);
+  assert.equal(shadowGroups.has('AI-故障转移'), false);
   assert.ok(shadowGroups.get('故障转移').startsWith('fallback,url=https://'));
 });
 

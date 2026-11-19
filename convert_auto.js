@@ -154,7 +154,7 @@ const SHARED_POLICY = {
             "自动选择"
         ],
         "AI-负载均衡": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "OpenAI": [
             "人工智能"
@@ -166,13 +166,13 @@ const SHARED_POLICY = {
             "人工智能"
         ],
         "OpenAI专线": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "Claude专线": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "Gemini专线": [
-            "AI-故障转移"
+            "自动选择"
         ],
         "Claude更新": [
             "节点选择"
@@ -1113,8 +1113,8 @@ function buildProxyGroups({
         const allowedGroups = aiGroupCandidates
             .filter(name => !exclusions.has(name) && !preferredGroups.includes(name));
         return buildList(
-            preferredGroups,
             PROXY_GROUPS.AUTO,
+            preferredGroups,
             PROXY_GROUPS.SELECT,
             allowedGroups,
             PROXY_GROUPS.MANUAL

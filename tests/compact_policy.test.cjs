@@ -86,9 +86,8 @@ test('主脚本精简 AI、社交与媒体出口，PT 并入直连', () => {
   const groups = verify(config, sample);
   assert.equal(groups.get('奈飞节点').type, 'url-test');
   assert.equal(groups.get('奈飞节点').filter, '(?i)\\bNF\\b|奈飞|解锁|Netflix');
-  assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
-  assert.equal(groups.get('AI-故障转移').type, 'fallback');
-  assert.match(groups.get('AI-故障转移')['exclude-filter'], /香港/);
+  assert.equal(groups.get('人工智能').proxies[0], '自动选择');
+  assert.equal(groups.has('AI-故障转移'), false);
   assert.equal(groups.has('PT站点'), false);
   assert.equal(groups.get('社交平台').proxies[0], '节点选择');
   assert.equal(groups.get('微软服务').proxies[0], 'DIRECT');
@@ -117,12 +116,13 @@ test('兼容转换脚本将 Netflix 域名与 IP 规则独立发送到奈飞节�
   }
 });
 
-test('Clash 精简配置保留 AI 故障转移、独立更新下载与奈飞候选', () => {
+test('Clash 精简配置移除 AI 故障转移并保留独立更新下载与奈飞候选', () => {
   const config = yaml.load(read('clash_config_slim.yaml'));
   const groups = verify(config);
-  assert.equal(groups.size, 28);
+  assert.equal(groups.size, 27);
   assert.equal(groups.has('全球直连'), false);
-  assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
+  assert.equal(groups.get('人工智能').proxies[0], '自动选择');
+  assert.equal(groups.has('AI-故障转移'), false);
   assert.ok(groups.get('国外媒体').proxies.includes('奈飞节点'));
   assert.equal(groups.get('奈飞节点').type, 'url-test');
   assert.equal(groups.get('奈飞节点').filter, '(?i)\\bNF\\b|奈飞|解锁|Netflix');
@@ -139,7 +139,7 @@ test('Shadowrocket 合并后选中索引有效，保留微软代理与奈飞候�
   const lines = read('shadowrocket_slim.conf').split('[Proxy Group]')[1].split('[Rule]')[0]
     .split('\n').filter(line => line.includes(' = '));
   const groups = new Map(lines.map(line => line.split(' = ')));
-  assert.equal(groups.size, 29);
+  assert.equal(groups.size, 28);
   assert.equal(groups.has('全球直连'), false);
   for (const name of Object.keys(policy.groupMerges)) assert.equal(groups.has(name), false, name);
   for (const [name, definition] of groups) {
@@ -190,7 +190,7 @@ test('Telegram 分组统一为电报消息，DC 专用规则保留在最前', ()
   assert.equal(groups.get('自动选择').url, 'https://www.gstatic.com/generate_204');
   assert.equal(groups.get('自动选择')['expected-status'], 204);
   assert.equal(groups.get('故障转移')['expected-status'], 204);
-  assert.equal(groups.get('AI-故障转移')['expected-status'], 204);
+  assert.equal(groups.has('AI-故障转移'), false);
 });
 
 test('ACL 模板合并净化到拦截，并保持完整目标引用', () => {
