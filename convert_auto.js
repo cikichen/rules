@@ -113,7 +113,6 @@ const PROXY_GROUPS = {
     MANUAL: "手动切换",
     FALLBACK: "故障转移",
     CUSTOM: "自定义规则",
-    DIRECT: "全球直连",
     LANDING: "落地节点",
     LOW_COST: "低倍率节点",
     OTHER: "其他地区",
@@ -246,7 +245,7 @@ const SHARED_POLICY = {
             "国外媒体"
         ],
         "PT站点": [
-            "全球直连"
+            "DIRECT"
         ],
         "TG-亚洲 (DC5)": [
             "电报消息"
@@ -376,12 +375,12 @@ function buildBaseLists({ landing, lowCost, countryGroupNames, regionGroupNames,
         hasOtherNodes && PROXY_GROUPS.OTHER,
         lowCost && PROXY_GROUPS.LOW_COST,
         PROXY_GROUPS.MANUAL,
-        PROXY_GROUPS.DIRECT
+        "DIRECT"
     );
 
     // “直连”优先的代理列表
     const defaultProxiesDirect = buildList(
-        PROXY_GROUPS.DIRECT,
+        "DIRECT",
         countryGroupNames,
         regionGroupNames,
         hasOtherNodes && PROXY_GROUPS.OTHER,
@@ -505,10 +504,10 @@ const ruleProviders = {
 }
 
 const baseRules = [
-    `GEOSITE,PRIVATE,${PROXY_GROUPS.DIRECT}`,
-    `GEOIP,PRIVATE,${PROXY_GROUPS.DIRECT}`,
+    "GEOSITE,PRIVATE,DIRECT",
+    "GEOIP,PRIVATE,DIRECT",
     `RULE-SET,Custom,${PROXY_GROUPS.CUSTOM}`,
-    `RULE-SET,DirectList,${PROXY_GROUPS.DIRECT}`,
+    "RULE-SET,DirectList,DIRECT",
     `RULE-SET,BanAD,广告拦截`,
     `RULE-SET,BanProgramAD,应用净化`,
     "RULE-SET,OpenAI,OpenAI",
@@ -516,10 +515,10 @@ const baseRules = [
     "RULE-SET,Gemini,Gemini",
     "GEOSITE,CATEGORY-AI-!CN,人工智能",
     `RULE-SET,TikTok,TikTok`,
-    `RULE-SET,SteamFix,${PROXY_GROUPS.DIRECT}`,
-    `RULE-SET,GoogleFCM,${PROXY_GROUPS.DIRECT}`,
+    "RULE-SET,SteamFix,DIRECT",
+    "RULE-SET,GoogleFCM,DIRECT",
     `DOMAIN,services.googleapis.cn,${PROXY_GROUPS.SELECT}`,
-    `GEOSITE,GOOGLE-PLAY@CN,${PROXY_GROUPS.DIRECT}`,
+    "GEOSITE,GOOGLE-PLAY@CN,DIRECT",
     "GEOSITE,GITHUB,GitHub",
     "GEOSITE,ONEDRIVE,OneDrive",
     "GEOSITE,MICROSOFT,微软服务",
@@ -533,9 +532,9 @@ const baseRules = [
     "GEOSITE,BILIBILI,哔哩哔哩",
     "GEOSITE,PIKPAK,PikPak",
     // 国内分类仅作兜底，不能覆盖 AI、OneDrive 和微软服务分组。
-    `GEOSITE,MICROSOFT@CN,${PROXY_GROUPS.DIRECT}`,
-    `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
-    `GEOIP,CN,${PROXY_GROUPS.DIRECT}`,
+    "GEOSITE,MICROSOFT@CN,DIRECT",
+    "GEOSITE,CN,DIRECT",
+    "GEOIP,CN,DIRECT",
     "GEOSITE,GFW,漏网之鱼",
     "GEOIP,NETFLIX,奈飞视频,no-resolve",
     "GEOIP,TELEGRAM,电报消息,no-resolve",
@@ -1119,6 +1118,7 @@ function buildProxyGroups({
         hasOtherNodes && PROXY_GROUPS.OTHER
     );
     const fullProxies = defaultProxies;
+    const directFirstProxies = [...new Set(["DIRECT", ...fullProxies])];
     return [
         {
             "name": PROXY_GROUPS.SELECT,
@@ -1215,7 +1215,7 @@ function buildProxyGroups({
             "name": "GitHub",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png",
             "type": "select",
-            "proxies": buildList(fullProxies, "DIRECT")
+            "proxies": fullProxies
         },
         {
             "name": PROXY_GROUPS.CUSTOM,
@@ -1263,10 +1263,7 @@ function buildProxyGroups({
             "name": "微软服务",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png",
             "type": "select",
-            "proxies": buildList(
-                "DIRECT",
-                fullProxies
-            )
+            "proxies": directFirstProxies
         },
         {
             "name": "OneDrive",
@@ -1303,7 +1300,7 @@ function buildProxyGroups({
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bahamut.png",
             "type": "select",
             "proxies": (hasTW)
-                ? buildList(pickRegions("台湾节点"), PROXY_GROUPS.SELECT, PROXY_GROUPS.MANUAL, PROXY_GROUPS.DIRECT)
+                ? buildList(pickRegions("台湾节点"), PROXY_GROUPS.SELECT, PROXY_GROUPS.MANUAL, "DIRECT")
                 : defaultProxies
         },
         {
@@ -1311,7 +1308,7 @@ function buildProxyGroups({
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili.png",
             "type": "select",
             "proxies": (hasTW && hasHK)
-                ? buildList(PROXY_GROUPS.DIRECT, pickRegions("台湾节点", "香港节点"))
+                ? buildList("DIRECT", pickRegions("台湾节点", "香港节点"))
                 : defaultProxiesDirect
         },
         {
@@ -1339,19 +1336,13 @@ function buildProxyGroups({
             "name": "Epic游戏",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Epic_Games.png",
             "type": "select",
-            "proxies": buildList(
-                "DIRECT",
-                fullProxies
-            )
+            "proxies": directFirstProxies
         },
         {
             "name": "游戏平台",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Game.png",
             "type": "select",
-            "proxies": buildList(
-                "DIRECT",
-                fullProxies
-            )
+            "proxies": directFirstProxies
         },
         {
             "name": "PT站点",
@@ -1372,19 +1363,11 @@ function buildProxyGroups({
             "proxies": unrecognizedProxies
         } : null,
         {
-            "name": PROXY_GROUPS.DIRECT,
-            "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png",
-            "type": "select",
-            "proxies": [
-                "DIRECT", PROXY_GROUPS.SELECT
-            ]
-        },
-        {
             "name": "广告拦截",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png",
             "type": "select",
             "proxies": [
-                "REJECT", "REJECT-DROP",  PROXY_GROUPS.DIRECT
+                "REJECT", "REJECT-DROP", "DIRECT"
             ]
         },
         {

@@ -61,6 +61,10 @@ for (const file of ['convert_clash_reference.js', 'convert_auto.js']) {
       const compact = generate(file, args);
       const full = generate(file, { ...args, compact: false });
       verify(compact, sample);
+      for (const config of [compact, full]) {
+        assert.doesNotMatch(JSON.stringify(config), /全球直连/);
+        assert.ok(config.rules.includes('RULE-SET,DirectList,DIRECT'));
+      }
       assert.ok(full['proxy-groups'].length - compact['proxy-groups'].length >= 10);
       assert.ok(full['proxy-groups'].some(g => g.name === 'OpenAI'));
       assert.ok(full['proxy-groups'].some(g => g.name === '负载均衡-轮询'));
@@ -93,7 +97,7 @@ test('主脚本精简 AI、社交与媒体出口，PT 并入直连', () => {
     'RULE-SET,OneDrive,节点选择',
     'RULE-SET,YouTubeMusic,国外媒体', 'RULE-SET,YouTube,国外媒体',
     'RULE-SET,Netflix,国外媒体', 'RULE-SET,Spotify,国外媒体',
-    'RULE-SET,Epic,游戏平台', 'RULE-SET,PrivateTracker,全球直连',
+    'RULE-SET,Epic,游戏平台', 'RULE-SET,PrivateTracker,DIRECT',
     'RULE-SET,BanProgramAD,广告拦截']) {
     assert.ok(config.rules.includes(rule), rule);
   }
@@ -102,7 +106,8 @@ test('主脚本精简 AI、社交与媒体出口，PT 并入直连', () => {
 test('Clash 精简配置保留 AI 故障转移、独立更新下载与奈飞候选', () => {
   const config = yaml.load(read('clash_config_slim.yaml'));
   const groups = verify(config);
-  assert.equal(groups.size, 29);
+  assert.equal(groups.size, 28);
+  assert.equal(groups.has('全球直连'), false);
   assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
   assert.ok(groups.get('国外媒体').proxies.includes('奈飞节点'));
   assert.equal(groups.get('中转站').proxies[0], 'DIRECT');
@@ -116,7 +121,8 @@ test('Shadowrocket 合并后选中索引有效，保留微软代理与奈飞候�
   const lines = read('shadowrocket_slim.conf').split('[Proxy Group]')[1].split('[Rule]')[0]
     .split('\n').filter(line => line.includes(' = '));
   const groups = new Map(lines.map(line => line.split(' = ')));
-  assert.equal(groups.size, 30);
+  assert.equal(groups.size, 29);
+  assert.equal(groups.has('全球直连'), false);
   for (const name of Object.keys(policy.groupMerges)) assert.equal(groups.has(name), false, name);
   for (const [name, definition] of groups) {
     const [type, ...parts] = definition.split(',');

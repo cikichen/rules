@@ -109,25 +109,12 @@ proxy-groups:
   - name: Cloudflare验证
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png
     type: select
-    proxies: &service_candidates_2
-      - 节点选择
-      - 全球直连
-      - 自动选择
-      - 故障转移
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 狮城-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 欧洲节点
-      - 其他地区
-      - 手动切换
-      - DIRECT
+    proxies: *service_candidates_1
 
   - name: 中转站
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
     type: select
-    proxies: &service_candidates_3
+    proxies: &service_candidates_2
       - DIRECT
       - 节点选择
       - 自动选择
@@ -171,17 +158,17 @@ proxy-groups:
   - name: 微软服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
     type: select
-    proxies: *service_candidates_3
+    proxies: *service_candidates_2
 
   - name: 苹果服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
     type: select
-    proxies: *service_candidates_3
+    proxies: *service_candidates_2
 
   - name: 阿里海外
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Alibaba.png
     type: select
-    proxies: *service_candidates_3
+    proxies: *service_candidates_2
 
   # === 媒体与游戏 ===
 
@@ -189,7 +176,7 @@ proxy-groups:
   - name: 国外媒体
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png
     type: select
-    proxies: &service_candidates_4
+    proxies: &service_candidates_3
       - 节点选择
       - 奈飞节点
       - 自动选择
@@ -281,14 +268,7 @@ proxy-groups:
     filter: (?i)\bNF\b|奈飞|解锁|Netflix
     type: select
 
-  # === 直连与拦截 ===
-  - name: 全球直连
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png
-    type: select
-    proxies:
-      - DIRECT
-      - 节点选择
-
+  # === 拦截 ===
   - name: 全球拦截
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png
     type: select
@@ -678,35 +658,35 @@ rule-providers:
 # ==================== 规则 ====================
 rules:
   # === 直连规则 (最高优先级) ===
-  - RULE-SET,Private_Domain,全球直连
-  - RULE-SET,Private_IP,全球直连,no-resolve
-  - RULE-SET,Lan_Domain,全球直连
-  - RULE-SET,Lan_IP,全球直连,no-resolve
+  - RULE-SET,Private_Domain,DIRECT
+  - RULE-SET,Private_IP,DIRECT,no-resolve
+  - RULE-SET,Lan_Domain,DIRECT
+  - RULE-SET,Lan_IP,DIRECT,no-resolve
   # === 中转站 (需早于直连/阿里规则, 否则会被抢先命中) ===
   - RULE-SET,Relay,中转站
 
   # === 自定义直连白名单 (优先级最高，防止被广告规则误拦) ===
-  - RULE-SET,Custom_Direct,全球直连
+  - RULE-SET,Custom_Direct,DIRECT
 
   # === 拦截规则 (需早于国内白名单规则，避免广告被国内直连放行) ===
   - RULE-SET,BanAD,全球拦截
   - RULE-SET,BanProgramAD,全球拦截
 
   # === 特定直连例外与国内媒体 ===
-  - RULE-SET,UnBan,全球直连
-  - RULE-SET,GoogleCN,全球直连
-  - RULE-SET,SteamCN,全球直连
+  - RULE-SET,UnBan,DIRECT
+  - RULE-SET,GoogleCN,DIRECT
+  - RULE-SET,SteamCN,DIRECT
   - RULE-SET,ChinaMedia,国内媒体
   # -- 阿里: 国内段直连, 海外段/海外域名走「阿里海外」 --
   # GEOIP,CN 库缺 8 个国内段, 先白名单兜底 (no-resolve)
-  - IP-CIDR,8.128.0.0/10,全球直连,no-resolve
-  - IP-CIDR,43.242.168.0/22,全球直连,no-resolve
-  - IP-CIDR,45.112.212.0/22,全球直连,no-resolve
-  - IP-CIDR,59.82.240.0/21,全球直连,no-resolve
-  - IP-CIDR,59.82.248.0/22,全球直连,no-resolve
-  - IP-CIDR,103.38.56.0/22,全球直连,no-resolve
-  - IP-CIDR,103.52.76.0/22,全球直连,no-resolve
-  - IP-CIDR,119.38.224.0/20,全球直连,no-resolve
+  - IP-CIDR,8.128.0.0/10,DIRECT,no-resolve
+  - IP-CIDR,43.242.168.0/22,DIRECT,no-resolve
+  - IP-CIDR,45.112.212.0/22,DIRECT,no-resolve
+  - IP-CIDR,59.82.240.0/21,DIRECT,no-resolve
+  - IP-CIDR,59.82.248.0/22,DIRECT,no-resolve
+  - IP-CIDR,103.38.56.0/22,DIRECT,no-resolve
+  - IP-CIDR,103.52.76.0/22,DIRECT,no-resolve
+  - IP-CIDR,119.38.224.0/20,DIRECT,no-resolve
   # 阿里云海外 IP 段（只保留核心段, 无域名/Region 规则, 与 Shadowrocket 保持一致）
   - IP-CIDR,147.139.0.0/16,阿里海外,no-resolve
   - IP-CIDR,149.129.0.0/16,阿里海外,no-resolve
@@ -792,18 +772,18 @@ rules:
   - RULE-SET,Epic_Domain,游戏平台
 
   # === PT站点 ===
-  - RULE-SET,PT,全球直连
+  - RULE-SET,PT,DIRECT
 
   # === 通用直连与国内规则 (服务分流优先，避免微软登录被直连抢先命中) ===
-  - RULE-SET,Direct_Domain,全球直连
-  - RULE-SET,China_Domain,全球直连
-  - RULE-SET,China_YYDS_Domain,全球直连
-  - RULE-SET,China_IP,全球直连
-  - RULE-SET,China_YYDS_IP,全球直连
-  - RULE-SET,Download,全球直连
+  - RULE-SET,Direct_Domain,DIRECT
+  - RULE-SET,China_Domain,DIRECT
+  - RULE-SET,China_YYDS_Domain,DIRECT
+  - RULE-SET,China_IP,DIRECT
+  - RULE-SET,China_YYDS_IP,DIRECT
+  - RULE-SET,Download,DIRECT
 
   # === GEOIP ===
-  - GEOIP,CN,全球直连
+  - GEOIP,CN,DIRECT
 
   # === 代理规则 ===
   - RULE-SET,ProxyGFWlist,漏网之鱼

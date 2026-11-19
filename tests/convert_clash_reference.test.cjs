@@ -154,7 +154,7 @@ test('custom group uses friendly chinese name and Custom rules target it', () =>
   const result = runGenerator({ full: false });
   const customGroup = result['proxy-groups'].find(group => group.name === '自定义规则');
   const customRuleIndex = result.rules.indexOf('RULE-SET,Custom,自定义规则');
-  const directRuleIndex = result.rules.indexOf('RULE-SET,DirectList,全球直连');
+  const directRuleIndex = result.rules.indexOf('RULE-SET,DirectList,DIRECT');
 
   assert.ok(customGroup);
   assert.equal(customGroup.type, 'select');

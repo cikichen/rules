@@ -33,20 +33,20 @@ function findRule(rules, fragment) {
 test('精简配置：微软与专用服务先于通用直连，保留白名单和拦截优先级', () => {
   const rules = slim.rules;
   const microsoft = 'RULE-SET,Microsoft_Domain,微软服务';
-  before(rules, 'RULE-SET,Relay,中转站', 'RULE-SET,Custom_Direct,全球直连');
-  before(rules, 'RULE-SET,Custom_Direct,全球直连', 'RULE-SET,BanAD,全球拦截');
+  before(rules, 'RULE-SET,Relay,中转站', 'RULE-SET,Custom_Direct,DIRECT');
+  before(rules, 'RULE-SET,Custom_Direct,DIRECT', 'RULE-SET,BanAD,全球拦截');
   before(rules, 'RULE-SET,BanAD,全球拦截', microsoft);
   before(rules, 'RULE-SET,BanProgramAD,全球拦截', microsoft);
   before(rules, 'DOMAIN,browser.events.data.microsoft.com,人工智能', microsoft);
   before(rules, 'RULE-SET,AI,人工智能', microsoft);
   for (const provider of ['Direct_Domain', 'China_Domain', 'China_YYDS_Domain',
     'China_IP', 'China_YYDS_IP', 'Download']) {
-    const direct = `RULE-SET,${provider},全球直连`;
+    const direct = `RULE-SET,${provider},DIRECT`;
     before(rules, microsoft, direct);
-    before(rules, 'RULE-SET,PT,全球直连', direct);
-    before(rules, direct, 'GEOIP,CN,全球直连');
+    before(rules, 'RULE-SET,PT,DIRECT', direct);
+    before(rules, direct, 'GEOIP,CN,DIRECT');
   }
-  before(rules, 'GEOIP,CN,全球直连', 'RULE-SET,ProxyGFWlist,漏网之鱼');
+  before(rules, 'GEOIP,CN,DIRECT', 'RULE-SET,ProxyGFWlist,漏网之鱼');
   assert.equal(rules.at(-1), 'MATCH,漏网之鱼');
 });
 
@@ -75,13 +75,13 @@ for (const name of ['convert_clash_reference.js', 'convert_auto.js']) {
     const oneDrive = reference ? 'RULE-SET,OneDrive,节点选择' : 'GEOSITE,ONEDRIVE,节点选择';
     // DirectList 是仓库自定义白名单，不是需要后移的第三方通用直连集。
     assert.ok(providers.DirectList.url.endsWith('/clash/direct.list'));
-    before(rules, 'RULE-SET,DirectList,全球直连', 'RULE-SET,BanAD,广告拦截');
+    before(rules, 'RULE-SET,DirectList,DIRECT', 'RULE-SET,BanAD,广告拦截');
     before(rules, 'RULE-SET,BanAD,广告拦截', microsoft);
     before(rules, 'RULE-SET,BanProgramAD,广告拦截', microsoft);
     before(rules, 'GEOSITE,CATEGORY-AI-!CN,人工智能', microsoft);
     before(rules, oneDrive, microsoft);
-    for (const direct of ['GEOSITE,MICROSOFT@CN,全球直连', 'GEOSITE,CN,全球直连',
-      'GEOIP,CN,全球直连']) {
+    for (const direct of ['GEOSITE,MICROSOFT@CN,DIRECT', 'GEOSITE,CN,DIRECT',
+      'GEOIP,CN,DIRECT']) {
       before(rules, microsoft, direct);
       before(rules, direct, 'GEOSITE,GFW,漏网之鱼');
     }
@@ -95,6 +95,7 @@ test('ACL4SSR：自定义白名单与拦截保持前置，微软服务先于通�
   const microsoft = findRule(rules, '/Microsoft/Microsoft.list');
   const customDirect = findRule(rules, '/cikichen/rules@main/clash/direct.list');
   const ad = findRule(rules, '/BanAD.list');
+  assert.ok(customDirect.startsWith('ruleset=DIRECT,'));
   before(rules, customDirect, ad);
   before(rules, ad, microsoft);
   before(rules, findRule(rules, '/BanProgramAD.list'), microsoft);
@@ -102,7 +103,9 @@ test('ACL4SSR：自定义白名单与拦截保持前置，微软服务先于通�
   for (const fragment of ['/Direct/Direct.list', '/China/China_Classical.yaml',
     '/ChinaDNS/ChinaDNS.list', '/ChinaIPs/ChinaIPs.list', '/ChinaIpV6.list',
     '/China/China_Domain.yaml', '/ChinaCompanyIp.list', '/Download.list', '[]GEOIP,CN']) {
-    before(rules, microsoft, findRule(rules, fragment));
+    const direct = findRule(rules, fragment);
+    assert.ok(direct.startsWith('ruleset=DIRECT,'), direct);
+    before(rules, microsoft, direct);
   }
   assert.equal(rules.at(-1), 'ruleset=🐟 漏网之鱼,[]FINAL');
 });
@@ -115,7 +118,9 @@ test('Shadowrocket：保持已有的 AI、微软、通用直连顺序', () => {
   before(rules, findRule(rules, '/Copilot/Copilot.list'), microsoft);
   before(rules, 'DOMAIN,browser.events.data.microsoft.com,人工智能', microsoft);
   for (const fragment of ['/Direct/Direct.list', '/China/China.list', 'GEOIP,CN']) {
-    before(rules, microsoft, findRule(rules, fragment));
+    const direct = findRule(rules, fragment);
+    assert.ok(direct.endsWith(',DIRECT'), direct);
+    before(rules, microsoft, direct);
   }
   assert.equal(rules.at(-1), 'FINAL,漏网之鱼');
 });
