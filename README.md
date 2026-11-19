@@ -33,6 +33,18 @@ GitHub 直连下载和失效的 `github.ithome.me` 入口改用 `https://gh-prox
 - `fakeip=true`：切换到 Fake-IP DNS 模式
 - `compact=true`：默认精简重复策略组；`compact=false` 恢复完整分组，与 `full`、`profile` 独立。兼容转换脚本也支持此参数。
 
+## DNS 分流与接管
+
+精简 Mihomo 配置及两个转换脚本显式指定主 DNS：国外和未分类域名使用 Cloudflare / Google DoH，通过现有“节点选择”组查询；国内域名、私有域名和 `DIRECT` 出口保持阿里 / 腾讯解析，避免直连网站因海外解析被分配到海外 CDN。代理节点域名和加密 DNS 的启动解析使用独立的国内 DNS，避免代理与 DNS 循环依赖。国内、直连和节点启动解析仍允许本地 DNS 查询，保护目标是应走代理的访问域名。
+
+`proxy` 单独写在 DNS 服务器列表中会被当作服务器主机名，并不表示走代理；正确的指定出口形式是 `https://1.1.1.1/dns-query#节点选择`。`respect-rules` 只表示 DNS 连接遵守规则，不会强制所有 DNS 走代理。`fallback: []` 防止沿用订阅中的回落解析设置；代理组应选用可用节点，选成 `DIRECT` 会使该组的 DNS 连接也直连。
+
+共享配置只声明 `tun.dns-hijack: [any:53, tcp://any:53]`，不启用 TUN、不改路由范围或节点选择。需要在负责接管的客户端或路由器启用对应功能，才能覆盖系统和应用的 UDP/TCP 53 查询。macOS 的 TUN 无法自动接管发往局域网 DNS 的请求，双网卡和局域网 DNS 需另行实测；应用自带 DoH/DoT 也不受 53 端口接管约束。
+
+`防止dns泄露(雾).js` 可作为已有订阅的 DNS 覆写，优先使用“节点选择”，否则使用 `MATCH` 指向的代理组，保留已有的规则、Fake-IP 排除项和 TUN 路由。它不再添加外部的 DNS 测试域名规则集。修改后需重新加载配置或关联覆写脚本，仓库修改不会自动改变运行中的客户端。
+
+DNS 改动影响解析及首次建连，持续下载速度主要由出口、线路和服务器决定。国内直连解析与现有流量分流保持不变，但不能承诺任何线路在所有时间都不降速；部署后应对比解析耗时、首包耗时和下载吞吐。参数参考 [Mihomo DNS 文档](https://wiki.metacubex.one/config/dns/) 与 [TUN 文档](https://wiki.metacubex.one/config/inbound/tun/)。
+
 
 ## 弱节点与故障切换
 

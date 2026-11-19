@@ -654,6 +654,8 @@ function buildSharedConfig({ proxyGroups, finalRules }) {
         rules: finalRules,
         sniffer: snifferConfig,
         dns: fakeIPEnabled ? dnsConfigFakeIp : dnsConfig,
+        // 不启用 TUN，也不改变路由范围；接管启用时同时覆盖 UDP/TCP DNS。
+        tun: { "dns-hijack": ["any:53", "tcp://any:53"] },
         "geodata-mode": true,
         "geox-url": geoxURL
     };
@@ -683,19 +685,28 @@ function buildDnsConfig({ mode, fakeIpFilter }) {
         listen: "0.0.0.0:1053",
         "respect-rules": true,
         "default-nameserver": ["119.29.29.29", "223.5.5.5"],
+        "nameserver": [
+            "https://1.1.1.1/dns-query#节点选择",
+            "https://8.8.8.8/dns-query#节点选择"
+        ],
+        "fallback": [],
         "nameserver-policy": {
             "geosite:cn,private": [
-                "223.5.5.5",
-                "119.29.29.29"
+                "223.5.5.5#DIRECT",
+                "119.29.29.29#DIRECT"
             ],
             "geosite:geolocation-!cn": [
-                "proxy"
+                "https://1.1.1.1/dns-query#节点选择",
+                "https://8.8.8.8/dns-query#节点选择"
             ]
         },
         "proxy-server-nameserver": [
             "223.5.5.5",
             "119.29.29.29"
-        ]
+        ],
+        // 直连网站仍使用国内解析；代理节点解析独立，避免 DNS 循环依赖。
+        "direct-nameserver": ["223.5.5.5", "119.29.29.29"],
+        "direct-nameserver-follow-policy": false
     };
 
     if (fakeIpFilter) {

@@ -583,19 +583,27 @@ function buildDnsConfig({ mode, fakeIpFilter }) {
             "119.29.29.29",
             "223.5.5.5"
         ],
+        "nameserver": [
+            "https://1.1.1.1/dns-query#节点选择",
+            "https://8.8.8.8/dns-query#节点选择"
+        ],
+        "fallback": [],
         "nameserver-policy": {
             "geosite:cn,private": [
-                "223.5.5.5",
-                "119.29.29.29"
+                "223.5.5.5#DIRECT",
+                "119.29.29.29#DIRECT"
             ],
             "geosite:geolocation-!cn": [
-                "proxy"
+                "https://1.1.1.1/dns-query#节点选择",
+                "https://8.8.8.8/dns-query#节点选择"
             ]
         },
         "proxy-server-nameserver": [
             "223.5.5.5",
             "119.29.29.29"
-        ]
+        ],
+        "direct-nameserver": ["223.5.5.5", "119.29.29.29"],
+        "direct-nameserver-follow-policy": false
     };
 
     if (fakeIpFilter) {
@@ -1468,6 +1476,7 @@ function main(config) {
         "rules": finalRules,
         "sniffer": snifferConfig,
         "dns": fakeIPEnabled ? dnsConfigFakeIp : dnsConfig,
+        "tun": { "dns-hijack": ["any:53", "tcp://any:53"] },
         "geodata-mode": true,
         "geox-url": geoxURL,
     });

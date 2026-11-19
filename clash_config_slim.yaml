@@ -792,6 +792,12 @@ rules:
   - MATCH,漏网之鱼
 
 # ==================== DNS ====================
+# 只声明 DNS 接管协议；是否启用 TUN 由客户端或路由器决定。
+tun:
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+
 dns:
   enable: true
   ipv6: false
@@ -801,15 +807,26 @@ dns:
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
+  # 国外及未分类域名经现有代理组解析，不回落到系统 DNS。
+  nameserver:
+    - https://1.1.1.1/dns-query#节点选择
+    - https://8.8.8.8/dns-query#节点选择
+  fallback: []
   nameserver-policy:
     "geosite:cn,private":
-      - 223.5.5.5
-      - 119.29.29.29
+      - 223.5.5.5#DIRECT
+      - 119.29.29.29#DIRECT
     "geosite:geolocation-!cn":
-      - proxy
+      - https://1.1.1.1/dns-query#节点选择
+      - https://8.8.8.8/dns-query#节点选择
   proxy-server-nameserver:
     - 223.5.5.5
     - 119.29.29.29
+  # 直连出口保持国内解析，避免直连网站被分配到海外 CDN。
+  direct-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  direct-nameserver-follow-policy: false
   fake-ip-filter:
     - geosite:private
     - geosite:connectivity-check
