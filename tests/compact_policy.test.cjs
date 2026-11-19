@@ -84,6 +84,8 @@ for (const file of ['convert_clash_reference.js', 'convert_auto.js']) {
 test('主脚本精简 AI、社交与媒体出口，PT 并入直连', () => {
   const config = generate('convert_clash_reference.js', {});
   const groups = verify(config, sample);
+  assert.equal(groups.get('奈飞节点').type, 'url-test');
+  assert.equal(groups.get('奈飞节点').filter, '(?i)\\bNF\\b|奈飞|解锁|Netflix');
   assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
   assert.equal(groups.get('AI-故障转移').type, 'fallback');
   assert.match(groups.get('AI-故障转移')['exclude-filter'], /香港/);
@@ -96,10 +98,22 @@ test('主脚本精简 AI、社交与媒体出口，PT 并入直连', () => {
     'RULE-SET,Twitter,社交平台', 'RULE-SET,Discord,社交平台', 'RULE-SET,TikTok,社交平台',
     'RULE-SET,OneDrive,节点选择',
     'RULE-SET,YouTubeMusic,国外媒体', 'RULE-SET,YouTube,国外媒体',
-    'RULE-SET,Netflix,国外媒体', 'RULE-SET,Spotify,国外媒体',
+    'RULE-SET,Netflix,奈飞节点', 'GEOIP,NETFLIX,奈飞节点,no-resolve', 'RULE-SET,Spotify,国外媒体',
     'RULE-SET,Epic,游戏平台', 'RULE-SET,PrivateTracker,DIRECT',
     'RULE-SET,BanProgramAD,广告拦截']) {
     assert.ok(config.rules.includes(rule), rule);
+  }
+});
+
+test('兼容转换脚本将 Netflix 域名与 IP 规则独立发送到奈飞节点组', () => {
+  for (const args of [{}, { compact: false }]) {
+    const config = generate('convert_auto.js', args);
+    const groups = new Map(config['proxy-groups'].map(group => [group.name, group]));
+    assert.equal(groups.get('奈飞节点').type, 'url-test');
+    assert.equal(groups.get('奈飞节点').filter, '(?i)\\bNF\\b|奈飞|解锁|Netflix');
+    assert.ok(config.rules.includes('GEOSITE,NETFLIX,奈飞节点'));
+    assert.ok(config.rules.includes('GEOIP,NETFLIX,奈飞节点,no-resolve'));
+    assert.ok(!config.rules.includes('GEOSITE,NETFLIX,国外媒体'));
   }
 });
 
@@ -110,6 +124,10 @@ test('Clash 精简配置保留 AI 故障转移、独立更新下载与奈飞候�
   assert.equal(groups.has('全球直连'), false);
   assert.equal(groups.get('人工智能').proxies[0], 'AI-故障转移');
   assert.ok(groups.get('国外媒体').proxies.includes('奈飞节点'));
+  assert.equal(groups.get('奈飞节点').type, 'url-test');
+  assert.equal(groups.get('奈飞节点').filter, '(?i)\\bNF\\b|奈飞|解锁|Netflix');
+  assert.ok(config.rules.includes('RULE-SET,Netflix_Domain,奈飞节点'));
+  assert.ok(config.rules.includes('RULE-SET,Netflix_IP,奈飞节点,no-resolve'));
   assert.equal(groups.get('中转站').proxies[0], 'DIRECT');
   assert.equal(groups.get('国内媒体').proxies[0], 'DIRECT');
   assert.ok(config.rules.includes('DOMAIN-SUFFIX,downloads.claude.ai,节点选择'));
@@ -134,6 +152,7 @@ test('Shadowrocket 合并后选中索引有效，保留微软代理与奈飞候�
   const microsoft = groups.get('微软服务').split(',').slice(1);
   assert.equal(microsoft.filter(p => !p.includes('='))[Number(microsoft.find(p => p.startsWith('select=')).slice(7))], '节点选择');
   assert.ok(groups.get('国外媒体').startsWith('select,节点选择,奈飞节点,流媒体解锁,'));
+  assert.ok(groups.get('奈飞节点').startsWith('url-test,url=https://www.gstatic.com/generate_204,'));
   assert.ok(read('shadowrocket_slim.conf').includes('DOMAIN-SUFFIX,downloads.claude.ai,节点选择'));
   for (const name of ['Cloudflare验证', '社交平台']) {
     assert.ok(groups.has(name), name);
@@ -144,9 +163,8 @@ test('Shadowrocket 合并后选中索引有效，保留微软代理与奈飞候�
   for (const name of ['Twitter', 'Facebook', 'Discord', 'TikTok']) {
     assert.ok(rules.includes(`/${name}/${name}.list,社交平台`), name);
   }
-  for (const name of ['YouTube', 'Netflix']) {
-    assert.ok(rules.includes(`/${name}/${name}.list,国外媒体`), name);
-  }
+  assert.ok(rules.includes('/YouTube/YouTube.list,国外媒体'));
+  assert.ok(rules.includes('/Netflix/Netflix.list,奈飞节点'));
 });
 
 test('Telegram 分组统一为电报消息，DC 专用规则保留在最前', () => {

@@ -60,6 +60,8 @@ test('精简配置奈飞节点只在解锁标记节点中自动选延迟较低�
   assert.equal(netflix.timeout, policy.health.timeout);
   assert.equal(netflix.interval, policy.health.interval);
   assert.equal(netflix.tolerance, policy.health.tolerance);
+  assert.ok(clash.rules.includes('RULE-SET,Netflix_Domain,奈飞节点'));
+  assert.ok(clash.rules.includes('RULE-SET,Netflix_IP,奈飞节点,no-resolve'));
 });
 
 test('converter resolves shared candidates to existing dynamic regional groups', () => {

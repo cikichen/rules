@@ -740,8 +740,8 @@ rules:
   # === 流媒体 ===
   - RULE-SET,YouTube_Domain,国外媒体
   - RULE-SET,YouTube_IP,国外媒体,no-resolve
-  - RULE-SET,Netflix_Domain,国外媒体
-  - RULE-SET,Netflix_IP,国外媒体,no-resolve
+  - RULE-SET,Netflix_Domain,奈飞节点
+  - RULE-SET,Netflix_IP,奈飞节点,no-resolve
   - RULE-SET,Bilibili,国内媒体
   - RULE-SET,ProxyMedia,国外媒体
 

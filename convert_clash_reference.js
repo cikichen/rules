@@ -247,10 +247,10 @@ const SHARED_POLICY = {
             "国外媒体"
         ],
         "奈飞视频": [
-            "国外媒体"
+            "奈飞节点"
         ],
         "Netflix": [
-            "国外媒体"
+            "奈飞节点"
         ],
         "PT站点": [
             "DIRECT"
@@ -567,6 +567,8 @@ const baseRules = [
     "GEOSITE,GOOGLE-PLAY@CN,DIRECT",
     "RULE-SET,Apple,苹果服务",
     "RULE-SET,ChinaMedia,国内媒体",
+    "RULE-SET,Netflix,奈飞节点",
+    "GEOIP,NETFLIX,奈飞节点,no-resolve",
     "RULE-SET,GlobalMedia,国外媒体",
     "RULE-SET,Twitter,推特X",
     "RULE-SET,Discord,Discord",
@@ -575,7 +577,6 @@ const baseRules = [
     "RULE-SET,Telegram,电报消息",
     "RULE-SET,YouTubeMusic,YouTube Music",
     "RULE-SET,YouTube,油管视频",
-    "RULE-SET,Netflix,奈飞视频",
     // OneDrive 是微软子服务，需早于微软总规则。
     "RULE-SET,OneDrive,OneDrive",
     "RULE-SET,Microsoft,微软服务",
@@ -591,7 +592,6 @@ const baseRules = [
     "GEOSITE,CN,DIRECT",
     "GEOIP,CN,DIRECT",
     "GEOSITE,GFW,漏网之鱼",
-    "GEOIP,NETFLIX,奈飞视频,no-resolve",
     "GEOIP,TELEGRAM,电报消息,no-resolve",
     "MATCH,漏网之鱼"
 ];
@@ -1244,10 +1244,12 @@ function buildProxyGroups({
             proxies: fullProxies
         },
         {
-            name: "奈飞视频",
+            name: "奈飞节点",
             icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png",
-            type: "select",
-            proxies: fullProxies
+            type: "url-test",
+            "include-all": true,
+            filter: "(?i)\\bNF\\b|奈飞|解锁|Netflix",
+            ...buildHealthCheck("url-test")
         },
         {
             name: "Spotify",

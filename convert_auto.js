@@ -239,10 +239,10 @@ const SHARED_POLICY = {
             "国外媒体"
         ],
         "奈飞视频": [
-            "国外媒体"
+            "奈飞节点"
         ],
         "Netflix": [
-            "国外媒体"
+            "奈飞节点"
         ],
         "PT站点": [
             "DIRECT"
@@ -526,7 +526,8 @@ const baseRules = [
     "RULE-SET,YouTubeMusic,YouTube Music",
     "GEOSITE,YOUTUBE,油管视频",
     "GEOSITE,GOOGLE,谷歌服务",
-    "GEOSITE,NETFLIX,奈飞视频",
+    "GEOSITE,NETFLIX,奈飞节点",
+    "GEOIP,NETFLIX,奈飞节点,no-resolve",
     "GEOSITE,SPOTIFY,Spotify",
     "GEOSITE,BAHAMUT,Bahamut",
     "GEOSITE,BILIBILI,哔哩哔哩",
@@ -536,7 +537,6 @@ const baseRules = [
     "GEOSITE,CN,DIRECT",
     "GEOIP,CN,DIRECT",
     "GEOSITE,GFW,漏网之鱼",
-    "GEOIP,NETFLIX,奈飞视频,no-resolve",
     "GEOIP,TELEGRAM,电报消息,no-resolve",
     `MATCH,漏网之鱼`
 ];
@@ -1292,10 +1292,17 @@ function buildProxyGroups({
             "proxies": fullProxies
         },
         {
-            "name": "奈飞视频",
+            "name": "奈飞节点",
             "icon": "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png",
-            "type": "select",
-            "proxies": fullProxies
+            "type": "url-test",
+            "include-all": true,
+            "filter": "(?i)\\bNF\\b|奈飞|解锁|Netflix",
+            "url": PROXY_TEST_URL,
+            "expected-status": 204,
+            "interval": PROXY_TEST_INTERVAL,
+            "timeout": PROXY_TEST_TIMEOUT,
+            "tolerance": PROXY_TEST_TOLERANCE,
+            "lazy": PROXY_TEST_LAZY
         },
         {
             "name": "Spotify",
