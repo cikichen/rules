@@ -33,7 +33,7 @@ test('common service menus expose all existing candidates without duplicates', (
 
 test('service defaults and dedicated media/AI entries survive menu normalization', () => {
   assert.equal(groups.get('阿里海外').proxies[0], 'DIRECT');
-  assert.equal(groups.get('中转站').proxies[0], 'DIRECT');
+  assert.equal(groups.has('中转站'), false);
   assert.equal(groups.get('国外媒体').proxies[0], '节点选择');
   assert.ok(groups.get('国外媒体').proxies.includes('奈飞节点'));
   assert.equal(groups.has('OpenAI'), false);

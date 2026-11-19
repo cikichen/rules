@@ -23,6 +23,7 @@
     "OpenAI专线": ["自动选择"],
     "Claude专线": ["自动选择"],
     "Gemini专线": ["自动选择"],
+    "中转站": ["DIRECT"],
     "Claude更新": ["节点选择"],
     "Linux.do": ["节点选择"],
     "YouTube Music": ["国外媒体"],
@@ -52,7 +53,7 @@
     "TG-欧洲 (DC2/4)": ["电报消息"]
   },
   "services": [
-    "漏网之鱼", "中转站", "Claude更新", "油管视频", "YouTube", "YouTube Music",
+    "漏网之鱼", "Claude更新", "油管视频", "YouTube", "YouTube Music",
     "奈飞视频", "Netflix", "Disney+", "Max", "Spotify", "国外媒体",
     "电报消息", "Telegram", "社交平台", "谷歌服务", "微软服务", "苹果服务", "GitHub",
     "Cloudflare验证", "推特X", "Twitter", "Facebook", "Discord", "TikTok",

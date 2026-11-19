@@ -119,7 +119,7 @@ test('兼容转换脚本将 Netflix 域名与 IP 规则独立发送到奈飞节�
 test('Clash 精简配置移除 AI 故障转移并保留独立更新下载与奈飞候选', () => {
   const config = yaml.load(read('clash_config_slim.yaml'));
   const groups = verify(config);
-  assert.equal(groups.size, 27);
+  assert.equal(groups.size, 26);
   assert.equal(groups.has('全球直连'), false);
   assert.equal(groups.get('人工智能').proxies[0], '自动选择');
   assert.equal(groups.has('AI-故障转移'), false);
@@ -128,18 +128,19 @@ test('Clash 精简配置移除 AI 故障转移并保留独立更新下载与奈�
   assert.equal(groups.get('奈飞节点').filter, '(?i)\\bNF\\b|奈飞|解锁|Netflix');
   assert.ok(config.rules.includes('RULE-SET,Netflix_Domain,奈飞节点'));
   assert.ok(config.rules.includes('RULE-SET,Netflix_IP,奈飞节点,no-resolve'));
-  assert.equal(groups.get('中转站').proxies[0], 'DIRECT');
+  assert.equal(groups.has('中转站'), false);
   assert.equal(groups.get('国内媒体').proxies[0], 'DIRECT');
   assert.ok(config.rules.includes('DOMAIN-SUFFIX,downloads.claude.ai,节点选择'));
   assert.ok(config.rules.includes('PROCESS-NAME,Codex,人工智能'));
   assert.ok(config.rules.includes('IP-ASN,44907,电报消息,no-resolve'));
+  assert.ok(config.rules.includes('RULE-SET,Relay,DIRECT'));
 });
 
 test('Shadowrocket 合并后选中索引有效，保留微软代理与奈飞候选', () => {
   const lines = read('shadowrocket_slim.conf').split('[Proxy Group]')[1].split('[Rule]')[0]
     .split('\n').filter(line => line.includes(' = '));
   const groups = new Map(lines.map(line => line.split(' = ')));
-  assert.equal(groups.size, 28);
+  assert.equal(groups.size, 27);
   assert.equal(groups.has('全球直连'), false);
   for (const name of Object.keys(policy.groupMerges)) assert.equal(groups.has(name), false, name);
   for (const [name, definition] of groups) {

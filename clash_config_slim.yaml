@@ -103,22 +103,6 @@ proxy-groups:
     type: select
     proxies: *service_candidates_1
 
-  - name: 中转站
-    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png
-    type: select
-    proxies: &service_candidates_2
-      - DIRECT
-      - 节点选择
-      - 自动选择
-      - 故障转移
-      - 香港-自动选择
-      - 台湾-自动选择
-      - 狮城-自动选择
-      - 日本-自动选择
-      - 美国-自动选择
-      - 欧洲节点
-      - 其他地区
-      - 手动切换
 
   - name: 电报消息
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png
@@ -150,7 +134,19 @@ proxy-groups:
   - name: 微软服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png
     type: select
-    proxies: *service_candidates_2
+    proxies: &service_candidates_2
+      - DIRECT
+      - 节点选择
+      - 自动选择
+      - 故障转移
+      - 香港-自动选择
+      - 台湾-自动选择
+      - 狮城-自动选择
+      - 日本-自动选择
+      - 美国-自动选择
+      - 欧洲节点
+      - 其他地区
+      - 手动切换
 
   - name: 苹果服务
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png
@@ -655,8 +651,8 @@ rules:
   - RULE-SET,Private_IP,DIRECT,no-resolve
   - RULE-SET,Lan_Domain,DIRECT
   - RULE-SET,Lan_IP,DIRECT,no-resolve
-  # === 中转站 (需早于直连/阿里规则, 否则会被抢先命中) ===
-  - RULE-SET,Relay,中转站
+  # === 中转站域名固定直连, 需早于国内通用规则 ===
+  - RULE-SET,Relay,DIRECT
 
   # === 自定义直连白名单 (优先级最高，防止被广告规则误拦) ===
   - RULE-SET,Custom_Direct,DIRECT

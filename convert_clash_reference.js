@@ -181,6 +181,9 @@ const SHARED_POLICY = {
         "Gemini专线": [
             "自动选择"
         ],
+        "中转站": [
+            "DIRECT"
+        ],
         "Claude更新": [
             "节点选择"
         ],
@@ -266,7 +269,6 @@ const SHARED_POLICY = {
     },
     "services": [
         "漏网之鱼",
-        "中转站",
         "Claude更新",
         "油管视频",
         "YouTube",

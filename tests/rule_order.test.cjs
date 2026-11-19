@@ -33,7 +33,8 @@ function findRule(rules, fragment) {
 test('精简配置：微软与专用服务先于通用直连，保留白名单和拦截优先级', () => {
   const rules = slim.rules;
   const microsoft = 'RULE-SET,Microsoft_Domain,微软服务';
-  before(rules, 'RULE-SET,Relay,中转站', 'RULE-SET,Custom_Direct,DIRECT');
+  assert.ok(rules.includes('RULE-SET,Relay,DIRECT'));
+  before(rules, 'RULE-SET,Relay,DIRECT', 'RULE-SET,Custom_Direct,DIRECT');
   before(rules, 'RULE-SET,Custom_Direct,DIRECT', 'RULE-SET,BanAD,全球拦截');
   before(rules, 'RULE-SET,BanAD,全球拦截', microsoft);
   before(rules, 'RULE-SET,BanProgramAD,全球拦截', microsoft);
