@@ -266,7 +266,8 @@ proxy-groups:
     icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png
     include-all: true
     filter: (?i)\bNF\b|奈飞|解锁|Netflix
-    type: select
+    type: url-test
+    <<: *url_test_health
 
   # === 拦截 ===
   - name: 全球拦截

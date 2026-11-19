@@ -51,6 +51,17 @@ test('service defaults and dedicated media/AI entries survive menu normalization
   }
 });
 
+test('精简配置奈飞节点只在解锁标记节点中自动选延迟较低的线路', () => {
+  const netflix = groups.get('奈飞节点');
+  assert.equal(netflix.type, 'url-test');
+  assert.equal(netflix.filter, '(?i)\\bNF\\b|奈飞|解锁|Netflix');
+  assert.equal(netflix.url, policy.health.url);
+  assert.equal(netflix['expected-status'], policy.health['expected-status']);
+  assert.equal(netflix.timeout, policy.health.timeout);
+  assert.equal(netflix.interval, policy.health.interval);
+  assert.equal(netflix.tolerance, policy.health.tolerance);
+});
+
 test('converter resolves shared candidates to existing dynamic regional groups', () => {
   const context = { $arguments: {}, console, structuredClone };
   vm.createContext(context);

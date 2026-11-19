@@ -89,6 +89,7 @@ Clash 精简配置、Shadowrocket、ACL4SSR 模板和两个转换脚本按“节
 Clash 精简配置从 50 组降为 28 组，Shadowrocket 从 57 组降为 29 组。GitHub、Cloudflare 验证和中转站保留独立控制；Telegram 统一到“电报消息”，社交站点统一到“社交平台”。两个转换脚本默认启用精简，数量随节点地区及可选功能变化；传入 `compact=false` 可恢复完整分组。`full=true` 仅决定是否包含运行时配置，不代表恢复完整分组。
 
 - OpenAI、Claude、Gemini 共用“人工智能”；保留主脚本与精简配置的 AI 故障转移和地区限制。Claude 更新下载单独匹配“节点选择”，不跟随 AI 出口。
+- 精简 Clash 配置中的“奈飞节点”按现有 204 连通性测速，在 NF、奈飞、解锁或 Netflix 标记的节点中自动选择延迟较低的线路；该测速不验证 Netflix 实际播放或地区解锁状态。
 - 推特X、Discord、TikTok 与 Shadowrocket 的 Twitter/Facebook 并入“社交平台”，默认“节点选择”；Cloudflare 验证保留独立分组；Linux.do、OneDrive 共用“节点选择”。OneDrive 的专用规则仍先于微软总规则，微软服务的直连默认值不变。
 - Clash 原有的 3 个 Telegram DC 分组删除，DC 专用 IP-ASN/IP-CIDR 规则保留在最前并全部指向“电报消息”，不再为各 DC 单独维护目标测速。
 - YouTube Music、油管视频、奈飞视频及 Shadowrocket 的 YouTube/Netflix 并入“国外媒体”，奈飞节点与流媒体解锁仍作为候选；Spotify、PikPak、Disney+、Max 同样并入“国外媒体”；Epic 并入“游戏平台”。这些合并服务跟随目标组选择。
